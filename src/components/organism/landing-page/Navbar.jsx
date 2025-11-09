@@ -1,15 +1,25 @@
 import Link from 'next/link';
+import Text from '@/components/atoms/Text';
+
+import { cn } from '@sglara/cn';
 
 export default function Navbar() {
     return (
         <nav className="bg-gray-800 p-4 text-white">
-            <div className="container mx-auto flex justify-between items-center">
-                <Link href="/" className="text-xl font-bold">
-                    My App
+            <div className={cn(
+                "container flex justify-between items-center",
+                "max-w-[1200px] mx-auto"
+
+            )}>
+                {/* Home Page */}
+                <Link href="/">
+                    <Text font='inter' className='text-2xl font-semibold text-white hover:underline transition-all duration-100'>
+                        Dhaafin.
+                    </Text>
                 </Link>
                 <div>
                     <Link href="/about" className="mr-4 hover:text-gray-300">
-                        About
+                        Resume
                     </Link>
                     <Link href="/contact" className="hover:text-gray-300">
                         Contact
