@@ -1,12 +1,12 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
-import Navbar from '@/components/organism/landing-page/Navbar';
+import Navbar from '@/components/organism/molecules/Navbar';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'My Awesome App',
-  description: 'A layout for the entire application.',
+  title: "Dhaafin's Portfolio",
+  description: '',
 };
 
 export default function RootLayout({ children }) {
@@ -14,7 +14,6 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <Navbar />
-
         <main className="container mx-auto p-4">
           {children}
         </main>

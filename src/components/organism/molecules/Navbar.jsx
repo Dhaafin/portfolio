@@ -17,8 +17,8 @@ export default function Navbar() {
                         Dhaafin.
                     </Text>
                 </Link>
-                <div>
-                    <Link href="/about" className="mr-4 hover:text-gray-300">
+                <div className='flex flex-row gap-4'>
+                    <Link href="/about" className="hover:text-gray-300">
                         Resume
                     </Link>
                     <Link href="/contact" className="hover:text-gray-300">
