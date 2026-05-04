@@ -1,10 +1,10 @@
 import Text from "@/components/atoms/Text";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata = { title: "Projects | Dhaafin" };
 
-// Mock data for project placeholders
-const projects = [
+const mockProjects = [
   { 
     id: "01", 
     title: "project one.", 
@@ -28,8 +28,17 @@ const projects = [
   },
 ];
 
-export default function WorkPage() {
-  const nodeColor = "#A78BFA"; // Matches the 'work' node color from the graph
+export default async function ProjectsPage() {
+  const nodeColor = "#A78BFA"; 
+
+  const supabase = await createClient();
+  const { data: dbProjects } = await supabase
+    .from("projects")
+    .select("*")
+    .order("order", { ascending: true });
+
+  // Use DB projects if available, otherwise fallback to mock data
+  const projects = dbProjects?.length > 0 ? dbProjects : mockProjects;
 
   return (
     <div className="min-h-screen relative px-8 md:px-24 lg:px-48 py-24 md:py-32 max-w-[1400px] mx-auto">
@@ -106,12 +115,20 @@ export default function WorkPage() {
 
                 {/* Cinematic Image Placeholder */}
                 <div className="w-full aspect-[16/10] md:aspect-[21/9] bg-surface border border-border/20 rounded-lg overflow-hidden relative group-hover:border-white/10 transition-colors duration-700 mt-4">
-                  <div className="absolute inset-0 bg-blob opacity-5 blur-[100px] group-hover:opacity-10 transition-opacity duration-700" />
-                  
-                  {/* Subtle visual texture inside placeholder */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center opacity-20">
-                    <Text className="text-sm tracking-[0.5em] font-medium uppercase">placeholder</Text>
-                  </div>
+                  {project.image_url ? (
+                    <img 
+                      src={project.image_url} 
+                      alt={project.title} 
+                      className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
+                    />
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 bg-blob opacity-5 blur-[100px] group-hover:opacity-10 transition-opacity duration-700" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center opacity-20">
+                        <Text className="text-sm tracking-[0.5em] font-medium uppercase">placeholder</Text>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 
