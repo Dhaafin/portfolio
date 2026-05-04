@@ -4,37 +4,29 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
   --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
 
   --font-sans: var(--font-jost), "Inter", system-ui, sans-serif;
   --font-display: var(--font-jost), sans-serif;
 
   --radius-xl: 1.5rem;
-  --radius-2xl: 2rem;
 }
 
 :root {
-  --background: hsl(0 0% 100%);
-  --foreground: hsl(240 10% 3.9%);
-  --muted: hsl(240 4.8% 95.9%);
-  --muted-foreground: hsl(240 3.8% 46.1%);
-  --accent: hsl(240 4.8% 95.9%);
-  --accent-foreground: hsl(240 5.9% 10%);
-  --border: hsl(240 5.9% 90%);
+  /* Luxury Midnight Blue Palette */
+  --background: hsl(222 47% 4%);
+  --foreground: hsl(210 40% 98%);
+  --muted: hsl(215 20% 65%);
+  --accent: hsl(217 91% 60%);
+  --border: hsla(217, 91%, 60%, 0.1);
 }
 
-@media (prefers-color-scheme: dark) {
+/* Force dark mode behavior as default for luxury nonchalance */
+@media (prefers-color-scheme: light) {
   :root {
-    --background: hsl(240 10% 3.9%);
-    --foreground: hsl(0 0% 98%);
-    --muted: hsl(240 3.7% 15.9%);
-    --muted-foreground: hsl(240 5% 64.9%);
-    --accent: hsl(240 3.7% 15.9%);
-    --accent-foreground: hsl(0 0% 98%);
-    --border: hsl(240 3.7% 15.9%);
+    --background: hsl(222 47% 4%);
+    --foreground: hsl(210 40% 98%);
   }
 }
 
@@ -52,20 +44,16 @@ body {
 
 /* Antigravity Aesthetics */
 .glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: hsla(222, 47%, 7%, 0.4);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
 }
 
-.text-gradient {
-  background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.5) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.text-damp {
+  opacity: 0.6;
+  letter-spacing: -0.02em;
 }
 
-.bg-mesh {
-  background-image: 
-    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-    radial-gradient(at 50% 0%, hsla(225,39%,30%,0.1) 0, transparent 50%), 
-    radial-gradient(at 100% 0%, hsla(339,49%,30%,0.1) 0, transparent 50%);
+.bg-blob {
+  background: radial-gradient(circle at center, hsla(217, 91%, 60%, 0.15) 0%, transparent 70%);
 }

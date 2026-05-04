@@ -13,9 +13,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.variable} ${jost.variable} font-sans bg-mesh min-h-screen`}>
+      <body className={`${inter.variable} ${jost.variable} font-sans bg-mesh min-h-screen selection:bg-accent/30`}>
         <Navbar />
-        <main className="relative pt-24">
+        <main>
           {children}
         </main>
       </body>
