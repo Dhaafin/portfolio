@@ -1,6 +1,7 @@
 import './globals.css';
 import { Inter, Jost } from 'next/font/google';
 import Navbar from '@/components/organism/molecules/Navbar';
+import Footer from '@/components/organism/molecules/Footer';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const jost = Jost({ subsets: ['latin'], variable: '--font-jost' });
@@ -13,11 +14,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.variable} ${jost.variable} font-sans bg-mesh min-h-screen selection:bg-accent/30`}>
+      <body className={`${inter.variable} ${jost.variable} font-sans bg-mesh min-h-screen selection:bg-accent/30 flex flex-col`}>
         <Navbar />
-        <main>
+        <main className="flex-grow">
           {children}
         </main>
+        <Footer />
       </body>
     </html>
   );
