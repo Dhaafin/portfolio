@@ -1,7 +1,6 @@
 import './globals.css';
 import { Inter, Jost } from 'next/font/google';
 import Navbar from '@/components/organism/molecules/Navbar';
-import Footer from '@/components/organism/molecules/Footer';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const jost = Jost({ subsets: ['latin'], variable: '--font-jost' });
@@ -19,7 +18,6 @@ export default function RootLayout({ children }) {
         <main className="flex-grow">
           {children}
         </main>
-        <Footer />
       </body>
     </html>
   );
