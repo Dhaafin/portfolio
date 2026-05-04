@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Text from "@/components/atoms/Text";
+import { logout } from "./login/actions";
 
 export default async function AdminLayout({ children }) {
   const supabase = await createClient();
@@ -11,11 +12,9 @@ export default async function AdminLayout({ children }) {
   } = await supabase.auth.getUser();
 
   // Redirect to login if not authenticated
-  // For initial setup, we might want to comment this out if the user hasn't set up OAuth yet
-  // but standard practice is to redirect.
-  // if (!user) {
-  //   return redirect("/admin/login");
-  // }
+  if (!user) {
+    return redirect("/admin/login");
+  }
 
   return (
     <div className="min-h-screen bg-[#050505] text-foreground flex">
@@ -36,18 +35,26 @@ export default async function AdminLayout({ children }) {
           <AdminNavLink href="/admin/settings" label="settings." />
         </nav>
 
-        <div className="mt-auto pt-6 border-t border-white/5">
-          <Text className="text-[10px] uppercase tracking-widest text-white/20 mb-4">
-            Authenticated as
-          </Text>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
-              <span className="text-xs font-bold text-primary">A</span>
-            </div>
-            <Text className="text-xs font-bold truncate text-white/60">
-              {user?.email || "Admin"}
+        <div className="mt-auto pt-6 border-t border-white/5 flex flex-col gap-6">
+          <div>
+            <Text className="text-[10px] uppercase tracking-widest text-white/20 mb-4">
+              Authenticated as
             </Text>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
+                <span className="text-xs font-bold text-primary">A</span>
+              </div>
+              <Text className="text-xs font-bold truncate text-white/60">
+                {user?.email || "Admin"}
+              </Text>
+            </div>
           </div>
+          
+          <form action={logout}>
+            <button className="w-full py-3 rounded-xl border border-white/5 hover:bg-red-500/10 hover:border-red-500/20 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-red-500 transition-all">
+              Sign Out
+            </button>
+          </form>
         </div>
       </aside>
 
