@@ -1,16 +1,20 @@
 
 import Hero from "./Hero";
+import Projects from "./Projects";
 
 const HomePage = () => {
     return (
-        <div className="max-w-[1200px] mx-auto flex flex-col gap-6">
-
+        <div className="flex flex-col">
             <section id="hero">
-                <Hero></Hero>
+                <Hero />
             </section>
-
+            
+            <section id="projects">
+                <Projects />
+            </section>
         </div>
     );
 };
 
 export default HomePage;
+
