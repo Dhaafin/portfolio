@@ -1,17 +1,125 @@
 import Text from "@/components/atoms/Text";
+import Link from "next/link";
 
 export const metadata = { title: "Work | Dhaafin" };
 
+// Mock data for project placeholders
+const projects = [
+  { 
+    id: "01", 
+    title: "project one.", 
+    role: "full-stack", 
+    year: "2026",
+    description: "a state-of-the-art e-commerce platform built with next.js and supabase. features real-time inventory management and a custom 3d product configurator."
+  },
+  { 
+    id: "02", 
+    title: "project two.", 
+    role: "frontend", 
+    year: "2025",
+    description: "an award-winning marketing site for a luxury automotive brand. intense focus on webgl animations and scroll-linked micro-interactions."
+  },
+  { 
+    id: "03", 
+    title: "project three.", 
+    role: "backend", 
+    year: "2025",
+    description: "a high-performance microservice architecture designed to handle millions of concurrent websocket connections for a live auction application."
+  },
+];
+
 export default function WorkPage() {
+  const nodeColor = "#A78BFA"; // Matches the 'work' node color from the graph
+
   return (
-    <div className="min-h-screen flex flex-col justify-center px-24 md:px-48 lg:px-64">
-      <div className="max-w-[900px] mx-auto w-full">
-        <Text className="text-xs tracking-[0.3em] uppercase font-bold text-muted/50 mb-8">selected works.</Text>
-        <Text as="h1" className="text-7xl md:text-9xl font-black lowercase tracking-tighter leading-none">
-          work<span className="text-accent">.</span>
+    <div className="min-h-screen relative px-8 md:px-24 lg:px-48 py-24 md:py-32 max-w-[1400px] mx-auto">
+      
+      {/* Back navigation */}
+      <Link href="/" className="inline-block mb-24 text-xs font-bold uppercase tracking-[0.25em] text-muted hover:text-foreground transition-colors">
+        ← back.
+      </Link>
+
+      {/* Page Header (Root of the Timeline) */}
+      <header className="relative mb-32 ml-16 md:ml-32">
+        <Text className="text-xs tracking-[0.3em] uppercase font-bold mb-4" style={{ color: nodeColor }}>
+          selected projects.
         </Text>
-        <Text className="text-muted text-xl mt-8 font-medium">coming soon.</Text>
+        <Text as="h1" className="text-7xl md:text-9xl font-black lowercase tracking-tighter leading-none">
+          work<span style={{ color: nodeColor }}>.</span>
+        </Text>
+      </header>
+
+      {/* The Timeline Container */}
+      <div className="relative">
+        
+        {/* The Continuous Vertical Line */}
+        <div 
+          className="absolute top-0 bottom-0 left-[27px] md:left-[35px] w-[2px] opacity-20"
+          style={{ background: `linear-gradient(to bottom, ${nodeColor}, transparent)` }}
+        />
+
+        {/* Project List */}
+        <div className="flex flex-col gap-48">
+          {projects.map((project, index) => (
+            <div key={project.id} className="relative group pl-24 md:pl-32 lg:pl-48">
+              
+              {/* The Timeline Node for this Project */}
+              <div 
+                className="absolute top-8 left-6 md:left-8 w-4 h-4 rounded-full -translate-x-1/2 z-10 shadow-[0_0_15px_rgba(167,139,250,0.4)] group-hover:scale-150 transition-transform duration-500"
+                style={{ backgroundColor: nodeColor }}
+              >
+                {/* Inner glowing core */}
+                <div 
+                  className="absolute inset-0 rounded-full animate-pulse"
+                  style={{ backgroundColor: nodeColor, transform: 'scale(2)', opacity: 0.3 }}
+                />
+              </div>
+
+              {/* Connecting Horizontal Dash (Optional but looks cool) */}
+              <div 
+                className="absolute top-[39px] left-8 md:left-10 w-12 md:w-20 h-[1px] opacity-20"
+                style={{ backgroundColor: nodeColor }}
+              />
+
+              <div className="flex flex-col gap-8">
+                {/* Project Metadata */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border/20 pb-8">
+                  <div className="flex flex-col gap-2">
+                    <Text className="text-muted/50 text-sm tracking-[0.2em] uppercase font-bold">
+                      {project.id} — {project.year}
+                    </Text>
+                    <Text as="h2" className="text-4xl md:text-6xl font-black lowercase tracking-tighter text-foreground group-hover:text-white transition-colors duration-500">
+                      {project.title}
+                    </Text>
+                  </div>
+                  <div className="text-left md:text-right">
+                    <Text className="text-xs tracking-[0.3em] uppercase font-bold" style={{ color: nodeColor }}>
+                      {project.role}
+                    </Text>
+                  </div>
+                </div>
+
+                {/* Brief Description */}
+                <Text className="text-muted/80 text-lg md:text-xl font-medium max-w-2xl leading-relaxed">
+                  {project.description}
+                </Text>
+
+                {/* Cinematic Image Placeholder */}
+                <div className="w-full aspect-[16/10] md:aspect-[21/9] bg-surface border border-border/20 rounded-lg overflow-hidden relative group-hover:border-white/10 transition-colors duration-700 mt-4">
+                  <div className="absolute inset-0 bg-blob opacity-5 blur-[100px] group-hover:opacity-10 transition-opacity duration-700" />
+                  
+                  {/* Subtle visual texture inside placeholder */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center opacity-20">
+                    <Text className="text-sm tracking-[0.5em] font-medium uppercase">placeholder</Text>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          ))}
+        </div>
       </div>
+
     </div>
   );
 }
