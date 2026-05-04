@@ -122,12 +122,6 @@ const GraphExplorer = () => {
 
   return (
     <section className="relative w-full py-16 px-10">
-      {/* Section Label */}
-      <div className="flex items-center gap-6 mb-12 max-w-[900px] mx-auto opacity-30 px-14 md:px-24 lg:px-38">
-        <Text className="text-xs tracking-[0.3em] uppercase font-bold">explore.</Text>
-        <div className="h-[1px] flex-grow bg-border"></div>
-      </div>
-
       {/* Graph Canvas — no background, fully transparent */}
       <div
         ref={wrapperRef}
