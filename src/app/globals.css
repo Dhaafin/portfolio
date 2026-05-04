@@ -9,8 +9,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
 
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-display: "Outfit", sans-serif;
+  --font-sans: var(--font-jost), "Inter", system-ui, sans-serif;
+  --font-display: var(--font-jost), sans-serif;
 
   --radius-xl: 1.5rem;
   --radius-2xl: 2rem;

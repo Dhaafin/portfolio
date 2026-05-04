@@ -29,6 +29,9 @@ export default function Text({
         case 'inter':
             fontClass = 'font-inter';
             break;
+        case 'jost':
+            fontClass = 'font-sans'; // font-sans is now mapped to Jost
+            break;
         default:
             fontClass = 'font-sans'; // Default font set in Tailwind or CSS
             break;
