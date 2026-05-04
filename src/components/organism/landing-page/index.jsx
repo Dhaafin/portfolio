@@ -1,6 +1,6 @@
-
 import Hero from "./Hero";
 import Projects from "./Projects";
+import Experience from "./Experience";
 
 const HomePage = () => {
     return (
@@ -12,9 +12,14 @@ const HomePage = () => {
             <section id="projects">
                 <Projects />
             </section>
+            
+            <section id="experience">
+                <Experience />
+            </section>
         </div>
     );
 };
 
 export default HomePage;
+
 
