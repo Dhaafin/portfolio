@@ -9,8 +9,8 @@ const projects = [
 
 const Projects = () => {
   return (
-    <section className="py-32 px-10">
-      <div className="max-w-[1400px] mx-auto">
+    <section className="py-32 px-20 md:px-32">
+      <div className="max-w-[1100px] mx-auto">
         <div className="flex items-center gap-6 mb-24">
           <Text className="text-xs tracking-[0.3em] uppercase font-bold text-muted/50">
             selected works.

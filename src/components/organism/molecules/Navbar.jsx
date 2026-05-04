@@ -3,7 +3,7 @@ import Text from '@/components/atoms/Text';
 
 export default function Navbar() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-10 py-8">
+    <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-20 md:px-32 py-8">
       <Link href="/" className="group">
         <Text className="text-xl font-black lowercase tracking-tighter">
           dhaafin<span className="text-accent">.</span>
