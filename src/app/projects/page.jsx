@@ -1,7 +1,7 @@
 import Text from "@/components/atoms/Text";
 import Link from "next/link";
 
-export const metadata = { title: "Work | Dhaafin" };
+export const metadata = { title: "Projects | Dhaafin" };
 
 // Mock data for project placeholders
 const projects = [
@@ -45,7 +45,7 @@ export default function WorkPage() {
           selected projects.
         </Text>
         <Text as="h1" className="text-7xl md:text-9xl font-black lowercase tracking-tighter leading-none">
-          work<span style={{ color: nodeColor }}>.</span>
+          projects<span style={{ color: nodeColor }}>.</span>
         </Text>
       </header>
 
