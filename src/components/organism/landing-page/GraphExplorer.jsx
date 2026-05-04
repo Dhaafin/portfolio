@@ -1,31 +1,33 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import Link from "next/link";
 import Text from "@/components/atoms/Text";
 
-// Each node has its own color identity
+// --- Nodes Data (Sequential but winding) ---
 const nodes = [
-  { id: "me",         label: "dhaafin.",    x: 50, y: 50, isRoot: true, href: "/",           description: "the center.",           color: "#3B82F6", size: 18 },
-  { id: "work",       label: "work.",        x: 22, y: 20, isRoot: false, href: "/work",       description: "selected projects.",    color: "#A78BFA", size: 11 },
-  { id: "experience", label: "experience.",  x: 78, y: 24, isRoot: false, href: "/experience", description: "where i've been.",      color: "#34D399", size: 11 },
-  { id: "about",      label: "about.",       x: 24, y: 78, isRoot: false, href: "/about",      description: "who i am.",             color: "#F472B6", size: 11 },
-  { id: "contact",    label: "contact.",     x: 76, y: 80, isRoot: false, href: "/contact",    description: "let's talk.",           color: "#FB923C", size: 11 },
-  { id: "tech",       label: "tech.",        x: 8,  y: 50, isRoot: false, href: null,          description: "next.js. react. node.", color: "#22D3EE", size: 9  },
-  { id: "design",     label: "design.",      x: 92, y: 50, isRoot: false, href: null,          description: "figma. tailwind.",      color: "#FACC15", size: 9  },
+  { id: "about",          label: "about.",          x: 20, y: 20, isRoot: true, href: "/about",          description: "who i am.",               color: "#F472B6", size: 16 },
+  { id: "projects",       label: "projects.",       x: 50, y: 15, isRoot: false, href: "/work",           description: "selected works.",         color: "#A78BFA", size: 12 },
+  { id: "experience",     label: "experience.",     x: 80, y: 35, isRoot: false, href: "/experience",     description: "professional path.",      color: "#34D399", size: 12 },
+  { id: "organizations",  label: "organizations.",  x: 65, y: 65, isRoot: false, href: "/organizations",  description: "leadership & groups.",    color: "#22D3EE", size: 11 },
+  { id: "certifications", label: "certifications.", x: 30, y: 80, isRoot: false, href: "/certifications", description: "verified skills.",        color: "#FACC15", size: 11 },
+  { id: "contact",        label: "contact.",        x: 80, y: 85, isRoot: false, href: "/contact",        description: "let's talk.",             color: "#FB923C", size: 14 },
 ];
 
+// --- Edges Data ---
+// Sequential path + some cross-connections for "multiple ways"
 const edges = [
-  ["me", "work"],
-  ["me", "experience"],
-  ["me", "about"],
-  ["me", "contact"],
-  ["me", "tech"],
-  ["me", "design"],
-  ["work", "tech"],
-  ["work", "design"],
-  ["experience", "tech"],
+  // Primary Sequence
+  ["about", "projects"],
+  ["projects", "experience"],
+  ["experience", "organizations"],
+  ["organizations", "certifications"],
+  ["certifications", "contact"],
+  // Alternative Paths
+  ["about", "organizations"],
+  ["projects", "certifications"],
+  ["experience", "contact"],
 ];
 
 function GraphNode({ node, isActive, onClick, cw, ch }) {
@@ -72,17 +74,16 @@ function GraphNode({ node, isActive, onClick, cw, ch }) {
         stroke="rgba(255,255,255,0.3)"
         strokeWidth={active ? 2 : 1}
         animate={{ scale: active ? 1.2 : 1 }}
-        whileHover={{ scale: 1.35, fillOpacity: 1 }}
         transition={{ duration: 0.3 }}
       />
 
       {/* Label */}
       <motion.text
         x={cx}
-        y={cy - node.size - 10}
+        y={cy - node.size - 12}
         textAnchor="middle"
         fill="white"
-        fontSize={node.isRoot ? "15" : "11"}
+        fontSize={node.isRoot ? "15" : "12"}
         fontWeight={node.isRoot ? "900" : "700"}
         fontFamily="var(--font-jost), sans-serif"
         letterSpacing="-0.03em"
@@ -97,9 +98,18 @@ function GraphNode({ node, isActive, onClick, cw, ch }) {
 
 const GraphExplorer = () => {
   const [activeNode, setActiveNode] = useState(null);
-  const [containerSize, setContainerSize] = useState({ w: 900, h: 500 });
+  const [containerSize, setContainerSize] = useState({ w: 900, h: 600 });
+  
   const svgRef = useRef(null);
   const wrapperRef = useRef(null);
+
+  // Magnetic Cursor state
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
+  const cursorX = useSpring(mouseX, { stiffness: 150, damping: 15, mass: 0.5 });
+  const cursorY = useSpring(mouseY, { stiffness: 150, damping: 15, mass: 0.5 });
+  const cursorSize = useSpring(12, { stiffness: 200, damping: 20 });
+  const cursorOpacity = useSpring(0, { stiffness: 200, damping: 20 });
 
   useEffect(() => {
     const updateSize = () => {
@@ -114,6 +124,48 @@ const GraphExplorer = () => {
     return () => ro.disconnect();
   }, []);
 
+  const handleMouseMove = (e) => {
+    if (!wrapperRef.current) return;
+    const rect = wrapperRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Magnetic pull logic
+    let isHoveringNode = false;
+    let targetX = x;
+    let targetY = y;
+    const magneticRadius = 80;
+
+    for (const node of nodes) {
+      const nx = (node.x / 100) * containerSize.w;
+      const ny = (node.y / 100) * containerSize.h;
+      const dist = Math.hypot(nx - x, ny - y);
+
+      if (dist < magneticRadius) {
+        isHoveringNode = true;
+        // Interpolate heavily towards the node center
+        const pullFactor = 1 - Math.pow(dist / magneticRadius, 2); // Stronger pull closer to center
+        targetX = x + (nx - x) * pullFactor;
+        targetY = y + (ny - y) * pullFactor;
+        break; // Snap to the closest one in range
+      }
+    }
+
+    mouseX.set(targetX);
+    mouseY.set(targetY);
+    cursorOpacity.set(1);
+
+    if (isHoveringNode) {
+      cursorSize.set(40);
+    } else {
+      cursorSize.set(16);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    cursorOpacity.set(0);
+  };
+
   const handleNodeClick = (node) => {
     setActiveNode(node.id === activeNode ? null : node.id);
   };
@@ -121,13 +173,30 @@ const GraphExplorer = () => {
   const activeNodeData = nodes.find((n) => n.id === activeNode);
 
   return (
-    <section className="relative w-full py-16 px-10">
-      {/* Graph Canvas — no background, fully transparent */}
+    <section className="relative w-full py-16 px-4 md:px-10 overflow-hidden">
+      
+      {/* Graph Canvas */}
       <div
         ref={wrapperRef}
-        className="relative w-full"
-        style={{ height: "clamp(400px, 55vh, 620px)" }}
+        className="relative w-full max-w-[1200px] mx-auto cursor-none"
+        style={{ height: "clamp(500px, 70vh, 800px)" }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
       >
+        {/* The Magnetic Cursor */}
+        <motion.div
+          className="absolute top-0 left-0 rounded-full border border-white/50 bg-white/10 pointer-events-none z-50 backdrop-blur-[2px]"
+          style={{
+            x: cursorX,
+            y: cursorY,
+            width: cursorSize,
+            height: cursorSize,
+            translateX: "-50%",
+            translateY: "-50%",
+            opacity: cursorOpacity,
+          }}
+        />
+
         <svg
           ref={svgRef}
           className="w-full h-full"
@@ -135,7 +204,6 @@ const GraphExplorer = () => {
           preserveAspectRatio="xMidYMid meet"
         >
           <defs>
-            {/* A gradient for each edge based on connected nodes */}
             {edges.map(([fromId, toId]) => {
               const from = nodes.find((n) => n.id === fromId);
               const to   = nodes.find((n) => n.id === toId);
@@ -144,14 +212,14 @@ const GraphExplorer = () => {
                   x1={(from.x / 100) * containerSize.w} y1={(from.y / 100) * containerSize.h}
                   x2={(to.x / 100) * containerSize.w}   y2={(to.y / 100) * containerSize.h}
                 >
-                  <stop offset="0%"   stopColor={from.color} stopOpacity="0.6" />
-                  <stop offset="100%" stopColor={to.color}   stopOpacity="0.6" />
+                  <stop offset="0%"   stopColor={from.color} stopOpacity="0.5" />
+                  <stop offset="100%" stopColor={to.color}   stopOpacity="0.5" />
                 </linearGradient>
               );
             })}
           </defs>
 
-          {/* Colorful Gradient Edges */}
+          {/* Edges */}
           {edges.map(([fromId, toId]) => {
             const from = nodes.find((n) => n.id === fromId);
             const to   = nodes.find((n) => n.id === toId);
@@ -165,10 +233,10 @@ const GraphExplorer = () => {
                 y2={(to.y / 100) * containerSize.h}
                 stroke={`url(#grad-${fromId}-${toId})`}
                 strokeWidth={isConnectedToActive ? 2 : 1}
-                opacity={activeNode ? (isConnectedToActive ? 0.9 : 0.15) : 0.4}
+                opacity={activeNode ? (isConnectedToActive ? 0.9 : 0.1) : 0.4}
                 strokeDasharray={isConnectedToActive ? "none" : "4 4"}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: activeNode ? (isConnectedToActive ? 0.9 : 0.15) : 0.4 }}
+                animate={{ opacity: activeNode ? (isConnectedToActive ? 0.9 : 0.1) : 0.4 }}
                 transition={{ duration: 0.5 }}
               />
             );
@@ -199,9 +267,9 @@ const GraphExplorer = () => {
               className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-center pointer-events-none"
             >
               <div
-                className="pointer-events-auto flex flex-col items-center gap-3 px-8 py-5 rounded-2xl"
+                className="pointer-events-auto flex flex-col items-center gap-3 px-8 py-5 rounded-2xl shadow-2xl"
                 style={{
-                  background: `linear-gradient(135deg, ${activeNodeData.color}18, ${activeNodeData.color}08)`,
+                  background: `linear-gradient(135deg, ${activeNodeData.color}15, ${activeNodeData.color}05)`,
                   border: `1px solid ${activeNodeData.color}35`,
                   backdropFilter: "blur(16px)",
                 }}
@@ -210,9 +278,9 @@ const GraphExplorer = () => {
                   {activeNodeData.description}
                 </Text>
                 {activeNodeData.href && (
-                  <Link href={activeNodeData.href} className="pointer-events-auto">
+                  <Link href={activeNodeData.href} className="pointer-events-auto cursor-pointer">
                     <button
-                      className="px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all hover:opacity-80"
+                      className="px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all hover:scale-105"
                       style={{
                         background: `${activeNodeData.color}25`,
                         border: `1px solid ${activeNodeData.color}60`,
