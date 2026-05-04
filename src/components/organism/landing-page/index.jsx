@@ -1,6 +1,5 @@
 import Hero from "./Hero";
-import Projects from "./Projects";
-import Experience from "./Experience";
+import GraphExplorer from "./GraphExplorer";
 
 const HomePage = () => {
     return (
@@ -9,17 +8,11 @@ const HomePage = () => {
                 <Hero />
             </section>
             
-            <section id="projects">
-                <Projects />
-            </section>
-            
-            <section id="experience">
-                <Experience />
+            <section id="explorer">
+                <GraphExplorer />
             </section>
         </div>
     );
 };
 
 export default HomePage;
-
-
