@@ -1,219 +1,176 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
-// Stagger container
-const stagger = {
+// --- Configuration ---
+
+const REPEL_BLOBS = [
+  { color: "hsla(217,91%,60%,0.2)", size: 600, ox: -250, oy: -200, strength: 300 }, // Blue
+  { color: "hsla(322,80%,65%,0.15)", size: 500, ox: 300,  oy: 250,  strength: 350 }, // Pink
+];
+
+// --- Animations ---
+
+const STAGGER = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.12, delayChildren: 0.2 } },
-};
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.23, 1, 0.32, 1] } },
+  show: { transition: { staggerChildren: 0.15, delayChildren: 0.2 } },
 };
 
-// Floating tags data
-const tags = [
-  { label: "full-stack.",     color: "#A78BFA", x: "-22%", y: "20%",  delay: 0.6 },
-  { label: "problem solver.", color: "#F472B6", x: "-18%", y: "72%",  delay: 1.1 },
-];
-
-// Repulsion blob config — anchor offsets from center in px
-const repelBlobs = [
-  { color: "hsla(322,80%,65%,0.15)", size: 500, ox: -200, oy: -200, strength: 260 }, // pink top-left
-  { color: "hsla(160,70%,50%,0.15)", size: 500, ox: 200,  oy: 200,  strength: 280 }, // teal bottom-right
-  { color: "hsla(262,80%,65%,0.10)", size: 400, ox: 200,  oy: -180, strength: 220 }, // purple top-right
-  { color: "hsla(40,90%,60%,0.08)",  size: 350, ox: -180, oy: 160,  strength: 200 }, // amber bottom-left
-];
+const FADE_UP = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { duration: 1, ease: [0.23, 1, 0.32, 1] } },
+};
 
 const Hero = () => {
   const containerRef = useRef(null);
 
-  // Normalised [0,1] mouse position for the cursor blob
-  const rawX = useMotionValue(0.5);
-  const rawY = useMotionValue(0.5);
+  // 1. MOUSE MOTION VALUES (Normalized 0-1)
+  const mouseX = useMotionValue(0.5);
+  const mouseY = useMotionValue(0.5);
 
-  // Spring-lagged cursor blob
-  const springCfg = { stiffness: 60, damping: 22, mass: 1.2 };
-  const blobSpringX = useSpring(rawX, springCfg);
-  const blobSpringY = useSpring(rawY, springCfg);
+  // 2. SPRING PHYSICS FOR FLUIDITY
+  const springConfig = { stiffness: 45, damping: 25, mass: 1 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
 
-  // Container size for pixel-space transform
-  const [size, setSize] = useState({ w: 1440, h: 900 });
+  // 3. TRANSFORMATIONS
+  const splatX = useTransform(smoothX, [0, 1], ["-10%", "10%"]);
+  const splatY = useTransform(smoothY, [0, 1], ["-10%", "10%"]);
 
-  // Convert spring 0-1 to pixel offset from center
-  const blobX = useTransform(blobSpringX, [0, 1], [-size.w / 2, size.w / 2]);
-  const blobY = useTransform(blobSpringY, [0, 1], [-size.h / 2, size.h / 2]);
-
-  // Dynamic positions for repelled blobs
-  const [repelPos, setRepelPos] = useState(() =>
-    repelBlobs.map((b) => ({ x: b.ox, y: b.oy }))
-  );
+  // MotionValues for repulsion blobs
+  const blobMotionValues = REPEL_BLOBS.map(b => ({
+    x: useMotionValue(b.ox),
+    y: useMotionValue(b.oy)
+  }));
 
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
+    const handleMouseMove = (e) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      
+      const nx = (e.clientX - rect.left) / rect.width;
+      const ny = (e.clientY - rect.top) / rect.height;
+      mouseX.set(nx);
+      mouseY.set(ny);
 
-    // Capture container dimensions for transform range
-    const ro = new ResizeObserver(([entry]) => {
-      setSize({ w: entry.contentRect.width, h: entry.contentRect.height });
-    });
-    ro.observe(el);
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+      const mx = e.clientX - rect.left - cx;
+      const my = e.clientY - rect.top - cy;
 
-    const handleMove = (e) => {
-      const rect = el.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-
-      // Cursor blob follows mouse in [0,1] space
-      rawX.set((e.clientX - rect.left) / rect.width);
-      rawY.set((e.clientY - rect.top) / rect.height);
-
-      // Repulsion: push each blob away from cursor
-      const mx = e.clientX - cx;
-      const my = e.clientY - cy;
-
-      setRepelPos(
-        repelBlobs.map((b) => {
-          const dx = b.ox - mx;
-          const dy = b.oy - my;
-          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          const factor = Math.max(0, 1 - dist / b.strength);
-          return {
-            x: b.ox - (dx / dist) * factor * b.strength * 0.65,
-            y: b.oy - (dy / dist) * factor * b.strength * 0.65,
-          };
-        })
-      );
+      REPEL_BLOBS.forEach((blob, i) => {
+        const dx = blob.ox - mx;
+        const dy = blob.oy - my;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        const factor = Math.max(0, 1 - dist / blob.strength);
+        
+        blobMotionValues[i].x.set(blob.ox - (dx / dist) * factor * blob.strength * 0.6);
+        blobMotionValues[i].y.set(blob.oy - (dy / dist) * factor * blob.strength * 0.6);
+      });
     };
 
-    const handleLeave = () => {
-      rawX.set(0.5);
-      rawY.set(0.5);
-      setRepelPos(repelBlobs.map((b) => ({ x: b.ox, y: b.oy })));
+    const handleMouseLeave = () => {
+      mouseX.set(0.5);
+      mouseY.set(0.5);
+      REPEL_BLOBS.forEach((blob, i) => {
+        blobMotionValues[i].x.set(blob.ox);
+        blobMotionValues[i].y.set(blob.oy);
+      });
     };
 
-    el.addEventListener("mousemove", handleMove);
-    el.addEventListener("mouseleave", handleLeave);
+    window.addEventListener("mousemove", handleMouseMove);
+    containerRef.current?.addEventListener("mouseleave", handleMouseLeave);
+    
     return () => {
-      el.removeEventListener("mousemove", handleMove);
-      el.removeEventListener("mouseleave", handleLeave);
-      ro.disconnect();
+      window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [rawX, rawY]);
+  }, [mouseX, mouseY]);
 
   return (
-    <div
+    <section 
       ref={containerRef}
-      className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden"
+      className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden bg-background select-none"
     >
-      {/* ── Cursor-following color splat ── */}
-      <motion.div
-        className="absolute pointer-events-none -z-10 rounded-full blur-[110px]"
-        style={{
-          width: 580,
-          height: 580,
-          background:
-            "radial-gradient(circle at center, hsla(217,91%,60%,0.20) 0%, hsla(322,80%,65%,0.12) 50%, transparent 70%)",
-          left: "50%",
-          top: "50%",
-          translateX: "-50%",
-          translateY: "-50%",
-          x: blobX,
-          y: blobY,
-        }}
-      />
+      {/* ── LAYER 0: The Color Splat (Vibrant Blobby Splat) ── */}
+      <motion.div 
+        className="absolute inset-0 pointer-events-none z-[1] flex items-center justify-center"
+        style={{ x: splatX, y: splatY }}
+      >
+        <div className="relative w-[700px] h-[700px] opacity-80">
+           {/* Blob 1: Blue */}
+           <motion.div 
+            className="absolute top-[10%] left-[10%] w-[50%] h-[50%] rounded-full" 
+            style={{ background: "#3B82F6", filter: "blur(70px)" }}
+            animate={{ scale: [1, 1.15, 1], x: [0, 40, 0] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+           />
+           {/* Blob 2: Pink */}
+           <motion.div 
+            className="absolute top-[30%] left-[40%] w-[45%] h-[45%] rounded-full" 
+            style={{ background: "#EC4899", filter: "blur(80px)" }}
+            animate={{ scale: [1, 1.25, 1], x: [0, -50, 0], y: [0, 40, 0] }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+           />
+           {/* Blob 3: Purple */}
+           <motion.div 
+            className="absolute top-[45%] left-[15%] w-[40%] h-[40%] rounded-full" 
+            style={{ background: "#8B5CF6", filter: "blur(70px)" }}
+            animate={{ scale: [1, 1.2, 1], y: [0, -50, 0] }}
+            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+           />
+        </div>
+      </motion.div>
 
-      {/* ── Repelling aurora blobs (each spring-animated to repelPos) ── */}
-      {repelBlobs.map((blob, i) => (
+      {/* ── LAYER 1: Repulsion Blobs (GPU Accelerated) ── */}
+      {REPEL_BLOBS.map((blob, i) => (
         <motion.div
           key={i}
-          className="absolute top-1/2 left-1/2 rounded-full pointer-events-none -z-10"
+          className="absolute top-1/2 left-1/2 rounded-full pointer-events-none z-0 opacity-20 blur-[100px]"
           style={{
             width: blob.size,
             height: blob.size,
             background: `radial-gradient(circle, ${blob.color} 0%, transparent 70%)`,
-            filter: "blur(80px)",
             translateX: "-50%",
             translateY: "-50%",
+            x: blobMotionValues[i].x,
+            y: blobMotionValues[i].y,
           }}
-          animate={{
-            x: repelPos[i]?.x ?? blob.ox,
-            y: repelPos[i]?.y ?? blob.oy,
-          }}
-          transition={{ type: "spring", stiffness: 50, damping: 20, mass: 1.5 }}
         />
       ))}
 
-      {/* ── Subtle dot grid ── */}
-      <div
-        className="absolute inset-0 -z-10 opacity-[0.03]"
-        style={{
-          backgroundImage: "radial-gradient(circle, hsl(217 91% 80%) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
+      {/* ── LAYER 2: Subtle Dot Grid ── */}
+      <div 
+        className="absolute inset-0 z-[2] opacity-[0.03] pointer-events-none"
+        style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "40px 40px" }}
       />
 
-      {/* ── Floating Tags ── */}
-      {tags.map((tag) => (
-        <motion.div
-          key={tag.label}
-          className="absolute hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full border text-[10px] font-bold uppercase tracking-[0.2em] select-none pointer-events-none"
-          style={{
-            left: tag.x,
-            top: tag.y,
-            color: tag.color,
-            borderColor: `${tag.color}30`,
-            background: `${tag.color}08`,
-          }}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{
-            opacity: [0, 0.6, 0.6],
-            scale: [0.8, 1, 1],
-            y: [0, -8, 0],
-          }}
-          transition={{
-            opacity: { delay: tag.delay, duration: 0.6 },
-            scale:   { delay: tag.delay, duration: 0.6 },
-            y:       { delay: tag.delay + 0.6, duration: 5, repeat: Infinity, ease: "easeInOut" },
-          }}
-        >
-          <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: tag.color }} />
-          {tag.label}
-        </motion.div>
-      ))}
-
-      {/* ── Main Content ── */}
+      {/* ── LAYER 3: Main Content ── */}
       <motion.div
-        className="flex flex-col items-center gap-6 z-10"
-        variants={stagger}
+        className="relative z-10 flex flex-col items-center gap-6 px-4"
+        variants={STAGGER}
         initial="hidden"
         animate="show"
       >
-        <motion.div variants={fadeUp}>
-          <h1
+        <motion.div variants={FADE_UP}>
+          <h1 
             className="text-7xl md:text-9xl font-black tracking-tighter lowercase leading-none cursor-pointer select-none"
             onClick={() => document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' })}
-            style={{
-              background: "linear-gradient(135deg, hsl(210 40% 98%) 40%, hsl(217 91% 75%) 70%, hsl(262 80% 75%) 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
           >
-            hello world
+            <span 
+               className="inline-block"
+               style={{
+                 background: "linear-gradient(135deg, hsl(210 40% 98%) 40%, hsl(217 91% 75%) 70%, hsl(262 80% 75%) 100%)",
+                 WebkitBackgroundClip: "text",
+                 WebkitTextFillColor: "transparent",
+               }}
+            >
+               hello world
+            </span>
             <motion.span
-              className="inline-block cursor-pointer"
-              animate={{
-                filter: [
-                  "drop-shadow(0 0 8px hsl(217 91% 60% / 0.3))",
-                  "drop-shadow(0 0 24px hsl(217 91% 60% / 0.9)) drop-shadow(0 0 50px hsl(322 80% 65% / 0.4))",
-                  "drop-shadow(0 0 8px hsl(217 91% 60% / 0.3))",
-                ],
-              }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              whileTap={{ scale: 0.9 }}
+              className="inline-block text-accent"
+              animate={{ opacity: [1, 0.4, 1] }}
+              transition={{ duration: 2.5, repeat: Infinity }}
             >
               .
             </motion.span>
@@ -221,44 +178,32 @@ const Hero = () => {
         </motion.div>
 
         <motion.p
-          variants={fadeUp}
-          className="text-muted/60 text-xl font-medium tracking-tight lowercase max-w-md"
+          variants={FADE_UP}
+          className="text-muted/60 text-xl font-medium tracking-tight lowercase max-w-md leading-relaxed"
         >
           im dhaafin and i like to build random things
-          <span style={{ color: "hsl(217 91% 60% / 0.4)" }}>.</span>
+          <span className="text-accent/30">.</span>
         </motion.p>
       </motion.div>
 
-      {/* ── Affordance Hint ── */}
+      {/* ── LAYER 4: Scroll Hint ── */}
       <motion.div
-        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 cursor-pointer group"
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 cursor-pointer group z-10"
         onClick={() => document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' })}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ delay: 1.8, duration: 0.8 }}
       >
-        <motion.span
-          className="text-[11px] font-bold uppercase tracking-[0.4em] text-muted/30 group-hover:text-accent transition-colors select-none"
-          animate={{ opacity: [0.4, 0.8, 0.4] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        >
-          scroll to explore.
-        </motion.span>
+        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 group-hover:text-white transition-colors duration-500">
+          scroll to explore
+        </span>
         <motion.div
-          className="flex flex-col items-center gap-[2px]"
+          className="w-[1px] h-10 bg-gradient-to-b from-accent/50 to-transparent"
           animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <div
-            className="w-[1px] h-10"
-            style={{ background: "linear-gradient(to bottom, hsl(217 91% 60% / 0.5), transparent)" }}
-          />
-          <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ opacity: 0.5 }}>
-            <path d="M1 1L5 5L9 1" stroke="hsl(217 91% 60%)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </motion.div>
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+        />
       </motion.div>
-    </div>
+    </section>
   );
 };
 
