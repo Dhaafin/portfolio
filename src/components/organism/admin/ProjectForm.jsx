@@ -9,6 +9,7 @@ import {
   createProject,
   updateProject,
 } from "@/app/admin/(dashboard)/projects/actions";
+import ImageUploader from "./ImageUploader";
 
 const projectSchema = z.z.object({
   title: z.z.string().min(1, "Title is required"),
@@ -43,6 +44,7 @@ export default function ProjectForm({ initialData, id }) {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(projectSchema),
@@ -152,12 +154,10 @@ export default function ProjectForm({ initialData, id }) {
         />
       </div>
 
-      <FormField
-        label="Image URL"
-        id="image_url"
-        register={register}
+      <ImageUploader 
+        currentUrl={initialData?.image_url} 
+        onUpload={(url) => setValue("image_url", url)} 
         error={errors.image_url?.message}
-        placeholder="https://..."
       />
 
       <div className="flex items-center gap-12 border-t border-white/5 pt-8">
