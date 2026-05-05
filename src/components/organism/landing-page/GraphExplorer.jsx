@@ -178,8 +178,32 @@ const GraphExplorer = () => {
         className="relative w-full max-w-[1400px] mx-auto rounded-3xl"
         style={{ height: "clamp(600px, 75vh, 900px)" }}
       >
+        {/* LAYER 0: Background Echo Text (Outline) */}
+        <AnimatePresence>
+          {activeNodeData && (
+            <motion.div
+              key={`echo-${activeNodeData.id}`}
+              initial={{ opacity: 0, scale: 0.9, filter: "blur(40px)" }}
+              animate={{ opacity: 0.15, scale: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 1.05, filter: "blur(40px)" }}
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
+            >
+              <Text 
+                className="font-black uppercase tracking-tighter leading-none text-transparent text-center px-10"
+                style={{ 
+                  WebkitTextStroke: `2px ${activeNodeData.color}`,
+                  fontSize: `clamp(4rem, ${Math.min(18, Math.max(8, 140 / activeNodeData.label.length))}vw, 15rem)`
+                }}
+              >
+                {activeNodeData.label.replace('.', '')}
+              </Text>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <svg
-          className="w-full h-full"
+          className="w-full h-full relative z-10"
           viewBox={`0 0 ${containerSize.w} ${containerSize.h}`}
           preserveAspectRatio="xMidYMid meet"
           style={{ overflow: "visible" }}
@@ -258,57 +282,25 @@ const GraphExplorer = () => {
           </g>
         </svg>
 
-        {/* Floating Detail Panel */}
+        {/* Floating Proceed Pill */}
         <AnimatePresence>
-          {activeNodeData && (
+          {activeNodeData && activeNodeData.href && (
             <motion.div
-              key={activeNodeData.id}
-              initial={{ opacity: 0, y: 30, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.9 }}
-              transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-              className="absolute bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-center pointer-events-none z-50"
+              key={`pill-${activeNodeData.id}`}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+              className="absolute bottom-12 left-1/2 -translate-x-1/2 z-50 pointer-events-auto"
             >
-              <div
-                className="pointer-events-auto flex flex-col items-center gap-4 px-12 py-8 rounded-3xl shadow-2xl relative overflow-hidden"
-                style={{
-                  background: `linear-gradient(135deg, ${activeNodeData.color}15, ${activeNodeData.color}02)`,
-                  border: `1px solid ${activeNodeData.color}30`,
-                  backdropFilter: "blur(24px)",
-                }}
-              >
-                {/* Background glow in panel */}
-                <div 
-                  className="absolute inset-0 opacity-20 pointer-events-none"
-                  style={{ background: `radial-gradient(circle at 50% 0%, ${activeNodeData.color}, transparent 70%)` }}
-                />
-
-                <Text className="text-sm font-bold tracking-[0.3em] uppercase drop-shadow-md text-white/70">
-                  {activeNodeData.description}
-                </Text>
-                {activeNodeData.href && (
-                  <Link href={activeNodeData.href} className="pointer-events-auto cursor-pointer mt-4">
-                    <button
-                      className="px-10 py-4 rounded-full text-xs font-black uppercase tracking-[0.2em] transition-all hover:scale-105 active:scale-95 group relative overflow-hidden"
-                      style={{
-                        background: `${activeNodeData.color}20`,
-                        border: `1px solid ${activeNodeData.color}50`,
-                        color: "white",
-                        boxShadow: `0 0 20px ${activeNodeData.color}20`,
-                      }}
-                    >
-                      <span className="relative z-10 group-hover:text-white transition-colors duration-300">
-                        enter {activeNodeData.id}
-                      </span>
-                      {/* Button hover sweep */}
-                      <div 
-                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                        style={{ background: `linear-gradient(90deg, transparent, ${activeNodeData.color}40, transparent)` }}
-                      />
-                    </button>
-                  </Link>
-                )}
-              </div>
+              <Link href={activeNodeData.href}>
+                <button
+                  className="px-10 py-4 rounded-full bg-white text-black text-[10px] font-black uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)] group overflow-hidden relative"
+                >
+                  <span className="relative z-10">proceed.</span>
+                  <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-10 transition-opacity" />
+                </button>
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>
