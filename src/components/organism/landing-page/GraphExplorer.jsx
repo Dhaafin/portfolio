@@ -10,13 +10,15 @@ const nodes = [
   { id: "about",          label: "about.",          x: 20, y: 30, isRoot: true, href: "/about",          description: "who i am.",               color: "#F472B6", size: 28, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
   { id: "projects",       label: "projects.",       x: 45, y: 45, isRoot: false, href: "/projects",       description: "selected works.",         color: "#A78BFA", size: 24, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
   { id: "experience",     label: "experience.",     x: 35, y: 70, isRoot: false, href: "/experience",     description: "professional path.",      color: "#34D399", size: 22, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
+  { id: "education",      label: "education.",      x: 55, y: 25, isRoot: false, href: "/education",      description: "academic foundation.",    color: "#60A5FA", size: 22, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
   { id: "organizations",  label: "organizations.",  x: 65, y: 65, isRoot: false, href: "/organizations",  description: "leadership & groups.",    color: "#22D3EE", size: 22, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
   { id: "certifications", label: "certifications.", x: 75, y: 35, isRoot: false, href: "/certifications", description: "verified skills.",        color: "#FACC15", size: 22, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
   { id: "contact",        label: "contact.",        x: 85, y: 75, isRoot: false, href: "/contact",        description: "let's talk.",             color: "#FB923C", size: 26, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
 ];
 
 const edges = [
-  { from: "about", to: "projects", duration: 3 + Math.random() * 2 },
+  { from: "about", to: "education", duration: 3 + Math.random() * 2 },
+  { from: "education", to: "projects", duration: 3 + Math.random() * 2 },
   { from: "projects", to: "experience", duration: 3 + Math.random() * 2 },
   { from: "projects", to: "organizations", duration: 3 + Math.random() * 2 },
   { from: "experience", to: "organizations", duration: 3 + Math.random() * 2 },

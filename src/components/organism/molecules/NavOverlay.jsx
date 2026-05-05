@@ -11,6 +11,7 @@ const nodes = [
   { id: "experience", label: "experience.", x: 78, y: 25, href: "/experience", description: "where i've been." },
   { id: "about", label: "about.", x: 25, y: 75, href: "/about", description: "who i am." },
   { id: "contact", label: "contact.", x: 75, y: 78, href: "/contact", description: "let's talk." },
+  { id: "education", label: "education.", x: 45, y: 18, href: "/education", description: "academic path." },
   { id: "tech", label: "tech.", x: 10, y: 50, href: null, description: "next.js. react. postgres." },
   { id: "design", label: "design.", x: 88, y: 52, href: null, description: "figma. tailwind. motion." },
 ];
@@ -20,6 +21,7 @@ const edges = [
   ["me", "experience"],
   ["me", "about"],
   ["me", "contact"],
+  ["me", "education"],
   ["me", "tech"],
   ["me", "design"],
   ["work", "tech"],
