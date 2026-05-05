@@ -70,3 +70,35 @@ body {
 .pause-on-hover:hover {
   animation-play-state: paused;
 }
+
+/* Custom Scrollbar for Luxury Nonchalance */
+@layer base {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsla(215, 20%, 65%, 0.2);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsla(217, 91%, 60%, 0.4);
+  }
+
+  /* Remove Arrows */
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  /* Firefox Support */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsla(215, 20%, 65%, 0.2) transparent;
+  }
+}
