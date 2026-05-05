@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { motion, AnimatePresence, useDragControls } from "framer-motion";
 import Link from "next/link";
 
@@ -42,12 +42,13 @@ const overlayVariants = {
 function GraphNode({ node, isActive, onClick, containerSize }) {
   const cx = (node.x / 100) * containerSize.w;
   const cy = (node.y / 100) * containerSize.h;
+  const randomDelay = useMemo(() => 0.3 + Math.random() * 0.3, []);
 
   return (
     <motion.g
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 0.3 + Math.random() * 0.3, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+      transition={{ delay: randomDelay, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
       onClick={() => onClick(node)}
       style={{ cursor: node.href ? "pointer" : "default" }}
     >
@@ -119,7 +120,7 @@ export default function NavOverlay() {
         id="nav-trigger"
         onClick={() => { setIsOpen(!isOpen); setActiveNode(null); }}
         aria-label="Toggle navigation"
-        className="fixed top-8 right-24 md:right-48 lg:right-64 z-[60] mix-blend-difference"
+        className="fixed top-8 right-24 md:right-48 lg:right-64 z-60 mix-blend-difference"
       >
         <motion.span
           className="text-xs font-bold uppercase tracking-[0.25em] text-white"
