@@ -12,10 +12,16 @@ import {
 
 const projectSchema = z.z.object({
   title: z.z.string().min(1, "Title is required"),
-  slug: z.z
+  github_url: z.z
     .string()
-    .min(1, "Slug is required")
-    .regex(/^[a-z0-9-]+$/, "Slug must be lowercase with dashes"),
+    .url("Must be a valid URL")
+    .optional()
+    .or(z.z.literal("")),
+  demo_url: z.z
+    .string()
+    .url("Must be a valid URL")
+    .optional()
+    .or(z.z.literal("")),
   role: z.z.string().min(1, "Role is required"),
   year: z.z.string().min(1, "Year is required"),
   description: z.z
@@ -42,7 +48,8 @@ export default function ProjectForm({ initialData, id }) {
     resolver: zodResolver(projectSchema),
     defaultValues: initialData || {
       title: "",
-      slug: "",
+      github_url: "",
+      demo_url: "",
       role: "",
       year: new Date().getFullYear().toString(),
       description: "",
@@ -96,13 +103,6 @@ export default function ProjectForm({ initialData, id }) {
           placeholder="Project Title"
         />
         <FormField
-          label="Slug"
-          id="slug"
-          register={register}
-          error={errors.slug?.message}
-          placeholder="project-slug"
-        />
-        <FormField
           label="Role"
           id="role"
           register={register}
@@ -133,6 +133,23 @@ export default function ProjectForm({ initialData, id }) {
             {errors.description.message}
           </span>
         )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FormField
+          label="GitHub URL (Optional)"
+          id="github_url"
+          register={register}
+          error={errors.github_url?.message}
+          placeholder="https://github.com/..."
+        />
+        <FormField
+          label="Demo URL (Optional)"
+          id="demo_url"
+          register={register}
+          error={errors.demo_url?.message}
+          placeholder="https://demo.com/..."
+        />
       </div>
 
       <FormField

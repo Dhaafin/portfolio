@@ -113,6 +113,32 @@ export default async function ProjectsPage() {
                   {project.description}
                 </Text>
 
+                {/* Project Links */}
+                {(project.github_url || project.demo_url) && (
+                  <div className="flex items-center gap-6 mt-2">
+                    {project.github_url && (
+                      <a 
+                        href={project.github_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-[10px] uppercase tracking-[0.25em] font-bold text-muted hover:text-white transition-colors flex items-center gap-2"
+                      >
+                        github <span className="text-accent">↗</span>
+                      </a>
+                    )}
+                    {project.demo_url && (
+                      <a 
+                        href={project.demo_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-[10px] uppercase tracking-[0.25em] font-bold text-muted hover:text-white transition-colors flex items-center gap-2"
+                      >
+                        live demo <span className="text-accent">↗</span>
+                      </a>
+                    )}
+                  </div>
+                )}
+
                 {/* Cinematic Image Placeholder */}
                 <div className="w-full aspect-[16/10] md:aspect-[21/9] bg-surface border border-border/20 rounded-lg overflow-hidden relative group-hover:border-white/10 transition-colors duration-700 mt-4">
                   {project.image_url ? (

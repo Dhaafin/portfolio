@@ -9,7 +9,8 @@ export async function createProject(formData) {
 
   const projectData = {
     title: formData.get("title"),
-    slug: formData.get("slug"),
+    github_url: formData.get("github_url"),
+    demo_url: formData.get("demo_url"),
     role: formData.get("role"),
     year: formData.get("year"),
     description: formData.get("description"),
@@ -35,7 +36,8 @@ export async function updateProject(id, formData) {
 
   const projectData = {
     title: formData.get("title"),
-    slug: formData.get("slug"),
+    github_url: formData.get("github_url"),
+    demo_url: formData.get("demo_url"),
     role: formData.get("role"),
     year: formData.get("year"),
     description: formData.get("description"),
