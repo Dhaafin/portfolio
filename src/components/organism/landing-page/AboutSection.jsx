@@ -314,7 +314,7 @@ export default function AboutSection({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
-          className="mb-32 relative"
+          className="relative mb-32"
         >
           <SectionLabel color="#A78BFA">selected works.</SectionLabel>
 
@@ -329,36 +329,57 @@ export default function AboutSection({
                 onMouseEnter={() => setHoveredProjectImage(project.image_url)}
               >
                 <motion.div
-                  className="py-8 md:py-12 border-b border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 -mx-6 rounded-2xl cursor-pointer"
-                  whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.02)" }}
-                  transition={smoothTransition}
+                  className="group/item relative flex flex-col items-start justify-between gap-6 border-b border-white/5 py-10 px-8 -mx-8 md:flex-row md:items-center md:py-14"
+                  initial={false}
                 >
-                  <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 lg:gap-16">
+                  {/* Background Hover Highlight */}
+                  <motion.div
+                    className="absolute inset-0 -z-10 bg-white/[0.03] opacity-0 group-hover/item:opacity-100"
+                    transition={{ duration: 0.4, ease: "circOut" }}
+                  />
+
+                  <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:gap-12 lg:gap-20">
                     <motion.span
-                      className="text-xs font-black uppercase tracking-[0.3em] text-muted/20"
-                      whileHover={{ color: "#A78BFA" }}
+                      className="text-[10px] font-black uppercase tracking-[0.4em] text-white/10"
+                      variants={{
+                        hover: { color: "#A78BFA", x: 5 },
+                      }}
+                      whileHover="hover"
+                      transition={{ duration: 0.4 }}
                     >
-                      0{i + 1}
+                      {String(i + 1).padStart(2, "0")}
                     </motion.span>
-                    <motion.h3
-                      className="text-4xl md:text-5xl lg:text-7xl font-black lowercase tracking-tighter text-muted/40"
-                      whileHover={{ color: "hsl(var(--foreground))" }}
-                      transition={smoothTransition}
-                    >
-                      {project.title}
-                    </motion.h3>
+
+                    <div className="flex flex-col">
+                      <motion.h3
+                        className="text-4xl font-black lowercase tracking-tighter text-white/30 transition-colors duration-500 group-hover/item:text-white md:text-6xl lg:text-8xl"
+                        whileHover={{ x: 10 }}
+                        transition={{ type: "spring", stiffness: 100, damping: 20 }}
+                      >
+                        {project.title}
+                      </motion.h3>
+                    </div>
                   </div>
-                  <div className="text-left md:text-right">
+
+                  <div className="flex flex-col items-start text-left md:items-end md:text-right">
                     <motion.p
-                      className="text-sm font-medium text-muted/50"
-                      whileHover={{ color: "white" }}
+                      className="text-[11px] font-black uppercase tracking-[0.3em] text-white/20 group-hover/item:text-[#A78BFA]"
+                      transition={{ duration: 0.5 }}
                     >
                       {project.role}
                     </motion.p>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted/30">
+                    <p className="mt-1 text-[10px] font-bold tracking-[0.2em] text-white/10">
                       {project.year}
                     </p>
                   </div>
+
+                  {/* Aesthetic Indicator (Bottom line growth) */}
+                  <motion.div
+                    className="absolute bottom-0 left-0 h-[1px] bg-[#A78BFA] opacity-0"
+                    initial={{ width: 0 }}
+                    whileHover={{ width: "100%", opacity: 1 }}
+                    transition={{ duration: 0.6, ease: "circOut" }}
+                  />
                 </motion.div>
               </Link>
             ))}
@@ -368,27 +389,40 @@ export default function AboutSection({
           <AnimatePresence>
             {hoveredProjectImage && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className="absolute right-[5%] top-1/2 -translate-y-1/2 w-80 aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 shadow-2xl pointer-events-none hidden lg:block z-50"
+                initial={{ opacity: 0, scale: 0.9, y: 20, rotate: -3 }}
+                animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20, rotate: 3 }}
+                transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+                className="pointer-events-none fixed top-1/2 right-[10%] z-50 hidden aspect-[4/3] w-96 -translate-y-1/2 overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.5)] lg:block"
               >
                 <img
                   src={hoveredProjectImage}
                   alt="Project preview"
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
               </motion.div>
             )}
           </AnimatePresence>
 
-          <ViewAllLink
-            href="/projects"
-            color="#A78BFA"
-            text="view all projects"
-          />
+          {/* UNIQUE CTA: Cinematic Frame */}
+          <div className="mt-20 flex justify-center">
+            <Link
+              href="/projects"
+              className="group relative px-12 py-5 overflow-hidden rounded-full border border-white/10 transition-all duration-500 hover:border-[#A78BFA]/50"
+            >
+              <motion.div
+                className="absolute inset-0 bg-[#A78BFA] opacity-0 group-hover:opacity-5"
+                transition={{ duration: 0.5 }}
+              />
+              <span className="relative text-[10px] font-black uppercase tracking-[0.5em] text-white/40 group-hover:text-white transition-colors duration-500">
+                Explore the full archive
+              </span>
+              
+              {/* Decorative light pill */}
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-[1px] bg-[#A78BFA] opacity-0 group-hover:opacity-100 group-hover:w-24 transition-all duration-700 shadow-[0_0_15px_#A78BFA]" />
+            </Link>
+          </div>
         </motion.div>
 
         {/* ── 4. EXPERIENCES: The Path ── */}
