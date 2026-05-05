@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 import GraphExplorer from "../landing-page/GraphExplorer";
 
 const overlayVariants = {
@@ -18,6 +19,12 @@ const overlayVariants = {
 
 export default function NavExplorer() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Close overlay when pathname changes (user navigated)
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   return (
     <>
