@@ -120,7 +120,7 @@ export default function NavOverlay() {
         id="nav-trigger"
         onClick={() => { setIsOpen(!isOpen); setActiveNode(null); }}
         aria-label="Toggle navigation"
-        className="fixed top-8 right-24 md:right-48 lg:right-64 z-60 mix-blend-difference"
+        className="z-60 mix-blend-difference"
       >
         <motion.span
           className="text-xs font-bold uppercase tracking-[0.25em] text-white"
