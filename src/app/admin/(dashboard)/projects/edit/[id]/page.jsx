@@ -7,7 +7,7 @@ import { notFound } from "next/navigation";
 export const metadata = { title: "Edit Project | Admin" };
 
 export default async function EditProjectPage({ params }) {
-  const { id } = params;
+  const { id } = await params;
   const supabase = await createClient();
 
   const { data: project } = await supabase

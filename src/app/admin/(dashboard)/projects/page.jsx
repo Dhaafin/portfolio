@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Text from "@/components/atoms/Text";
 import Link from "next/link";
+import DeleteProjectButton from "@/components/organism/admin/DeleteProjectButton";
 
 export const metadata = { title: "Manage Projects | Admin" };
 
@@ -75,16 +76,14 @@ export default async function AdminProjectsPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <Link 
                   href={`/admin/projects/edit/${project.id}`}
                   className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] font-bold uppercase tracking-widest transition-all"
                 >
                   Edit
                 </Link>
-                <button className="px-4 py-2 rounded-lg bg-red-500/5 hover:bg-red-500/20 text-red-500 text-[10px] font-bold uppercase tracking-widest transition-all">
-                  Delete
-                </button>
+                <DeleteProjectButton id={project.id} title={project.title} />
               </div>
             </div>
           ))
