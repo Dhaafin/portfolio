@@ -39,10 +39,15 @@ const Hero = () => {
   const splatY = useTransform(smoothY, [0, 1], ["-10%", "10%"]);
 
   // MotionValues for repulsion blobs
-  const blobMotionValues = REPEL_BLOBS.map(b => ({
-    x: useMotionValue(b.ox),
-    y: useMotionValue(b.oy)
-  }));
+  const blob0X = useMotionValue(REPEL_BLOBS[0].ox);
+  const blob0Y = useMotionValue(REPEL_BLOBS[0].oy);
+  const blob1X = useMotionValue(REPEL_BLOBS[1].ox);
+  const blob1Y = useMotionValue(REPEL_BLOBS[1].oy);
+
+  const blobMotionValues = [
+    { x: blob0X, y: blob0Y },
+    { x: blob1X, y: blob1Y }
+  ];
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -85,7 +90,7 @@ const Hero = () => {
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, blobMotionValues]);
 
   return (
     <section 
@@ -94,7 +99,7 @@ const Hero = () => {
     >
       {/* ── LAYER 0: The Color Splat (Vibrant Blobby Splat) ── */}
       <motion.div 
-        className="absolute inset-0 pointer-events-none z-[1] flex items-center justify-center"
+        className="absolute inset-0 pointer-events-none z-1 flex items-center justify-center"
         style={{ x: splatX, y: splatY }}
       >
         <div className="relative w-[700px] h-[700px] opacity-80">
@@ -141,7 +146,7 @@ const Hero = () => {
 
       {/* ── LAYER 2: Subtle Dot Grid ── */}
       <div 
-        className="absolute inset-0 z-[2] opacity-[0.03] pointer-events-none"
+        className="absolute inset-0 z-2 opacity-[0.03] pointer-events-none"
         style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "40px 40px" }}
       />
 
@@ -198,7 +203,7 @@ const Hero = () => {
           scroll to explore
         </span>
         <motion.div
-          className="w-[1px] h-10 bg-gradient-to-b from-accent/50 to-transparent"
+          className="w-px h-10 bg-linear-to-b from-accent/50 to-transparent"
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
         />
