@@ -179,81 +179,113 @@ export default function TacticalConstellation({ initialExperiences }) {
 
           {/* ── RIGHT PANEL: Scrolling Experience List ── */}
           <div className="w-full lg:w-[32rem] flex flex-col gap-24 sm:gap-48 md:gap-64">
-            {experiences.map((exp, index) => (
-              <motion.div
-                key={exp.id}
-                id={exp.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, amount: 0.2 }}
-                transition={TRANSITION}
-                className="flex flex-col gap-6 sm:gap-8 scroll-mt-48 lg:scroll-mt-32"
-              >
-                {/* Index + period */}
-                <div className="flex items-center gap-4">
-                  <Text
-                    className="text-[9px] sm:text-[10px] uppercase tracking-[0.35em] font-black"
-                    style={{ color: exp.color }}
-                  >
-                    {exp.id}
-                  </Text>
-                  <div
-                    className="h-[1px] flex-1"
-                    style={{ background: `${exp.color}30` }}
-                  />
-                  <Text className="text-[9px] sm:text-[10px] uppercase tracking-[0.25em] font-bold text-muted/50">
-                    {exp.period}
-                  </Text>
-                </div>
-
-                {/* Company + role */}
-                <div>
-                  <Text
-                    as="h2"
-                    className="text-3xl sm:text-5xl md:text-6xl font-black lowercase tracking-tighter leading-tight mb-2 sm:mb-3"
-                  >
-                    {exp.company}
-                  </Text>
-                  <Text className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-bold text-muted">
-                    {exp.role}
-                  </Text>
-                </div>
-
-                {/* Description */}
-                <div className="glass p-6 sm:p-8 rounded-2xl relative overflow-hidden">
-                  <div
-                    className="absolute top-0 left-0 w-[2px] h-full rounded-full opacity-60"
-                    style={{ backgroundColor: exp.color }}
-                  />
-                  <Text className="text-muted/80 text-base sm:text-lg leading-relaxed font-medium pl-2">
-                    {exp.description}
-                  </Text>
-                </div>
-
-                {/* Skill tags */}
-                <div className="flex flex-wrap gap-2">
-                  {exp.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="text-[8px] sm:text-[10px] uppercase tracking-[0.2em] font-bold px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full border"
-                      style={{
-                        borderColor: `${exp.color}30`,
-                        color: exp.color,
-                        backgroundColor: `${exp.color}08`,
-                      }}
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
+            {experiences.map((exp) => (
+              <ExperienceCard key={exp.id} exp={exp} />
             ))}
-
+            
             {/* Bottom spacer to allow the last item to be active */}
             <div className="h-[40vh] lg:h-[40vh]" />
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+function ExperienceCard({ exp }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const hasMore = exp.points?.length > 3;
+  const visiblePoints = isExpanded ? exp.points : exp.points?.slice(0, 3);
+
+  return (
+    <motion.div
+      id={exp.id}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.2 }}
+      transition={TRANSITION}
+      className="flex flex-col gap-6 sm:gap-8 scroll-mt-48 lg:scroll-mt-32"
+    >
+      {/* Index + period */}
+      <div className="flex items-center gap-4">
+        <Text
+          className="text-[9px] sm:text-[10px] uppercase tracking-[0.35em] font-black"
+          style={{ color: exp.color }}
+        >
+          {exp.id}
+        </Text>
+        <div
+          className="h-[1px] flex-1"
+          style={{ background: `${exp.color}30` }}
+        />
+        <Text className="text-[9px] sm:text-[10px] uppercase tracking-[0.25em] font-bold text-muted/50">
+          {exp.period}
+        </Text>
+      </div>
+
+      {/* Company + role */}
+      <div>
+        <Text
+          as="h2"
+          className="text-3xl sm:text-5xl md:text-6xl font-black lowercase tracking-tighter leading-tight mb-2 sm:mb-3"
+        >
+          {exp.company}
+        </Text>
+        <Text className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-bold text-muted">
+          {exp.role}
+        </Text>
+      </div>
+
+      {/* Description / Points */}
+      <div className="glass p-6 sm:p-8 rounded-2xl relative overflow-hidden flex flex-col gap-4">
+        <div
+          className="absolute top-0 left-0 w-[2px] h-full rounded-full opacity-60"
+          style={{ backgroundColor: exp.color }}
+        />
+        
+        <ul className="flex flex-col gap-4 pl-2">
+          {visiblePoints?.map((point, i) => (
+            <motion.li 
+              key={i}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="flex items-start gap-3"
+            >
+              <div className="w-1 h-1 rounded-full bg-accent mt-2.5 flex-shrink-0" />
+              <Text className="text-muted/80 text-base sm:text-lg leading-relaxed font-medium">
+                {point}
+              </Text>
+            </motion.li>
+          ))}
+        </ul>
+
+        {hasMore && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="self-start text-[10px] font-black uppercase tracking-widest text-accent hover:opacity-70 transition-all mt-2 pl-6"
+          >
+            {isExpanded ? "less." : `more (+${exp.points.length - 3}).`}
+          </button>
+        )}
+      </div>
+
+      {/* Skill tags */}
+      <div className="flex flex-wrap gap-2">
+        {exp.skills?.map((skill) => (
+          <span
+            key={skill}
+            className="text-[8px] sm:text-[10px] uppercase tracking-[0.2em] font-bold px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full border"
+            style={{
+              borderColor: `${exp.color}30`,
+              color: exp.color,
+              backgroundColor: `${exp.color}08`,
+            }}
+          >
+            {skill}
+          </span>
+        ))}
+      </div>
+    </motion.div>
   );
 }
