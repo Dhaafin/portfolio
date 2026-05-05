@@ -5,15 +5,27 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Text from "@/components/atoms/Text";
-import { createProject, updateProject } from "@/app/admin/projects/actions";
+import {
+  createProject,
+  updateProject,
+} from "@/app/admin/(dashboard)/projects/actions";
 
 const projectSchema = z.z.object({
   title: z.z.string().min(1, "Title is required"),
-  slug: z.z.string().min(1, "Slug is required").regex(/^[a-z0-9-]+$/, "Slug must be lowercase with dashes"),
+  slug: z.z
+    .string()
+    .min(1, "Slug is required")
+    .regex(/^[a-z0-9-]+$/, "Slug must be lowercase with dashes"),
   role: z.z.string().min(1, "Role is required"),
   year: z.z.string().min(1, "Year is required"),
-  description: z.z.string().min(10, "Description must be at least 10 characters"),
-  image_url: z.z.string().url("Must be a valid URL").optional().or(z.z.literal("")),
+  description: z.z
+    .string()
+    .min(10, "Description must be at least 10 characters"),
+  image_url: z.z
+    .string()
+    .url("Must be a valid URL")
+    .optional()
+    .or(z.z.literal("")),
   order: z.z.number().int().default(0),
   is_published: z.z.boolean().default(false),
 });
@@ -50,10 +62,10 @@ export default function ProjectForm({ initialData, id }) {
     });
 
     try {
-      const result = id 
+      const result = id
         ? await updateProject(id, formData)
         : await createProject(formData);
-      
+
       if (result?.error) {
         setError(result.error);
       }
@@ -65,7 +77,10 @@ export default function ProjectForm({ initialData, id }) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8 max-w-2xl">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col gap-8 max-w-2xl"
+    >
       {error && (
         <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-xs font-bold uppercase tracking-widest">
           {error}
@@ -73,32 +88,32 @@ export default function ProjectForm({ initialData, id }) {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <FormField 
-          label="Title" 
-          id="title" 
-          register={register} 
-          error={errors.title?.message} 
+        <FormField
+          label="Title"
+          id="title"
+          register={register}
+          error={errors.title?.message}
           placeholder="Project Title"
         />
-        <FormField 
-          label="Slug" 
-          id="slug" 
-          register={register} 
-          error={errors.slug?.message} 
+        <FormField
+          label="Slug"
+          id="slug"
+          register={register}
+          error={errors.slug?.message}
           placeholder="project-slug"
         />
-        <FormField 
-          label="Role" 
-          id="role" 
-          register={register} 
-          error={errors.role?.message} 
+        <FormField
+          label="Role"
+          id="role"
+          register={register}
+          error={errors.role?.message}
           placeholder="Frontend Developer"
         />
-        <FormField 
-          label="Year" 
-          id="year" 
-          register={register} 
-          error={errors.year?.message} 
+        <FormField
+          label="Year"
+          id="year"
+          register={register}
+          error={errors.year?.message}
           placeholder="2026"
         />
       </div>
@@ -120,11 +135,11 @@ export default function ProjectForm({ initialData, id }) {
         )}
       </div>
 
-      <FormField 
-        label="Image URL" 
-        id="image_url" 
-        register={register} 
-        error={errors.image_url?.message} 
+      <FormField
+        label="Image URL"
+        id="image_url"
+        register={register}
+        error={errors.image_url?.message}
         placeholder="https://..."
       />
 
@@ -136,7 +151,10 @@ export default function ProjectForm({ initialData, id }) {
             {...register("is_published")}
             className="w-4 h-4 rounded bg-white/5 border-white/10 text-primary focus:ring-0 focus:ring-offset-0 transition-all cursor-pointer"
           />
-          <label htmlFor="is_published" className="text-xs font-bold uppercase tracking-widest text-white/60 cursor-pointer">
+          <label
+            htmlFor="is_published"
+            className="text-xs font-bold uppercase tracking-widest text-white/60 cursor-pointer"
+          >
             Published
           </label>
         </div>
@@ -158,7 +176,7 @@ export default function ProjectForm({ initialData, id }) {
         disabled={isPending}
         className="mt-4 px-12 py-4 rounded-full bg-white text-black text-xs font-black uppercase tracking-[0.2em] hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all"
       >
-        {isPending ? "Syncing..." : (id ? "Update Project" : "Create Project")}
+        {isPending ? "Syncing..." : id ? "Update Project" : "Create Project"}
       </button>
     </form>
   );
@@ -167,7 +185,10 @@ export default function ProjectForm({ initialData, id }) {
 function FormField({ label, id, register, error, placeholder, type = "text" }) {
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-[10px] uppercase tracking-widest text-white/40 font-bold ml-1">
+      <label
+        htmlFor={id}
+        className="text-[10px] uppercase tracking-widest text-white/40 font-bold ml-1"
+      >
         {label}
       </label>
       <input

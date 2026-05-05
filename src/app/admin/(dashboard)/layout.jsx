@@ -2,8 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Text from "@/components/atoms/Text";
-import { logout } from "./login/actions";
-
+import { logout } from "../login/actions";
 export default async function AdminLayout({ children }) {
   const supabase = await createClient();
 
@@ -49,7 +48,7 @@ export default async function AdminLayout({ children }) {
               </Text>
             </div>
           </div>
-          
+
           <form action={logout}>
             <button className="w-full py-3 rounded-xl border border-white/5 hover:bg-red-500/10 hover:border-red-500/20 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-red-500 transition-all">
               Sign Out
@@ -60,9 +59,7 @@ export default async function AdminLayout({ children }) {
 
       {/* Main Content Area */}
       <main className="flex-1 p-12 overflow-y-auto">
-        <div className="max-w-5xl mx-auto">
-          {children}
-        </div>
+        <div className="max-w-5xl mx-auto">{children}</div>
       </main>
     </div>
   );
@@ -70,8 +67,8 @@ export default async function AdminLayout({ children }) {
 
 function AdminNavLink({ href, label }) {
   return (
-    <Link 
-      href={href} 
+    <Link
+      href={href}
       className="group flex items-center px-4 py-3 rounded-xl hover:bg-white/5 transition-all duration-300"
     >
       <span className="text-sm font-bold uppercase tracking-[0.1em] text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all">
