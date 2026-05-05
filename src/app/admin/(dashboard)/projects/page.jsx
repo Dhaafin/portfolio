@@ -47,7 +47,7 @@ export default async function AdminProjectsPage() {
           projects?.map((project) => (
             <div 
               key={project.id}
-              className="group p-6 bg-white/2 border border-white/5 rounded-2xl flex items-center justify-between hover:bg-white/5 transition-all duration-500"
+              className="group p-4 sm:p-6 bg-white/2 border border-white/5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between hover:bg-white/5 transition-all duration-500 gap-6"
             >
               <div className="flex items-center gap-6">
                 <div className="w-12 h-12 rounded-xl bg-surface border border-border/20 overflow-hidden flex items-center justify-center">
@@ -76,14 +76,16 @@ export default async function AdminProjectsPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="flex items-center gap-3 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
                 <Link 
                   href={`/admin/projects/edit/${project.id}`}
-                  className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] font-bold uppercase tracking-widest transition-all"
+                  className="flex-1 md:flex-none text-center px-4 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] font-bold uppercase tracking-widest transition-all"
                 >
                   Edit
                 </Link>
-                <DeleteProjectButton id={project.id} title={project.title} />
+                <div className="flex-1 md:flex-none">
+                  <DeleteProjectButton id={project.id} title={project.title} />
+                </div>
               </div>
             </div>
           ))
