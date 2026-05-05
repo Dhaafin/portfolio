@@ -43,10 +43,6 @@ export default async function ProjectsPage() {
   return (
     <div className="min-h-screen relative w-full max-w-[1400px] mx-auto px-4 sm:px-12 md:px-24 lg:px-48 py-16 sm:py-24 md:py-32 overflow-x-hidden">
       
-      {/* Back navigation */}
-      <Link href="/" className="inline-block mb-24 text-xs font-bold uppercase tracking-[0.25em] text-muted hover:text-foreground transition-colors">
-        ← back.
-      </Link>
 
       {/* Page Header (Root of the Timeline) */}
       <header className="relative mb-16 sm:mb-24 md:mb-32 ml-10 sm:ml-16 md:ml-32">

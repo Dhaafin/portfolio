@@ -96,21 +96,12 @@ export default function TacticalConstellation() {
   return (
     <div className="min-h-screen w-full flex flex-col bg-background">
       <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-12 md:px-24 lg:px-48 py-16 sm:py-24 md:py-32 flex flex-col">
-        {/* Back nav */}
-        <div className="mb-24">
-          <Link
-            href="/"
-            className="inline-block text-xs font-bold uppercase tracking-[0.25em] text-muted hover:text-foreground transition-colors"
-          >
-            ← back.
-          </Link>
-        </div>
 
         {/* Main layout */}
-        <div className="flex-1 flex flex-col lg:flex-row items-start justify-center gap-12 lg:gap-24 xl:gap-48 relative">
+        <div className="flex-1 flex flex-col lg:flex-row items-start justify-center gap-16 lg:gap-24 xl:gap-48 relative">
           
           {/* ── LEFT PANEL: Sticky Era Selector ── */}
-          <aside className="lg:sticky lg:top-32 flex lg:flex-col justify-start items-start gap-2 lg:gap-0 lg:w-56 lg:min-w-[14rem] flex-shrink-0 flex-wrap z-20">
+          <aside className="sticky top-24 lg:top-32 flex flex-col justify-start items-start w-full lg:w-56 lg:min-w-[14rem] flex-shrink-0 z-30 bg-background/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none pb-6 lg:pb-0">
             <div className="hidden lg:block mb-12">
               <Text className="text-[10px] uppercase tracking-[0.35em] font-bold text-muted/40 mb-1">
                 where i've been.
@@ -120,89 +111,102 @@ export default function TacticalConstellation() {
               </Text>
             </div>
 
-            {/* Mobile heading */}
-            <div className="block lg:hidden mb-4 w-full">
-              <Text as="h1" className="text-4xl font-black lowercase tracking-tighter leading-none">
+            {/* Mobile heading - more compact */}
+            <div className="block lg:hidden mb-6 w-full">
+              <Text as="h1" className="text-3xl font-black lowercase tracking-tighter leading-none">
                 experience<span className="text-accent">.</span>
               </Text>
             </div>
 
-            <div className="relative flex lg:flex-col gap-2 lg:gap-0 w-full">
-              {experiences.map((e, i) => (
-                <button
-                  key={e.id}
-                  onClick={() => scrollTo(e.id)}
-                  className="group relative flex items-center gap-4 py-3 lg:py-4 w-full text-left transition-all duration-500 cursor-pointer"
-                >
-                  {/* Perfectly Accurate Indicator via layoutId */}
-                  {active === i && (
-                    <motion.div
-                      layoutId="active-indicator"
-                      className="hidden lg:block absolute left-0 w-[2px] h-10 rounded-full z-10"
-                      style={{ backgroundColor: experiences[i].color }}
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    />
-                  )}
+            {/* Era Tabs - Scrollable on mobile */}
+            <div className="relative w-full overflow-x-auto no-scrollbar lg:overflow-visible">
+              <div className="flex lg:flex-col gap-6 lg:gap-0 min-w-max lg:min-w-0 w-full lg:w-full border-b border-white/5 lg:border-none pb-2 lg:pb-0">
+                {experiences.map((e, i) => (
+                  <button
+                    key={e.id}
+                    onClick={() => scrollTo(e.id)}
+                    className="group relative flex items-center gap-3 lg:gap-4 py-2 lg:py-4 transition-all duration-500 cursor-pointer flex-shrink-0"
+                  >
+                    {/* Vertical Indicator (Desktop) */}
+                    {active === i && (
+                      <motion.div
+                        layoutId="active-indicator-v"
+                        className="hidden lg:block absolute left-0 w-[2px] h-10 rounded-full z-10"
+                        style={{ backgroundColor: experiences[i].color }}
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                    )}
 
-                  <div className="lg:pl-6 flex items-center gap-4">
-                    <motion.div
-                      className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                      animate={{
-                        backgroundColor: active === i ? experiences[i].color : "hsla(215, 20%, 65%, 0.3)",
-                        scale: active === i ? 1.4 : 1,
-                      }}
-                      transition={TRANSITION}
-                    />
-                    <div className="relative">
-                      <motion.p
-                        className="text-xs uppercase tracking-[0.2em] font-black leading-none pb-1"
-                        animate={{ color: active === i ? "#fff" : "hsla(215, 20%, 65%, 0.5)" }}
+                    {/* Horizontal Indicator (Mobile) */}
+                    {active === i && (
+                      <motion.div
+                        layoutId="active-indicator-h"
+                        className="block lg:hidden absolute bottom-[-9px] left-0 right-0 h-[2px] rounded-full z-10"
+                        style={{ backgroundColor: experiences[i].color }}
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                    )}
+
+                    <div className="lg:pl-6 flex items-center gap-4">
+                      <motion.div
+                        className="w-1.5 h-1.5 rounded-full flex-shrink-0 hidden lg:block"
+                        animate={{
+                          backgroundColor: active === i ? experiences[i].color : "hsla(215, 20%, 65%, 0.3)",
+                          scale: active === i ? 1.4 : 1,
+                        }}
                         transition={TRANSITION}
-                      >
-                        {e.year}
-                      </motion.p>
-                      
-                      {/* Hover Underline */}
-                      <div className="absolute bottom-0 left-0 w-full h-[1px] overflow-hidden pointer-events-none">
-                        <div className="w-full h-full bg-foreground/30 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500" />
+                      />
+                      <div className="relative">
+                        <motion.p
+                          className="text-[10px] sm:text-xs uppercase tracking-[0.2em] font-black leading-none pb-1"
+                          animate={{ color: active === i ? "#fff" : "hsla(215, 20%, 65%, 0.5)" }}
+                          transition={TRANSITION}
+                        >
+                          {e.year}
+                        </motion.p>
+                        
+                        {/* Desktop Hover Underline */}
+                        <div className="absolute bottom-0 left-0 w-full h-[1px] overflow-hidden pointer-events-none hidden lg:block">
+                          <div className="w-full h-full bg-foreground/30 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500" />
+                        </div>
+
+                        <motion.p
+                          className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] font-medium leading-none mt-1 lg:block"
+                          animate={{ color: active === i ? experiences[i].color : "hsla(215, 20%, 65%, 0.3)" }}
+                          transition={TRANSITION}
+                        >
+                          {e.era}
+                        </motion.p>
                       </div>
-
-                      <motion.p
-                        className="text-[10px] uppercase tracking-[0.15em] font-medium leading-none mt-1 hidden lg:block"
-                        animate={{ color: active === i ? experiences[i].color : "hsla(215, 20%, 65%, 0.3)" }}
-                        transition={TRANSITION}
-                      >
-                        {e.era}
-                      </motion.p>
                     </div>
-                  </div>
-                </button>
-              ))}
+                  </button>
+                ))}
+              </div>
             </div>
           </aside>
 
           {/* ── RIGHT PANEL: Scrolling Experience List ── */}
-          <div className="lg:w-[32rem] flex flex-col gap-32 sm:gap-48 md:gap-64">
+          <div className="w-full lg:w-[32rem] flex flex-col gap-24 sm:gap-48 md:gap-64">
             {experiences.map((exp, index) => (
               <motion.div
                 key={exp.id}
                 id={exp.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, amount: 0.3 }}
+                viewport={{ once: false, amount: 0.2 }}
                 transition={TRANSITION}
-                className="flex flex-col gap-8 scroll-mt-32 md:scroll-mt-48"
+                className="flex flex-col gap-6 sm:gap-8 scroll-mt-48 lg:scroll-mt-32"
               >
                 {/* Index + period */}
                 <div className="flex items-center gap-4">
                   <Text
-                    className="text-[10px] uppercase tracking-[0.35em] font-black"
+                    className="text-[9px] sm:text-[10px] uppercase tracking-[0.35em] font-black"
                     style={{ color: exp.color }}
                   >
                     {exp.id}
                   </Text>
                   <div className="h-[1px] flex-1" style={{ background: `${exp.color}30` }} />
-                  <Text className="text-[10px] uppercase tracking-[0.25em] font-bold text-muted/50">
+                  <Text className="text-[9px] sm:text-[10px] uppercase tracking-[0.25em] font-bold text-muted/50">
                     {exp.period}
                   </Text>
                 </div>
@@ -211,22 +215,22 @@ export default function TacticalConstellation() {
                 <div>
                   <Text
                     as="h2"
-                    className="text-4xl sm:text-5xl md:text-6xl font-black lowercase tracking-tighter leading-none mb-3"
+                    className="text-3xl sm:text-5xl md:text-6xl font-black lowercase tracking-tighter leading-tight mb-2 sm:mb-3"
                   >
                     {exp.company}
                   </Text>
-                  <Text className="text-xs uppercase tracking-[0.25em] font-bold text-muted">
+                  <Text className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-bold text-muted">
                     {exp.role}
                   </Text>
                 </div>
 
                 {/* Description */}
-                <div className="glass p-8 rounded-2xl relative overflow-hidden">
+                <div className="glass p-6 sm:p-8 rounded-2xl relative overflow-hidden">
                   <div
                     className="absolute top-0 left-0 w-[2px] h-full rounded-full opacity-60"
                     style={{ backgroundColor: exp.color }}
                   />
-                  <Text className="text-muted/80 text-lg leading-relaxed font-medium pl-2">
+                  <Text className="text-muted/80 text-base sm:text-lg leading-relaxed font-medium pl-2">
                     {exp.description}
                   </Text>
                 </div>
@@ -236,7 +240,7 @@ export default function TacticalConstellation() {
                   {exp.skills.map((skill) => (
                     <span
                       key={skill}
-                      className="text-[10px] uppercase tracking-[0.2em] font-bold px-3 py-1.5 rounded-full border"
+                      className="text-[8px] sm:text-[10px] uppercase tracking-[0.2em] font-bold px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full border"
                       style={{
                         borderColor: `${exp.color}30`,
                         color: exp.color,
@@ -251,7 +255,7 @@ export default function TacticalConstellation() {
             ))}
             
             {/* Bottom spacer to allow the last item to be active */}
-            <div className="h-[20vh] lg:h-[40vh]" />
+            <div className="h-[40vh] lg:h-[40vh]" />
           </div>
         </div>
       </div>
