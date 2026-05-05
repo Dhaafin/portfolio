@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Text from "@/components/atoms/Text";
 import Link from "next/link";
 
-const experiences = [
+const FALLBACK_EXPERIENCES = [
   {
     id: "01",
     year: "2024",
@@ -18,47 +18,12 @@ const experiences = [
     skills: ["react", "three.js", "rust", "webgl", "typescript"],
     color: "hsl(217, 91%, 60%)",
   },
-  {
-    id: "02",
-    year: "2022",
-    era: "breakthrough.",
-    company: "vertex labs.",
-    role: "senior software engineer",
-    period: "2022 — 2024",
-    description:
-      "engineered a distributed data visualization platform for financial institutions. reduced render latency by 40% using custom webgl shaders and a bespoke data normalization layer.",
-    skills: ["next.js", "d3.js", "go", "postgres", "k8s"],
-    color: "hsl(250, 80%, 65%)",
-  },
-  {
-    id: "03",
-    year: "2020",
-    era: "foundation.",
-    company: "quantum sync.",
-    role: "full-stack developer",
-    period: "2020 — 2022",
-    description:
-      "built the core interaction layer for a decentralized collaboration tool. implemented real-time sync via custom crdt algorithms on a node.js cluster with redis-backed sessions.",
-    skills: ["node.js", "postgres", "redis", "socket.io", "react"],
-    color: "hsl(280, 70%, 60%)",
-  },
-  {
-    id: "04",
-    year: "2018",
-    era: "origin.",
-    company: "neon digital.",
-    role: "frontend developer",
-    period: "2018 — 2020",
-    description:
-      "developed immersive marketing experiences for global fashion brands. pioneered early adoption of framer motion for web animation and established a component library used across 12+ campaigns.",
-    skills: ["typescript", "framer", "gsap", "scss", "webpack"],
-    color: "hsl(200, 90%, 55%)",
-  },
 ];
 
 const TRANSITION = { duration: 0.8, ease: [0.23, 1, 0.32, 1] };
 
-export default function TacticalConstellation() {
+export default function TacticalConstellation({ initialExperiences }) {
+  const experiences = initialExperiences?.length > 0 ? initialExperiences : FALLBACK_EXPERIENCES;
   const [active, setActive] = useState(0);
   const observer = useRef(null);
 
