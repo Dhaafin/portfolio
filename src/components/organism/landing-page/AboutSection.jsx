@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, memo } from "react";
 import {
   motion,
   useScroll,
@@ -8,11 +8,12 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import Text from "@/components/atoms/Text";
 
 // --- Sub-Components ---
 
-function SectionLabel({ children, color = "hsl(217,91%,60%)" }) {
+const SectionLabel = memo(({ children, color = "hsl(217,91%,60%)" }) => {
   return (
     <div className="flex items-center gap-4 mb-8 md:mb-12">
       <div className="h-[1px] w-12" style={{ background: color }} />
@@ -24,9 +25,11 @@ function SectionLabel({ children, color = "hsl(217,91%,60%)" }) {
       </p>
     </div>
   );
-}
+});
 
-function ViewAllLink({ href, color, text = "view full archive" }) {
+SectionLabel.displayName = "SectionLabel";
+
+const ViewAllLink = memo(({ href, color, text = "view full archive" }) => {
   return (
     <Link
       href={href}
@@ -39,7 +42,9 @@ function ViewAllLink({ href, color, text = "view full archive" }) {
       {text}.<span style={{ color }}>↗</span>
     </Link>
   );
-}
+});
+
+ViewAllLink.displayName = "ViewAllLink";
 
 // --- Main Component ---
 
@@ -251,14 +256,21 @@ export default function AboutSection({
 
                 {/* Background Image with luxury overlay */}
                 <div className="absolute inset-0 -z-10 overflow-hidden">
-                  <motion.img
-                    src={edu.image}
-                    alt={edu.institution}
+                  <motion.div
                     initial={{ scale: 1, opacity: 0.1 }}
                     whileHover={{ scale: 1.1, opacity: 0.2 }}
                     transition={smoothTransition}
-                    className="h-full w-full object-cover grayscale"
-                  />
+                    className="h-full w-full grayscale"
+                  >
+                    <Image
+                      src={edu.image}
+                      alt={edu.institution}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover"
+                      priority={i < 2}
+                    />
+                  </motion.div>
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-background/90 to-transparent" />
                 </div>
 
@@ -395,10 +407,12 @@ export default function AboutSection({
                 transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
                 className="pointer-events-none fixed top-1/2 right-[10%] z-50 hidden aspect-[4/3] w-96 -translate-y-1/2 overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.5)] lg:block"
               >
-                <img
+                <Image
                   src={hoveredProjectImage}
                   alt="Project preview"
-                  className="h-full w-full object-cover"
+                  fill
+                  sizes="384px"
+                  className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
               </motion.div>
