@@ -23,7 +23,8 @@ const FALLBACK_EXPERIENCES = [
 const TRANSITION = { duration: 0.8, ease: [0.23, 1, 0.32, 1] };
 
 export default function TacticalConstellation({ initialExperiences }) {
-  const experiences = initialExperiences?.length > 0 ? initialExperiences : FALLBACK_EXPERIENCES;
+  const experiences =
+    initialExperiences?.length > 0 ? initialExperiences : FALLBACK_EXPERIENCES;
   const [active, setActive] = useState(0);
   const observer = useRef(null);
 
@@ -182,7 +183,7 @@ export default function TacticalConstellation({ initialExperiences }) {
             {experiences.map((exp) => (
               <ExperienceCard key={exp.id} exp={exp} />
             ))}
-            
+
             {/* Bottom spacer to allow the last item to be active */}
             <div className="h-[40vh] lg:h-[40vh]" />
           </div>
@@ -227,7 +228,7 @@ function ExperienceCard({ exp }) {
       <div>
         <Text
           as="h2"
-          className="text-3xl sm:text-5xl md:text-6xl font-black lowercase tracking-tighter leading-tight mb-2 sm:mb-3"
+          className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tighter leading-tight mb-2 sm:mb-3"
         >
           {exp.company}
         </Text>
@@ -242,10 +243,10 @@ function ExperienceCard({ exp }) {
           className="absolute top-0 left-0 w-[2px] h-full rounded-full opacity-60"
           style={{ backgroundColor: exp.color }}
         />
-        
+
         <ul className="flex flex-col gap-4 pl-2">
           {visiblePoints?.map((point, i) => (
-            <motion.li 
+            <motion.li
               key={i}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
