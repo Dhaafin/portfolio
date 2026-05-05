@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence, useDragControls } from "framer-motion";
 import Link from "next/link";
 
@@ -42,13 +42,13 @@ const overlayVariants = {
 function GraphNode({ node, isActive, onClick, containerSize }) {
   const cx = (node.x / 100) * containerSize.w;
   const cy = (node.y / 100) * containerSize.h;
-  const randomDelay = useMemo(() => 0.3 + Math.random() * 0.3, []);
+  const delay = 0.3 + ((node.id.length + (node.id.charCodeAt(0) || 0)) % 10) * 0.03;
 
   return (
     <motion.g
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: randomDelay, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+      transition={{ delay, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
       onClick={() => onClick(node)}
       style={{ cursor: node.href ? "pointer" : "default" }}
     >
