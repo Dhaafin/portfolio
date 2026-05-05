@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Text from '@/components/atoms/Text';
-import NavOverlay from './NavOverlay';
+import NavExplorer from './NavExplorer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from "next/navigation";
 
@@ -35,7 +35,7 @@ export default function Navbar() {
           </Text>
         </Link>
         <div className="pointer-events-auto">
-          <NavOverlay />
+          <NavExplorer />
         </div>
       </div>
     </nav>

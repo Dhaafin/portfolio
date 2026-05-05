@@ -144,7 +144,7 @@ function GraphEdge({ edge, cw, ch, activeNode }) {
   );
 }
 
-const GraphExplorer = () => {
+const GraphExplorer = ({ isOverlay = false }) => {
   const [activeNode, setActiveNode] = useState(null);
   const [containerSize, setContainerSize] = useState({ w: 900, h: 600 });
   
@@ -171,13 +171,12 @@ const GraphExplorer = () => {
 
   const activeNodeData = nodes.find((n) => n.id === activeNode);
 
-  return (
-    <section className="relative w-full py-16 px-4 md:px-10 overflow-hidden bg-background">
-      <div
-        ref={wrapperRef}
-        className="relative w-full max-w-[1400px] mx-auto rounded-3xl"
-        style={{ height: "clamp(600px, 75vh, 900px)" }}
-      >
+  const content = (
+    <div
+      ref={wrapperRef}
+      className={`relative w-full max-w-[1400px] mx-auto ${!isOverlay ? "rounded-3xl" : ""}`}
+      style={{ height: isOverlay ? "100%" : "clamp(600px, 75vh, 900px)" }}
+    >
         {/* LAYER 0: Background Echo Text (Outline) */}
         <AnimatePresence>
           {activeNodeData && (
@@ -304,7 +303,16 @@ const GraphExplorer = () => {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+    </div>
+  );
+
+  if (isOverlay) {
+    return <div className="w-full h-full flex items-center justify-center">{content}</div>;
+  }
+
+  return (
+    <section className="relative w-full py-16 px-4 md:px-10 overflow-hidden bg-background">
+      {content}
     </section>
   );
 };
