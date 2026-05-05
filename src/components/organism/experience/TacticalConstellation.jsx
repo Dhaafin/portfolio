@@ -67,15 +67,17 @@ export default function TacticalConstellation() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const index = experiences.findIndex((e) => e.id === entry.target.id);
+            const index = experiences.findIndex(
+              (e) => e.id === entry.target.id,
+            );
             if (index !== -1) setActive(index);
           }
         });
       },
-      { 
+      {
         threshold: 0.3,
-        rootMargin: "-20% 0px -40% 0px"
-      }
+        rootMargin: "-20% 0px -40% 0px",
+      },
     );
 
     experiences.forEach((e) => {
@@ -95,25 +97,29 @@ export default function TacticalConstellation() {
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-background">
-      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-12 md:px-24 lg:px-48 py-16 sm:py-24 md:py-32 flex flex-col">
-
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-12 md:px-24 lg:px-48 pt-48 pb-32 flex flex-col">
         {/* Main layout */}
-        <div className="flex-1 flex flex-col lg:flex-row items-start justify-center gap-16 lg:gap-24 xl:gap-48 relative">
-          
+        <div className="flex-1 flex flex-col lg:flex-row items-start justify-center gap-24 lg:gap-32 xl:gap-64 relative">
           {/* ── LEFT PANEL: Sticky Era Selector ── */}
           <aside className="sticky top-24 lg:top-32 flex flex-col justify-start items-start w-full lg:w-56 lg:min-w-[14rem] flex-shrink-0 z-30 bg-background/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none pb-6 lg:pb-0">
             <div className="hidden lg:block mb-12">
               <Text className="text-[10px] uppercase tracking-[0.35em] font-bold text-muted/40 mb-1">
-                where i've been.
+                where i&lsquo;ve been.
               </Text>
-              <Text as="h1" className="text-5xl font-black lowercase tracking-tighter leading-none">
+              <Text
+                as="h1"
+                className="text-5xl font-black lowercase tracking-tighter leading-none"
+              >
                 experience<span className="text-accent">.</span>
               </Text>
             </div>
 
             {/* Mobile heading - more compact */}
             <div className="block lg:hidden mb-6 w-full">
-              <Text as="h1" className="text-3xl font-black lowercase tracking-tighter leading-none">
+              <Text
+                as="h1"
+                className="text-3xl font-black lowercase tracking-tighter leading-none"
+              >
                 experience<span className="text-accent">.</span>
               </Text>
             </div>
@@ -133,7 +139,11 @@ export default function TacticalConstellation() {
                         layoutId="active-indicator-v"
                         className="hidden lg:block absolute left-0 w-[2px] h-10 rounded-full z-10"
                         style={{ backgroundColor: experiences[i].color }}
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 30,
+                        }}
                       />
                     )}
 
@@ -143,7 +153,11 @@ export default function TacticalConstellation() {
                         layoutId="active-indicator-h"
                         className="block lg:hidden absolute bottom-[-9px] left-0 right-0 h-[2px] rounded-full z-10"
                         style={{ backgroundColor: experiences[i].color }}
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 30,
+                        }}
                       />
                     )}
 
@@ -151,7 +165,10 @@ export default function TacticalConstellation() {
                       <motion.div
                         className="w-1.5 h-1.5 rounded-full flex-shrink-0 hidden lg:block"
                         animate={{
-                          backgroundColor: active === i ? experiences[i].color : "hsla(215, 20%, 65%, 0.3)",
+                          backgroundColor:
+                            active === i
+                              ? experiences[i].color
+                              : "hsla(215, 20%, 65%, 0.3)",
                           scale: active === i ? 1.4 : 1,
                         }}
                         transition={TRANSITION}
@@ -159,12 +176,17 @@ export default function TacticalConstellation() {
                       <div className="relative">
                         <motion.p
                           className="text-[10px] sm:text-xs uppercase tracking-[0.2em] font-black leading-none pb-1"
-                          animate={{ color: active === i ? "#fff" : "hsla(215, 20%, 65%, 0.5)" }}
+                          animate={{
+                            color:
+                              active === i
+                                ? "#fff"
+                                : "hsla(215, 20%, 65%, 0.5)",
+                          }}
                           transition={TRANSITION}
                         >
                           {e.year}
                         </motion.p>
-                        
+
                         {/* Desktop Hover Underline */}
                         <div className="absolute bottom-0 left-0 w-full h-[1px] overflow-hidden pointer-events-none hidden lg:block">
                           <div className="w-full h-full bg-foreground/30 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500" />
@@ -172,7 +194,12 @@ export default function TacticalConstellation() {
 
                         <motion.p
                           className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] font-medium leading-none mt-1 lg:block"
-                          animate={{ color: active === i ? experiences[i].color : "hsla(215, 20%, 65%, 0.3)" }}
+                          animate={{
+                            color:
+                              active === i
+                                ? experiences[i].color
+                                : "hsla(215, 20%, 65%, 0.3)",
+                          }}
                           transition={TRANSITION}
                         >
                           {e.era}
@@ -205,7 +232,10 @@ export default function TacticalConstellation() {
                   >
                     {exp.id}
                   </Text>
-                  <div className="h-[1px] flex-1" style={{ background: `${exp.color}30` }} />
+                  <div
+                    className="h-[1px] flex-1"
+                    style={{ background: `${exp.color}30` }}
+                  />
                   <Text className="text-[9px] sm:text-[10px] uppercase tracking-[0.25em] font-bold text-muted/50">
                     {exp.period}
                   </Text>
@@ -253,7 +283,7 @@ export default function TacticalConstellation() {
                 </div>
               </motion.div>
             ))}
-            
+
             {/* Bottom spacer to allow the last item to be active */}
             <div className="h-[40vh] lg:h-[40vh]" />
           </div>
