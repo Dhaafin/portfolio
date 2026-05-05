@@ -1,23 +1,30 @@
-import './globals.css';
-import { Inter, Jost } from 'next/font/google';
-import Navbar from '@/components/organism/molecules/Navbar';
+import "./globals.css";
+import { Inter, Jost, Cormorant_Garamond } from "next/font/google";
+import Navbar from "@/components/organism/molecules/Navbar";
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-const jost = Jost({ subsets: ['latin'], variable: '--font-jost' });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const jost = Jost({ subsets: ["latin"], variable: "--font-jost" });
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  style: ["italic", "normal"],
+  variable: "--font-cormorant",
+});
 
 export const metadata = {
   title: "Dhaafin | Full-stack Developer",
-  description: "Specializing in building state-of-the-art web applications with a focus on design and performance.",
+  description:
+    "Specializing in building state-of-the-art web applications with a focus on design and performance.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.variable} ${jost.variable} font-sans bg-mesh min-h-screen selection:bg-accent/30 flex flex-col`}>
+      <body
+        className={`${inter.variable} ${jost.variable} ${cormorant.variable} font-sans bg-mesh min-h-screen selection:bg-accent/30 flex flex-col`}
+      >
         <Navbar />
-        <main className="flex-grow">
-          {children}
-        </main>
+        <main className="grow">{children}</main>
       </body>
     </html>
   );

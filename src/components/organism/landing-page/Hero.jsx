@@ -27,7 +27,7 @@ const repelBlobs = [
   { color: "hsla(40,90%,60%,0.08)",  size: 350, ox: -180, oy: 160,  strength: 200 }, // amber bottom-left
 ];
 
-const Hero = ({ onOpenExplorer }) => {
+const Hero = () => {
   const containerRef = useRef(null);
 
   // Normalised [0,1] mouse position for the cursor blob
@@ -194,7 +194,7 @@ const Hero = ({ onOpenExplorer }) => {
         <motion.div variants={fadeUp}>
           <h1
             className="text-7xl md:text-9xl font-black tracking-tighter lowercase leading-none cursor-pointer select-none"
-            onClick={onOpenExplorer}
+            onClick={() => document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' })}
             style={{
               background: "linear-gradient(135deg, hsl(210 40% 98%) 40%, hsl(217 91% 75%) 70%, hsl(262 80% 75%) 100%)",
               WebkitBackgroundClip: "text",
@@ -205,13 +205,6 @@ const Hero = ({ onOpenExplorer }) => {
             hello world
             <motion.span
               className="inline-block cursor-pointer"
-              onClick={(e) => { e.stopPropagation(); onOpenExplorer(); }}
-              style={{
-                background: "linear-gradient(135deg, hsl(217 91% 60%), hsl(322 80% 65%))",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
               animate={{
                 filter: [
                   "drop-shadow(0 0 8px hsl(217 91% 60% / 0.3))",
@@ -239,7 +232,7 @@ const Hero = ({ onOpenExplorer }) => {
       {/* ── Affordance Hint ── */}
       <motion.div
         className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 cursor-pointer group"
-        onClick={onOpenExplorer}
+        onClick={() => document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' })}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.8, duration: 0.8 }}

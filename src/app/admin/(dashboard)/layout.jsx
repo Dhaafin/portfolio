@@ -35,7 +35,7 @@ function AdminNavLink({ href, label }) {
       href={href}
       className="group flex items-center px-4 py-3 rounded-xl hover:bg-white/5 transition-all duration-300"
     >
-      <span className="text-sm font-bold uppercase tracking-[0.1em] text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all">
+      <span className="text-sm font-bold uppercase tracking-widest text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all">
         {label}
       </span>
     </Link>

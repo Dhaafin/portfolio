@@ -24,7 +24,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6">
-      <div className="w-full max-w-md bg-white/2 border border-white/5 backdrop-blur-3xl rounded-[2rem] p-12 flex flex-col gap-8 shadow-2xl relative overflow-hidden">
+      <div className="w-full max-w-md bg-white/2 border border-white/5 backdrop-blur-3xl rounded-4xl p-12 flex flex-col gap-8 shadow-2xl relative overflow-hidden">
         {/* Background Ambient Glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-primary/10 blur-[100px] pointer-events-none" />
 
@@ -32,7 +32,10 @@ export default function LoginPage() {
           <Text className="text-xs tracking-[0.4em] uppercase font-bold text-white/30 mb-2">
             Authentication
           </Text>
-          <Text as="h1" className="text-4xl font-black lowercase tracking-tighter">
+          <Text
+            as="h1"
+            className="text-4xl font-black lowercase tracking-tighter"
+          >
             control center<span className="text-primary">.</span>
           </Text>
         </header>
