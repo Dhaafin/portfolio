@@ -5,23 +5,6 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 // --- Configuration ---
 
-const REPEL_BLOBS = [
-  {
-    color: "hsla(217,91%,60%,0.15)",
-    size: 350,
-    ox: -250,
-    oy: -200,
-    strength: 250,
-  }, // Blue
-  {
-    color: "hsla(322,80%,65%,0.12)",
-    size: 300,
-    ox: 300,
-    oy: 250,
-    strength: 300,
-  }, // Pink
-];
-
 // --- Animations ---
 
 const STAGGER = {
@@ -51,19 +34,8 @@ const Hero = () => {
   const smoothY = useSpring(mouseY, springConfig);
 
   // 3. TRANSFORMATIONS
-  const splatX = useTransform(smoothX, [0, 1], ["-10%", "10%"]);
-  const splatY = useTransform(smoothY, [0, 1], ["-10%", "10%"]);
-
-  // MotionValues for repulsion blobs
-  const blob0X = useMotionValue(REPEL_BLOBS[0].ox);
-  const blob0Y = useMotionValue(REPEL_BLOBS[0].oy);
-  const blob1X = useMotionValue(REPEL_BLOBS[1].ox);
-  const blob1Y = useMotionValue(REPEL_BLOBS[1].oy);
-
-  const blobMotionValues = [
-    { x: blob0X, y: blob0Y },
-    { x: blob1X, y: blob1Y },
-  ];
+  const splatX = useTransform(smoothX, [0, 1], ["-2%", "2%"]);
+  const splatY = useTransform(smoothY, [0, 1], ["-2%", "2%"]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -75,33 +47,11 @@ const Hero = () => {
       mouseX.set(nx);
       mouseY.set(ny);
 
-      const cx = rect.width / 2;
-      const cy = rect.height / 2;
-      const mx = e.clientX - rect.left - cx;
-      const my = e.clientY - rect.top - cy;
-
-      REPEL_BLOBS.forEach((blob, i) => {
-        const dx = blob.ox - mx;
-        const dy = blob.oy - my;
-        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        const factor = Math.max(0, 1 - dist / blob.strength);
-
-        blobMotionValues[i].x.set(
-          blob.ox - (dx / dist) * factor * blob.strength * 0.6,
-        );
-        blobMotionValues[i].y.set(
-          blob.oy - (dy / dist) * factor * blob.strength * 0.6,
-        );
-      });
     };
 
     const handleMouseLeave = () => {
       mouseX.set(0.5);
       mouseY.set(0.5);
-      REPEL_BLOBS.forEach((blob, i) => {
-        blobMotionValues[i].x.set(blob.ox);
-        blobMotionValues[i].y.set(blob.oy);
-      });
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -110,60 +60,13 @@ const Hero = () => {
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [mouseX, mouseY, blobMotionValues]);
+  }, [mouseX, mouseY]);
 
   return (
     <section
       ref={containerRef}
       className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden bg-background select-none"
     >
-      {/* ── LAYER 0: The Color Splat (Vibrant Blobby Splat) ── */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none z-1 flex items-center justify-center"
-        style={{ x: splatX, y: splatY }}
-      >
-        <div className="relative w-[450px] h-[450px] opacity-60">
-          {/* Blob 1: Blue */}
-          <motion.div
-            className="absolute top-[10%] left-[10%] w-[50%] h-[50%] rounded-full"
-            style={{ background: "#3B82F6", filter: "blur(70px)" }}
-            animate={{ scale: [1, 1.15, 1], x: [0, 40, 0] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          />
-          {/* Blob 2: Pink */}
-          <motion.div
-            className="absolute top-[30%] left-[40%] w-[45%] h-[45%] rounded-full"
-            style={{ background: "#EC4899", filter: "blur(80px)" }}
-            animate={{ scale: [1, 1.25, 1], x: [0, -50, 0], y: [0, 40, 0] }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          />
-          {/* Blob 3: Purple */}
-          <motion.div
-            className="absolute top-[45%] left-[15%] w-[40%] h-[40%] rounded-full"
-            style={{ background: "#8B5CF6", filter: "blur(70px)" }}
-            animate={{ scale: [1, 1.2, 1], y: [0, -50, 0] }}
-            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </div>
-      </motion.div>
-
-      {/* ── LAYER 1: Repulsion Blobs (GPU Accelerated) ── */}
-      {REPEL_BLOBS.map((blob, i) => (
-        <motion.div
-          key={i}
-          className="absolute top-1/2 left-1/2 rounded-full pointer-events-none z-0 opacity-20 blur-[100px]"
-          style={{
-            width: blob.size,
-            height: blob.size,
-            background: `radial-gradient(circle, ${blob.color} 0%, transparent 70%)`,
-            translateX: "-50%",
-            translateY: "-50%",
-            x: blobMotionValues[i].x,
-            y: blobMotionValues[i].y,
-          }}
-        />
-      ))}
-
       {/* ── LAYER 2: Subtle Dot Grid ── */}
       <div
         className="absolute inset-0 z-2 opacity-[0.03] pointer-events-none"
