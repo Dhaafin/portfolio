@@ -11,6 +11,8 @@ const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
 });
 
+import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
+
 export const metadata = {
   title: "Dhaafin | Full-stack Developer",
   description:
@@ -19,12 +21,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en">
       <body
         className={`${inter.variable} ${jost.variable} ${cormorant.variable} font-sans bg-mesh min-h-screen selection:bg-accent/30 flex flex-col`}
       >
-        <Navbar />
-        <main className="grow">{children}</main>
+        <SmoothScrollProvider>
+          <Navbar />
+          <main className="grow">{children}</main>
+        </SmoothScrollProvider>
       </body>
     </html>
   );
