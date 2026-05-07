@@ -293,9 +293,14 @@ const GraphExplorer = ({ isOverlay = false, onNavigate }) => {
               <Link 
                 href={activeNodeData.href} 
                 onClick={(e) => {
-                  if (activeNodeData.href.startsWith("/#") && pathname === "/") {
-                    e.preventDefault();
-                    window.lenis?.scrollTo(activeNodeData.href.split("#")[1] ? `#${activeNodeData.href.split("#")[1]}` : 0);
+                  const href = activeNodeData.href;
+                  if (href.includes("#")) {
+                    const targetId = href.split("#")[1];
+                    // On home page, use Lenis for smooth scroll
+                    if (pathname === "/" || pathname === "" || pathname === null) {
+                      e.preventDefault();
+                      window.lenis?.scrollTo?.(`#${targetId}`, { offset: -100 });
+                    }
                   }
                   if (onNavigate) onNavigate();
                 }}

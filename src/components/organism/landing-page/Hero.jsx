@@ -87,7 +87,7 @@ const Hero = () => {
         <motion.div variants={FADE_UP}>
           <h1
             className="text-7xl md:text-9xl font-black tracking-tighter lowercase leading-none cursor-pointer select-none"
-            onClick={() => window.lenis?.scrollTo("#explore")}
+            onClick={() => window.lenis?.scrollTo?.("#explore")}
           >
             <span
               className="inline-block"
@@ -122,7 +122,7 @@ const Hero = () => {
       {/* ── LAYER 4: Scroll Hint ── */}
       <motion.div
         className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 cursor-pointer group z-10"
-        onClick={() => window.lenis?.scrollTo("#explore")}
+        onClick={() => window.lenis?.scrollTo?.("#explore")}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8, duration: 0.8 }}

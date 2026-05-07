@@ -117,8 +117,9 @@ export default function AboutSection({
 
   return (
     <section
+      id="identity"
       ref={sectionRef}
-      className="relative bg-background overflow-hidden pb-48"
+      className="relative bg-background overflow-hidden pb-48 scroll-mt-32"
     >
       {/* Background ambient glow */}
       <div className="absolute inset-0 pointer-events-none">
@@ -157,33 +158,10 @@ export default function AboutSection({
                   src="/profile.png"
                   alt="Dhaafin Portrait"
                   fill
-                  className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 ease-in-out"
+                  className="object-cover transition-all duration-1000 ease-in-out"
                   priority
                 />
-                {/* Film grain overlay */}
-                <div
-                  className="absolute inset-0 opacity-[0.04] pointer-events-none"
-                  style={{
-                    backgroundImage:
-                      "url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%221%22 numOctaves=%224%22 stitchTiles=%22stitch%22/></filter><rect width=%22200%22 height=%22200%22 filter=%22url(%23n)%22 opacity=%221%22/></svg>')",
-                  }}
-                />
               </div>
-              {/* Floating status badge */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 10 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5, duration: 0.6 }}
-                className="absolute -bottom-6 -right-6 glass rounded-2xl px-5 py-3 border border-white/5"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.8)]" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/60">
-                    available for work.
-                  </span>
-                </div>
-              </motion.div>
             </motion.div>
           </motion.div>
 
@@ -395,7 +373,11 @@ export default function AboutSection({
             ))}
           </div>
 
-          <PrimaryCTA href="/projects" color="#A78BFA" text="the full archive ↗" />
+          <PrimaryCTA
+            href="/projects"
+            color="#A78BFA"
+            text="the full archive ↗"
+          />
         </motion.div>
 
         {/* ── 4. EXPERIENCES: The Path ("The Ticker") ── */}
@@ -416,8 +398,10 @@ export default function AboutSection({
                 style={
                   i === 2
                     ? {
-                        maskImage: "linear-gradient(to bottom, black 20%, transparent 100%)",
-                        WebkitMaskImage: "linear-gradient(to bottom, black 20%, transparent 100%)",
+                        maskImage:
+                          "linear-gradient(to bottom, black 20%, transparent 100%)",
+                        WebkitMaskImage:
+                          "linear-gradient(to bottom, black 20%, transparent 100%)",
                       }
                     : {}
                 }
@@ -438,24 +422,28 @@ export default function AboutSection({
                       {exp.era || exp.period}
                     </span>
                   </div>
-                  
+
                   {/* Huge low opacity company name */}
                   <div className="absolute inset-0 flex items-center overflow-hidden pointer-events-none -z-10">
-                     <span className="text-6xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter text-white/[0.02] whitespace-nowrap pt-8">
-                       {exp.company}
-                     </span>
+                    <span className="text-6xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter text-white/[0.02] whitespace-nowrap pt-8">
+                      {exp.company}
+                    </span>
                   </div>
                   <div className="pt-4">
-                     <span className="text-sm md:text-base font-bold uppercase tracking-widest text-muted/60">
-                        {exp.company}
-                     </span>
+                    <span className="text-sm md:text-base font-bold uppercase tracking-widest text-muted/60">
+                      {exp.company}
+                    </span>
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <PrimaryCTA href="/experience" color="#F472B6" text="the complete journey →" />
+          <PrimaryCTA
+            href="/experience"
+            color="#F472B6"
+            text="the complete journey →"
+          />
         </motion.div>
 
         {/* ── 5. CERTIFICATIONS: The Verified ("The Receipt") ── */}
@@ -469,28 +457,29 @@ export default function AboutSection({
 
           <div className="mt-12 bg-black/40 border border-white/5 p-8 md:p-12 rounded-2xl font-mono text-sm md:text-base tracking-wider shadow-inner">
             <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4 text-white/40 uppercase text-xs font-bold tracking-[0.2em]">
-              <span>{String(Math.min(3, certifications.length)).padStart(2, '0')} / {String(certifications.length).padStart(2, '0')} verified</span>
+              <span>
+                {String(Math.min(3, certifications.length)).padStart(2, "0")} /{" "}
+                {String(certifications.length).padStart(2, "0")} verified
+              </span>
               <span>credentials</span>
             </div>
 
             <div className="flex flex-col gap-4">
               {certifications.slice(0, 3).map((cert) => (
                 <Link href="/certifications" key={cert.id}>
-                  <motion.div
-                    className="flex flex-col sm:flex-row items-baseline gap-2 sm:gap-4 text-white/50 hover:text-[#FACC15] transition-colors duration-300 group cursor-pointer"
-                  >
+                  <motion.div className="flex flex-col sm:flex-row items-baseline gap-2 sm:gap-4 text-white/50 hover:text-[#FACC15] transition-colors duration-300 group cursor-pointer">
                     <span className="uppercase font-bold shrink-0 w-24 md:w-32 truncate text-white/80 group-hover:text-white">
                       [{cert.issuer_short || "CERT"}]
                     </span>
-                    
+
                     <span className="hidden sm:block flex-grow border-b border-dashed border-white/20 group-hover:border-[#FACC15]/50 relative top-[-6px]" />
-                    
+
                     <span className="truncate max-w-[200px] md:max-w-none">
                       {cert.title}
                     </span>
-                    
+
                     <span className="hidden sm:block flex-grow border-b border-dashed border-white/20 group-hover:border-[#FACC15]/50 relative top-[-6px]" />
-                    
+
                     <span className="shrink-0 text-white/30 group-hover:text-[#FACC15]/80 text-xs">
                       [{cert.issue_date || "XXXX"}]
                     </span>
@@ -498,15 +487,19 @@ export default function AboutSection({
                 </Link>
               ))}
             </div>
-            
+
             {certifications.length > 3 && (
-               <div className="mt-8 text-center text-white/20 text-xs italic">
-                 ... and {certifications.length - 3} more entries ...
-               </div>
+              <div className="mt-8 text-center text-white/20 text-xs italic">
+                ... and {certifications.length - 3} more entries ...
+              </div>
             )}
           </div>
 
-          <PrimaryCTA href="/certifications" color="#FACC15" text="all credentials ↗" />
+          <PrimaryCTA
+            href="/certifications"
+            color="#FACC15"
+            text="all credentials ↗"
+          />
         </motion.div>
       </div>
     </section>
