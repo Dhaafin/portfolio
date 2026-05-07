@@ -153,33 +153,21 @@ export default function AboutSection({
             >
               {/* Portrait Frame */}
               <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-white/5 bg-surface">
+                <Image
+                  src="/profile.png"
+                  alt="Dhaafin Portrait"
+                  fill
+                  className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 ease-in-out"
+                  priority
+                />
+                {/* Film grain overlay */}
                 <div
-                  className="w-full h-full"
+                  className="absolute inset-0 opacity-[0.04] pointer-events-none"
                   style={{
-                    background:
-                      "linear-gradient(160deg, hsl(222,47%,10%) 0%, hsl(222,47%,6%) 60%, hsl(262,40%,10%) 100%)",
+                    backgroundImage:
+                      "url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%221%22 numOctaves=%224%22 stitchTiles=%22stitch%22/></filter><rect width=%22200%22 height=%22200%22 filter=%22url(%23n)%22 opacity=%221%22/></svg>')",
                   }}
-                >
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                    <Text
-                      className="text-[8rem] font-black lowercase tracking-tighter leading-none select-none"
-                      style={{
-                        WebkitTextStroke: "1.5px hsla(217,91%,60%,0.25)",
-                        color: "transparent",
-                      }}
-                    >
-                      df.
-                    </Text>
-                  </div>
-                  {/* Film grain overlay */}
-                  <div
-                    className="absolute inset-0 opacity-[0.04] pointer-events-none"
-                    style={{
-                      backgroundImage:
-                        "url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%221%22 numOctaves=%224%22 stitchTiles=%22stitch%22/></filter><rect width=%22200%22 height=%22200%22 filter=%22url(%23n)%22 opacity=%221%22/></svg>')",
-                    }}
-                  />
-                </div>
+                />
               </div>
               {/* Floating status badge */}
               <motion.div
