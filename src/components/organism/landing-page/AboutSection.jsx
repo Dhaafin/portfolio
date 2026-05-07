@@ -29,6 +29,35 @@ const SectionLabel = memo(({ children, color = "hsl(217,91%,60%)" }) => {
 
 SectionLabel.displayName = "SectionLabel";
 
+const PrimaryCTA = memo(({ href, color, text }) => {
+  return (
+    <div className="mt-16 flex justify-center">
+      <Link
+        href={href}
+        className="group relative px-8 py-4 overflow-hidden rounded-full border transition-all duration-500"
+        style={{
+          borderColor: color,
+          backgroundColor: `${color}26`, // 15% opacity
+          color: color,
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = `${color}40`; // 25% opacity
+          e.currentTarget.style.color = "white";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = `${color}26`;
+          e.currentTarget.style.color = color;
+        }}
+      >
+        <span className="relative text-[10px] font-black uppercase tracking-[0.35em] transition-colors duration-500">
+          {text}
+        </span>
+      </Link>
+    </div>
+  );
+});
+PrimaryCTA.displayName = "PrimaryCTA";
+
 const ViewAllLink = memo(({ href, color, text = "view full archive" }) => {
   return (
     <Link
@@ -43,7 +72,6 @@ const ViewAllLink = memo(({ href, color, text = "view full archive" }) => {
     </Link>
   );
 });
-
 ViewAllLink.displayName = "ViewAllLink";
 
 // --- Main Component ---
@@ -320,7 +348,7 @@ export default function AboutSection({
           </div>
         </motion.div>
 
-        {/* ── 3. PROJECTS: The Showcase ── */}
+        {/* ── 3. PROJECTS: The Showcase ("The Ledger") ── */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -330,116 +358,59 @@ export default function AboutSection({
         >
           <SectionLabel color="#A78BFA">selected works.</SectionLabel>
 
-          <div
-            className="flex flex-col group/list"
-            onMouseLeave={() => setHoveredProjectImage(null)}
-          >
+          <div className="flex flex-col border-t border-white/10 mt-12">
             {projects.slice(0, 3).map((project, i) => (
-              <Link
-                href="/projects"
-                key={project.id}
-                onMouseEnter={() => setHoveredProjectImage(project.image_url)}
-              >
+              <Link href="/projects" key={project.id}>
                 <motion.div
-                  className="group/item relative flex flex-col items-start justify-between gap-6 border-b border-white/5 py-10 px-8 -mx-8 md:flex-row md:items-center md:py-14"
-                  initial={false}
+                  className="group relative flex flex-col md:flex-row items-baseline justify-between gap-4 py-8 border-b border-white/10 overflow-hidden"
+                  initial="initial"
+                  whileHover="hover"
                 >
-                  {/* Background Hover Highlight */}
+                  {/* Left Hover Glow */}
                   <motion.div
-                    className="absolute inset-0 -z-10 bg-white/[0.03] opacity-0 group-hover/item:opacity-100"
+                    className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#A78BFA]/10 to-transparent opacity-0 origin-left"
+                    variants={{
+                      initial: { opacity: 0, scaleX: 0 },
+                      hover: { opacity: 1, scaleX: 1 },
+                    }}
                     transition={{ duration: 0.4, ease: "circOut" }}
                   />
 
-                  <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:gap-12 lg:gap-20">
-                    <motion.span
-                      className="text-[10px] font-black uppercase tracking-[0.4em] text-white/10"
-                      variants={{
-                        hover: { color: "#A78BFA", x: 5 },
-                      }}
-                      whileHover="hover"
-                      transition={{ duration: 0.4 }}
-                    >
+                  <div className="flex items-baseline gap-6 md:gap-12 w-full md:w-auto relative z-10">
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 group-hover:text-[#A78BFA] transition-colors duration-300 w-6">
                       {String(i + 1).padStart(2, "0")}
-                    </motion.span>
+                    </span>
+                    <h3 className="text-3xl md:text-5xl lg:text-7xl font-black lowercase tracking-tighter text-white/60 group-hover:text-white transition-colors duration-300">
+                      {project.title}
+                    </h3>
+                  </div>
 
-                    <div className="flex flex-col">
-                      <motion.h3
-                        className="text-4xl font-black lowercase tracking-tighter text-white/30 transition-colors duration-500 group-hover/item:text-white md:text-6xl lg:text-8xl"
-                        whileHover={{ x: 10 }}
-                        transition={{ type: "spring", stiffness: 100, damping: 20 }}
-                      >
-                        {project.title}
-                      </motion.h3>
+                  <div className="flex items-center gap-6 relative z-10 self-end md:self-auto w-full md:w-auto justify-end">
+                    <div className="px-3 py-1 rounded-full border border-white/10 bg-white/5">
+                      <p className="text-[10px] font-bold tracking-[0.2em] text-white/40 group-hover:text-[#A78BFA] transition-colors duration-300">
+                        [{project.role}]
+                      </p>
                     </div>
-                  </div>
-
-                  <div className="flex flex-col items-start text-left md:items-end md:text-right">
-                    <motion.p
-                      className="text-[11px] font-black uppercase tracking-[0.3em] text-white/20 group-hover/item:text-[#A78BFA]"
-                      transition={{ duration: 0.5 }}
+                    <motion.span
+                      className="text-[#A78BFA] text-lg font-light opacity-0 -translate-x-4"
+                      variants={{
+                        initial: { opacity: 0, x: -10 },
+                        hover: { opacity: 1, x: 0 },
+                      }}
+                      transition={{ duration: 0.3 }}
                     >
-                      {project.role}
-                    </motion.p>
-                    <p className="mt-1 text-[10px] font-bold tracking-[0.2em] text-white/10">
-                      {project.year}
-                    </p>
+                      ↗
+                    </motion.span>
                   </div>
-
-                  {/* Aesthetic Indicator (Bottom line growth) */}
-                  <motion.div
-                    className="absolute bottom-0 left-0 h-[1px] bg-[#A78BFA] opacity-0"
-                    initial={{ width: 0 }}
-                    whileHover={{ width: "100%", opacity: 1 }}
-                    transition={{ duration: 0.6, ease: "circOut" }}
-                  />
                 </motion.div>
               </Link>
             ))}
           </div>
 
-          {/* Peek-thru Image effect */}
-          <AnimatePresence>
-            {hoveredProjectImage && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 20, rotate: -3 }}
-                animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20, rotate: 3 }}
-                transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-                className="pointer-events-none fixed top-1/2 right-[10%] z-50 hidden aspect-[4/3] w-96 -translate-y-1/2 overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.5)] lg:block"
-              >
-                <Image
-                  src={hoveredProjectImage}
-                  alt="Project preview"
-                  fill
-                  sizes="384px"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* UNIQUE CTA: Cinematic Frame */}
-          <div className="mt-20 flex justify-center">
-            <Link
-              href="/projects"
-              className="group relative px-12 py-5 overflow-hidden rounded-full border border-white/10 transition-all duration-500 hover:border-[#A78BFA]/50"
-            >
-              <motion.div
-                className="absolute inset-0 bg-[#A78BFA] opacity-0 group-hover:opacity-5"
-                transition={{ duration: 0.5 }}
-              />
-              <span className="relative text-[10px] font-black uppercase tracking-[0.5em] text-white/40 group-hover:text-white transition-colors duration-500">
-                Explore the full archive
-              </span>
-              
-              {/* Decorative light pill */}
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-[1px] bg-[#A78BFA] opacity-0 group-hover:opacity-100 group-hover:w-24 transition-all duration-700 shadow-[0_0_15px_#A78BFA]" />
-            </Link>
-          </div>
+          <PrimaryCTA href="/projects" color="#A78BFA" text="the full archive ↗" />
         </motion.div>
 
-        {/* ── 4. EXPERIENCES: The Path ── */}
+        {/* ── 4. EXPERIENCES: The Path ("The Ticker") ── */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -449,56 +420,57 @@ export default function AboutSection({
         >
           <SectionLabel color="#F472B6">professional path.</SectionLabel>
 
-          <div className="relative pl-8 md:pl-12">
-            {/* Minimalist Timeline Line */}
-            <div className="absolute top-0 bottom-0 left-0 w-[1px] bg-gradient-to-b from-white/20 via-white/10 to-transparent" />
+          <div className="flex flex-col mt-12 gap-2 overflow-hidden">
+            {experiences.slice(0, 3).map((exp, i) => (
+              <div
+                key={exp.id}
+                className="group flex items-stretch gap-6 opacity-80 hover:opacity-100 transition-opacity duration-300"
+                style={
+                  i === 2
+                    ? {
+                        maskImage: "linear-gradient(to bottom, black 20%, transparent 100%)",
+                        WebkitMaskImage: "linear-gradient(to bottom, black 20%, transparent 100%)",
+                      }
+                    : {}
+                }
+              >
+                {/* Left Color Tab */}
+                <motion.div
+                  className="w-1 md:w-2 shrink-0 transition-all duration-300"
+                  style={{ backgroundColor: exp.color || "#F472B6" }}
+                  whileHover={{ width: "12px" }}
+                />
 
-            <div className="flex flex-col gap-16">
-              {experiences.slice(0, 3).map((exp, i) => (
-                <div key={exp.id} className="relative group">
-                  {/* Timeline Node */}
-                  <motion.div
-                    className="absolute top-2 -left-8 md:-left-12 w-2 h-2 rounded-full -translate-x-1/2 bg-surface border border-white/40 shadow-[0_0_10px_rgba(244,114,182,0)]"
-                    whileHover={{
-                      backgroundColor: "#F472B6",
-                      borderColor: "#F472B6",
-                      scale: 1.5,
-                      boxShadow: "0 0 15px rgba(244,114,182,0.5)",
-                    }}
-                    transition={springTransition}
-                  />
-
-                  <motion.div
-                    className="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-8 cursor-default"
-                    whileHover={{ x: 10 }}
-                    transition={smoothTransition}
-                  >
-                    <motion.h3
-                      className="text-2xl md:text-3xl font-black lowercase tracking-tighter text-foreground transition-colors duration-300"
-                      whileHover={{ color: "white" }}
-                    >
+                <div className="flex flex-col py-6 w-full relative">
+                  <div className="flex justify-between items-end border-b border-white/10 pb-4 w-full">
+                    <h3 className="font-[family-name:var(--font-cormorant)] text-3xl md:text-5xl lg:text-6xl italic text-white/90">
                       {exp.role}
-                    </motion.h3>
-                    <span className="text-sm font-medium text-muted/60">
-                      — {exp.company}
+                    </h3>
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 whitespace-nowrap ml-4">
+                      {exp.era || exp.period}
                     </span>
-                  </motion.div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted/40 mt-3">
-                    {exp.era || exp.period}
-                  </p>
+                  </div>
+                  
+                  {/* Huge low opacity company name */}
+                  <div className="absolute inset-0 flex items-center overflow-hidden pointer-events-none -z-10">
+                     <span className="text-6xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter text-white/[0.02] whitespace-nowrap pt-8">
+                       {exp.company}
+                     </span>
+                  </div>
+                  <div className="pt-4">
+                     <span className="text-sm md:text-base font-bold uppercase tracking-widest text-muted/60">
+                        {exp.company}
+                     </span>
+                  </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
 
-          <ViewAllLink
-            href="/experience"
-            color="#F472B6"
-            text="view professional history"
-          />
+          <PrimaryCTA href="/experience" color="#F472B6" text="the complete journey →" />
         </motion.div>
 
-        {/* ── 5. CERTIFICATIONS: The Verified (Badge Bento) ── */}
+        {/* ── 5. CERTIFICATIONS: The Verified ("The Receipt") ── */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -507,68 +479,46 @@ export default function AboutSection({
         >
           <SectionLabel color="#FACC15">verified credentials.</SectionLabel>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {certifications.slice(0, 3).map((cert, i) => (
-              <Link href="/certifications" key={cert.id}>
-                <motion.div
-                  className="group aspect-square rounded-3xl bg-white/[0.02] border border-white/5 p-8 flex flex-col justify-between relative overflow-hidden"
-                  whileHover={{
-                    backgroundColor: "rgba(255, 255, 255, 0.05)",
-                    borderColor: "rgba(255, 255, 255, 0.1)",
-                    scale: 1.02,
-                  }}
-                  transition={smoothTransition}
-                >
-                  {/* Glow effect */}
+          <div className="mt-12 bg-black/40 border border-white/5 p-8 md:p-12 rounded-2xl font-mono text-sm md:text-base tracking-wider shadow-inner">
+            <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4 text-white/40 uppercase text-xs font-bold tracking-[0.2em]">
+              <span>{String(Math.min(3, certifications.length)).padStart(2, '0')} / {String(certifications.length).padStart(2, '0')} verified</span>
+              <span>credentials</span>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              {certifications.slice(0, 3).map((cert) => (
+                <Link href="/certifications" key={cert.id}>
                   <motion.div
-                    className="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-[50px] opacity-0"
-                    whileHover={{ opacity: 0.2 }}
-                    transition={smoothTransition}
-                    style={{ backgroundColor: cert.color || "#FACC15" }}
-                  />
-
-                  <div className="flex items-center justify-between z-10">
-                    <motion.div
-                      className="w-12 h-12 rounded-xl border flex items-center justify-center shrink-0 shadow-lg"
-                      style={{
-                        borderColor: `${cert.color || "#FACC15"}40`,
-                        background: `${cert.color || "#FACC15"}10`,
-                      }}
-                      whileHover={{ scale: 1.1 }}
-                      transition={springTransition}
-                    >
-                      <div
-                        className="w-2.5 h-2.5 rounded-full"
-                        style={{ backgroundColor: cert.color || "#FACC15" }}
-                      />
-                    </motion.div>
-                    <motion.span
-                      className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40"
-                      whileHover={{ opacity: 1 }}
-                      style={{ color: cert.color || "#FACC15" }}
-                    >
-                      {cert.issuer_short}
-                    </motion.span>
-                  </div>
-
-                  <div className="z-10">
-                    <h3 className="text-xl font-black lowercase tracking-tighter text-foreground leading-tight mb-2 line-clamp-3">
+                    className="flex flex-col sm:flex-row items-baseline gap-2 sm:gap-4 text-white/50 hover:text-[#FACC15] transition-colors duration-300 group cursor-pointer"
+                  >
+                    <span className="uppercase font-bold shrink-0 w-24 md:w-32 truncate text-white/80 group-hover:text-white">
+                      [{cert.issuer_short || "CERT"}]
+                    </span>
+                    
+                    <span className="hidden sm:block flex-grow border-b border-dashed border-white/20 group-hover:border-[#FACC15]/50 relative top-[-6px]" />
+                    
+                    <span className="truncate max-w-[200px] md:max-w-none">
                       {cert.title}
-                    </h3>
-                    <p className="text-xs font-medium text-muted/50">
-                      {cert.issue_date}
-                    </p>
-                  </div>
-                </motion.div>
-              </Link>
-            ))}
+                    </span>
+                    
+                    <span className="hidden sm:block flex-grow border-b border-dashed border-white/20 group-hover:border-[#FACC15]/50 relative top-[-6px]" />
+                    
+                    <span className="shrink-0 text-white/30 group-hover:text-[#FACC15]/80 text-xs">
+                      [{cert.issue_date || "XXXX"}]
+                    </span>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+            
+            {certifications.length > 3 && (
+               <div className="mt-8 text-center text-white/20 text-xs italic">
+                 ... and {certifications.length - 3} more entries ...
+               </div>
+            )}
           </div>
 
-          <ViewAllLink
-            href="/certifications"
-            color="#FACC15"
-            text="view all certifications"
-          />
+          <PrimaryCTA href="/certifications" color="#FACC15" text="all credentials ↗" />
         </motion.div>
       </div>
     </section>
