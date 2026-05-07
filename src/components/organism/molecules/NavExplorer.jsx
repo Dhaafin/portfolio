@@ -55,7 +55,7 @@ export default function NavExplorer() {
             className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden bg-background"
           >
             <div className="w-full h-full">
-              <GraphExplorer isOverlay={true} />
+              <GraphExplorer isOverlay={true} onNavigate={() => setIsOpen(false)} />
             </div>
 
             {/* Header hint */}

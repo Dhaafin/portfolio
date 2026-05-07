@@ -3,11 +3,12 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Text from "@/components/atoms/Text";
 
 // --- Nodes Data (Astral Layout) ---
 const nodes = [
-  { id: "about",          label: "about.",          x: 20, y: 30, isRoot: true, href: "/about",          description: "who i am.",               color: "#F472B6", size: 28, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
+  { id: "about",          label: "about.",          x: 20, y: 30, isRoot: true, href: "/#identity",       description: "who i am.",               color: "#F472B6", size: 28, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
   { id: "projects",       label: "projects.",       x: 45, y: 45, isRoot: false, href: "/projects",       description: "selected works.",         color: "#A78BFA", size: 24, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
   { id: "experience",     label: "experience.",     x: 35, y: 70, isRoot: false, href: "/experience",     description: "professional path.",      color: "#34D399", size: 22, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
   { id: "certifications", label: "certifications.", x: 75, y: 35, isRoot: false, href: "/certifications", description: "verified skills.",        color: "#FACC15", size: 22, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
@@ -140,9 +141,10 @@ function GraphEdge({ edge, cw, ch, activeNode }) {
   );
 }
 
-const GraphExplorer = ({ isOverlay = false }) => {
+const GraphExplorer = ({ isOverlay = false, onNavigate }) => {
   const [activeNode, setActiveNode] = useState(null);
   const [containerSize, setContainerSize] = useState({ w: 900, h: 600 });
+  const pathname = usePathname();
   
   const wrapperRef = useRef(null);
 
@@ -288,7 +290,16 @@ const GraphExplorer = ({ isOverlay = false }) => {
               transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
               className="absolute bottom-12 left-1/2 -translate-x-1/2 z-50 pointer-events-auto"
             >
-              <Link href={activeNodeData.href}>
+              <Link 
+                href={activeNodeData.href} 
+                onClick={(e) => {
+                  if (activeNodeData.href.startsWith("/#") && pathname === "/") {
+                    e.preventDefault();
+                    window.lenis?.scrollTo(activeNodeData.href.split("#")[1] ? `#${activeNodeData.href.split("#")[1]}` : 0);
+                  }
+                  if (onNavigate) onNavigate();
+                }}
+              >
                 <button
                   className="px-10 py-4 rounded-full bg-white text-black text-[10px] font-black uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)] group overflow-hidden relative"
                 >

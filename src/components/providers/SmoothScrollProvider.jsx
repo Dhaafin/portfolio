@@ -24,6 +24,9 @@ export default function SmoothScrollProvider({ children }) {
       touchMultiplier: 2,
     });
 
+    window.lenis = lenis;
+    lenisRef.current = lenis;
+
     // RAF Loop
     function raf(time) {
       lenis.raf(time);
@@ -31,12 +34,12 @@ export default function SmoothScrollProvider({ children }) {
     }
 
     requestAnimationFrame(raf);
-    lenisRef.current = lenis;
 
     // Cleanup
     return () => {
       lenis.destroy();
       lenisRef.current = null;
+      delete window.lenis;
     };
   }, []);
 
