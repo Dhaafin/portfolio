@@ -39,8 +39,10 @@ export default function AdminSidebar({ user, logoutAction }) {
         </div>
 
         <nav className="flex-1 flex flex-col gap-2">
+          <AdminNavLink href="/admin" label="overview." active={pathname === "/admin"} onClick={() => setIsOpen(false)} />
           <AdminNavLink href="/admin/projects" label="projects." active={pathname === "/admin/projects"} onClick={() => setIsOpen(false)} />
           <AdminNavLink href="/admin/experience" label="experience." active={pathname === "/admin/experience"} onClick={() => setIsOpen(false)} />
+          <AdminNavLink href="/admin/certifications" label="certifications." active={pathname === "/admin/certifications"} onClick={() => setIsOpen(false)} />
           <AdminNavLink href="/admin/settings" label="settings." active={pathname === "/admin/settings"} onClick={() => setIsOpen(false)} />
         </nav>
 
