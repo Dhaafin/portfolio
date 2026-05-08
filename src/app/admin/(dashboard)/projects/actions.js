@@ -71,3 +71,16 @@ export async function deleteProject(id) {
   revalidatePath("/admin/projects");
   revalidatePath("/projects");
 }
+
+export async function reorderProjects(items) {
+  const supabase = await createClient();
+
+  await Promise.all(
+    items.map(({ id, order }) =>
+      supabase.from("projects").update({ order }).eq("id", id)
+    )
+  );
+
+  revalidatePath("/admin/projects");
+  revalidatePath("/projects");
+}

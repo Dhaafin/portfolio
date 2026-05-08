@@ -75,3 +75,16 @@ export async function deleteCertification(id) {
   revalidatePath("/admin/certifications");
   revalidatePath("/certifications");
 }
+
+export async function reorderCertifications(items) {
+  const supabase = await createClient();
+
+  await Promise.all(
+    items.map(({ id, order }) =>
+      supabase.from("certifications").update({ order }).eq("id", id)
+    )
+  );
+
+  revalidatePath("/admin/certifications");
+  revalidatePath("/certifications");
+}
