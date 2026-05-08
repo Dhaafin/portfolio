@@ -24,7 +24,9 @@ export default function NavExplorer() {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     setIsOpen(false);
@@ -42,7 +44,10 @@ export default function NavExplorer() {
           className="fixed inset-0 z-1000 flex flex-col items-center justify-center overflow-hidden bg-background"
         >
           <div className="w-full h-full">
-            <GraphExplorer isOverlay={true} onNavigate={() => setIsOpen(false)} />
+            <GraphExplorer
+              isOverlay={true}
+              onNavigate={() => setIsOpen(false)}
+            />
           </div>
 
           <motion.p
@@ -53,6 +58,38 @@ export default function NavExplorer() {
           >
             astral navigation.
           </motion.p>
+
+          {/* Back button — aligned with content container */}
+          <div className="absolute top-0 left-0 right-0 z-50 pointer-events-none">
+            <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-12 md:px-24 lg:px-48 pt-8">
+              <motion.button
+                onClick={() => setIsOpen(false)}
+                className="cursor-pointer flex items-center gap-2 pointer-events-auto group"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{
+                  delay: 0.5,
+                  duration: 0.5,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+              >
+                <motion.span
+                  className="text-accent text-lg font-black leading-none group-hover:opacity-70 transition-opacity duration-300"
+                  animate={{ x: [0, -3, 0] }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  ←
+                </motion.span>
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 group-hover:text-white/70 transition-colors duration-300">
+                  back
+                </span>
+              </motion.button>
+            </div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

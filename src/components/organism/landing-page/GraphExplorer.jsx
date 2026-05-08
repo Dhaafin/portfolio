@@ -12,7 +12,7 @@ const nodes = [
   {
     id: "about",
     label: "about.",
-    x: 20,
+    x: 25,
     y: 30,
     isRoot: true,
     href: "/#identity",
@@ -25,7 +25,7 @@ const nodes = [
   {
     id: "projects",
     label: "projects.",
-    x: 45,
+    x: 55,
     y: 45,
     isRoot: false,
     href: "/projects",
@@ -38,8 +38,8 @@ const nodes = [
   {
     id: "experience",
     label: "experience.",
-    x: 35,
-    y: 70,
+    x: 42,
+    y: 76,
     isRoot: false,
     href: "/experience",
     description: "professional path.",
@@ -51,8 +51,8 @@ const nodes = [
   {
     id: "certifications",
     label: "certifications.",
-    x: 75,
-    y: 35,
+    x: 85,
+    y: 40,
     isRoot: false,
     href: "/certifications",
     description: "verified skills.",
@@ -61,19 +61,6 @@ const nodes = [
     delay: 0.4,
     duration: 4.1,
   },
-  {
-    id: "contact",
-    label: "contact.",
-    x: 85,
-    y: 75,
-    isRoot: false,
-    href: "/contact",
-    description: "let's talk.",
-    color: "#FB923C",
-    size: 26,
-    delay: 0.5,
-    duration: 4.6,
-  },
 ];
 
 const edges = [
@@ -81,7 +68,6 @@ const edges = [
   { from: "projects", to: "experience", duration: 4.2 },
   { from: "experience", to: "certifications", duration: 3.8 },
   { from: "projects", to: "certifications", duration: 4.5 },
-  { from: "certifications", to: "contact", duration: 3.2 },
 ];
 
 function GraphNode({ node, isActive, onClick, cw, ch }) {

@@ -11,6 +11,8 @@ import Link from "next/link";
 import Image from "next/image";
 import Text from "@/components/atoms/Text";
 
+const CV_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/cv/resume.pdf`;
+
 // --- Sub-Components ---
 
 const SectionLabel = memo(({ children, color = "hsl(217,91%,60%)" }) => {
@@ -195,6 +197,39 @@ export default function AboutSection({
                 and expressive UI. if it scrolls, it should be beautiful.
               </Text>
             </div>
+
+            {/* CV Download */}
+            <motion.a
+              href={CV_URL}
+              download="dhaafin-cv.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-4 self-start mt-2"
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="flex items-center gap-3 px-5 py-3 rounded-full border border-white/10 bg-white/[0.02] group-hover:border-accent/40 group-hover:bg-accent/5 transition-all duration-500">
+                <motion.svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 13 13"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  className="text-white/30 group-hover:text-accent transition-colors duration-500"
+                  animate={{ y: [0, 2, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <path d="M6.5 1v7M6.5 8L4 5.5M6.5 8L9 5.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M1 11h11" strokeLinecap="round" />
+                </motion.svg>
+                <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white/40 group-hover:text-white/80 transition-colors duration-300">
+                  Download CV
+                </span>
+              </div>
+            </motion.a>
           </motion.div>
         </div>
 

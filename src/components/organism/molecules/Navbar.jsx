@@ -73,7 +73,35 @@ export default function Navbar() {
           </Text>
         </Link>
 
-        <div className="relative z-10 pointer-events-auto">
+        <div className="relative z-10 pointer-events-auto flex items-center gap-6">
+          <motion.a
+            href={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/cv/resume.pdf`}
+            download="dhaafin-cv.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 group"
+            whileHover={{ opacity: 0.7 }}
+            transition={{ duration: 0.2 }}
+          >
+            <motion.svg
+              width="10"
+              height="10"
+              viewBox="0 0 10 10"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              className="text-foreground mix-blend-difference"
+              animate={{ y: [0, 1.5, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <path d="M5 1v5.5M5 6.5L3 4.5M5 6.5L7 4.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M1 9h8" strokeLinecap="round" />
+            </motion.svg>
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-foreground mix-blend-difference">
+              cv.
+            </span>
+          </motion.a>
+
           <NavExplorer />
         </div>
       </div>

@@ -239,6 +239,37 @@ const Hero = () => {
             background: "linear-gradient(to bottom, rgba(255,255,255,0.15), transparent)",
           }}
         />
+
+        {/* CV download — small, unobtrusive */}
+        <motion.a
+          variants={REVEAL}
+          href={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/cv/resume.pdf`}
+          download="dhaafin-cv.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group flex items-center gap-2"
+        >
+          <motion.svg
+            width="11"
+            height="11"
+            viewBox="0 0 11 11"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            className="text-white/20 group-hover:text-accent transition-colors duration-400"
+            animate={{ y: [0, 1.5, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <path d="M5.5 1v6M5.5 7L3.5 5M5.5 7L7.5 5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M1 9.5h9" strokeLinecap="round" />
+          </motion.svg>
+          <span
+            className="text-[9px] font-black uppercase tracking-[0.4em] transition-colors duration-400"
+            style={{ color: "rgba(255,255,255,0.2)" }}
+          >
+            cv
+          </span>
+        </motion.a>
       </motion.div>
 
       {/* ── SCROLL HINT ── */}
