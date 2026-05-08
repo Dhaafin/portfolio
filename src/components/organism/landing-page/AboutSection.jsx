@@ -121,7 +121,7 @@ export default function AboutSection({
     <section
       id="identity"
       ref={sectionRef}
-      className="relative bg-background overflow-hidden pb-48 scroll-mt-32"
+      className="relative bg-background overflow-hidden pb-24 md:pb-48 scroll-mt-32"
     >
       {/* Background ambient glow */}
       <div className="absolute inset-0 pointer-events-none">
@@ -141,7 +141,7 @@ export default function AboutSection({
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-12 md:px-24 lg:px-48">
         {/* ── 1. HERO IDENTITY: Portrait + Intro ── */}
-        <div className="py-24 md:py-36 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+        <div className="py-16 sm:py-24 md:py-36 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
           {/* Left: Portrait */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -303,7 +303,7 @@ export default function AboutSection({
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-background/90 to-transparent" />
                 </div>
 
-                <div className="relative p-10 md:p-12 flex flex-col min-h-[320px] justify-between">
+                <div className="relative p-6 sm:p-8 md:p-10 lg:p-12 flex flex-col min-h-[200px] sm:min-h-[260px] md:min-h-[320px] justify-between">
                   <div>
                     <div className="flex items-center gap-4 mb-8">
                       <div className="h-[1px] w-6 bg-white/20" />
@@ -312,7 +312,7 @@ export default function AboutSection({
                       </span>
                     </div>
 
-                    <h3 className="font-[family-name:var(--font-cormorant)] text-4xl md:text-5xl lg:text-6xl text-white/90 leading-[1.1] mb-6 italic font-medium">
+                    <h3 className="font-[family-name:var(--font-cormorant)] text-2xl sm:text-3xl md:text-5xl lg:text-6xl text-white/90 leading-[1.1] mb-6 italic font-medium">
                       {edu.degree}
                     </h3>
                   </div>
@@ -450,7 +450,7 @@ export default function AboutSection({
 
                 <div className="flex flex-col py-6 w-full relative">
                   <div className="flex justify-between items-end border-b border-white/10 pb-4 w-full">
-                    <h3 className="font-[family-name:var(--font-cormorant)] text-3xl md:text-5xl lg:text-6xl italic text-white/90">
+                    <h3 className="font-[family-name:var(--font-cormorant)] text-2xl sm:text-3xl md:text-5xl lg:text-6xl italic text-white/90">
                       {exp.role}
                     </h3>
                     <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 whitespace-nowrap ml-4">
@@ -460,7 +460,7 @@ export default function AboutSection({
 
                   {/* Huge low opacity company name */}
                   <div className="absolute inset-0 flex items-center overflow-hidden pointer-events-none -z-10">
-                    <span className="text-6xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter text-white/[0.02] whitespace-nowrap pt-8">
+                    <span className="text-4xl sm:text-6xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter text-white/[0.02] whitespace-nowrap pt-8">
                       {exp.company}
                     </span>
                   </div>

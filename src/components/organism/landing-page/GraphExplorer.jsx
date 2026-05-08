@@ -70,10 +70,17 @@ const edges = [
   { from: "projects", to: "certifications", duration: 4.5 },
 ];
 
-function GraphNode({ node, isActive, onClick, cw, ch }) {
+function GraphNode({ node, isActive, onClick, cw, ch, scale }) {
   const cx = (node.x / 100) * cw;
   const cy = (node.y / 100) * ch;
   const active = isActive === node.id;
+
+  const s         = scale;
+  const r         = node.size * s;
+  const glowR     = (node.size + 35) * s;
+  const glowRMax  = (node.size + 50) * s;
+  const fontSize  = Math.round((node.isRoot ? 18 : 16) * s);
+  const labelGap  = Math.round(24 * s);
 
   return (
     <motion.g
@@ -91,11 +98,11 @@ function GraphNode({ node, isActive, onClick, cw, ch }) {
       <motion.circle
         cx={cx}
         cy={cy}
-        r={node.size + 35}
+        r={glowR}
         fill={`url(#glow-${node.id})`}
         opacity={active ? 0.7 : 0.25}
         animate={{
-          r: [node.size + 35, node.size + 50, node.size + 35],
+          r: [glowR, glowRMax, glowR],
           opacity: active ? [0.7, 0.4, 0.7] : [0.25, 0.15, 0.25],
         }}
         transition={{
@@ -110,7 +117,7 @@ function GraphNode({ node, isActive, onClick, cw, ch }) {
       <motion.circle
         cx={cx}
         cy={cy}
-        r={node.size}
+        r={r}
         fill={`${node.color}25`}
         stroke={active ? node.color : `${node.color}80`}
         strokeWidth={active ? 5 : 3}
@@ -128,7 +135,7 @@ function GraphNode({ node, isActive, onClick, cw, ch }) {
       <motion.circle
         cx={cx}
         cy={cy}
-        r={node.size * 0.25}
+        r={r * 0.25}
         fill={node.color}
         opacity={active ? 1 : 0.9}
         className="shadow-lg"
@@ -137,10 +144,10 @@ function GraphNode({ node, isActive, onClick, cw, ch }) {
       {/* Label */}
       <motion.text
         x={cx}
-        y={cy - node.size - 24}
+        y={cy - r - labelGap}
         textAnchor="middle"
         fill="white"
-        fontSize={node.isRoot ? "18" : "16"}
+        fontSize={fontSize}
         fontWeight={node.isRoot ? "900" : "700"}
         fontFamily="var(--font-jost), sans-serif"
         letterSpacing="-0.03em"
@@ -243,13 +250,21 @@ const GraphExplorer = ({ isOverlay = false, onNavigate }) => {
     setActiveNode(node.id === activeNode ? null : node.id);
   };
 
+  // Scale nodes/fonts down proportionally on small containers
+  const nodeScale = useMemo(() => {
+    if (containerSize.w < 380) return 0.5;
+    if (containerSize.w < 560) return 0.7;
+    if (containerSize.w < 768) return 0.85;
+    return 1;
+  }, [containerSize.w]);
+
   const activeNodeData = nodes.find((n) => n.id === activeNode);
 
   const content = (
     <div
       ref={wrapperRef}
       className={`relative w-full max-w-[1400px] mx-auto ${!isOverlay ? "rounded-3xl" : ""}`}
-      style={{ height: isOverlay ? "100%" : "clamp(600px, 75vh, 900px)" }}
+      style={{ height: isOverlay ? "100%" : "clamp(400px, 75vh, 900px)" }}
     >
       {/* LAYER 0: Background Echo Text (Outline) */}
       <AnimatePresence>
@@ -365,6 +380,7 @@ const GraphExplorer = ({ isOverlay = false, onNavigate }) => {
               onClick={handleNodeClick}
               cw={containerSize.w}
               ch={containerSize.h}
+              scale={nodeScale}
             />
           ))}
         </g>
