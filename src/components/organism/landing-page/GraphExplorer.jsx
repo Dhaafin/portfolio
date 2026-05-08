@@ -38,6 +38,7 @@ function GraphNode({ node, isActive, onClick, cw, ch }) {
     >
       {/* Outer ambient glow */}
       <motion.circle
+        cx={cx} cy={cy}
         r={node.size + 35}
         fill={`url(#glow-${node.id})`}
         opacity={active ? 0.7 : 0.25}
