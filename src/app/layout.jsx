@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Inter, Jost, Cormorant_Garamond } from "next/font/google";
 import Navbar from "@/components/organism/molecules/Navbar";
+import Footer from "@/components/organism/molecules/Footer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const jost = Jost({ subsets: ["latin"], variable: "--font-jost" });
@@ -28,6 +29,7 @@ export default function RootLayout({ children }) {
         <SmoothScrollProvider>
           <Navbar />
           <main className="grow">{children}</main>
+          <Footer />
         </SmoothScrollProvider>
       </body>
     </html>
