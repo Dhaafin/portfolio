@@ -72,7 +72,7 @@ export default async function ProjectsPage() {
         />
 
         {/* Project List */}
-        <div className="flex flex-col gap-48">
+        <div className="flex flex-col gap-16 sm:gap-24 md:gap-32 lg:gap-48">
           {projects.map((project, index) => (
             <div
               key={project.id}
@@ -104,7 +104,7 @@ export default async function ProjectsPage() {
                 {/* Project Metadata */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border/20 pb-8">
                   <div className="flex flex-col gap-2">
-                    <Text className="text-muted/50 text-sm tracking-[0.2em] uppercase font-bold break-all">
+                    <Text className="text-muted/50 text-sm tracking-[0.2em] uppercase font-bold">
                       {project.id} — {project.year}
                     </Text>
                     <Text
