@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import GraphExplorer from "../landing-page/GraphExplorer";
@@ -20,16 +21,45 @@ const overlayVariants = {
 
 export default function NavExplorer() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
-  // Close overlay when pathname changes (user navigated)
+  useEffect(() => { setMounted(true); }, []);
+
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
 
+  const overlay = (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          key="nav-overlay"
+          variants={overlayVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          className="fixed inset-0 z-1000 flex flex-col items-center justify-center overflow-hidden bg-background"
+        >
+          <div className="w-full h-full">
+            <GraphExplorer isOverlay={true} onNavigate={() => setIsOpen(false)} />
+          </div>
+
+          <motion.p
+            className="absolute top-10 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.4em] uppercase font-black text-muted/20 pointer-events-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+          >
+            astral navigation.
+          </motion.p>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
   return (
     <>
-      {/* Trigger */}
       <button
         id="nav-trigger"
         onClick={() => setIsOpen(!isOpen)}
@@ -44,32 +74,7 @@ export default function NavExplorer() {
         </motion.span>
       </button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            key="nav-overlay"
-            variants={overlayVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden bg-background"
-          >
-            <div className="w-full h-full">
-              <GraphExplorer isOverlay={true} onNavigate={() => setIsOpen(false)} />
-            </div>
-
-            {/* Header hint */}
-            <motion.p
-              className="absolute top-10 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.4em] uppercase font-black text-muted/20 pointer-events-none"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-            >
-              astral navigation.
-            </motion.p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {mounted && createPortal(overlay, document.body)}
     </>
   );
 }
