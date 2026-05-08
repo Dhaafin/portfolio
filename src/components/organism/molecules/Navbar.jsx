@@ -12,7 +12,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -20,17 +20,36 @@ export default function Navbar() {
   if (pathname?.startsWith("/admin")) return null;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 pointer-events-none flex justify-center">
-      <div
-        className={`flex items-center justify-between transition-all duration-300 ease-in-out ${
-          scrolled
-            ? "pointer-events-auto mt-4 mx-4 sm:mx-8 px-6 sm:px-10 py-3 rounded-full backdrop-blur-md bg-background/80 border border-foreground/10 shadow-2xl w-[calc(100%-2rem)] sm:w-[calc(100%-4rem)] max-w-[1400px]"
-            : "pointer-events-none w-full max-w-[1400px] px-4 sm:px-12 md:px-24 lg:px-48 py-8"
-        }`}
-      >
+    <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none">
+      <div className="relative w-full max-w-[1400px] flex items-center justify-between py-6 sm:py-8 px-4 sm:px-12 md:px-24 lg:px-48 transition-all duration-700 ease-[0.23,1,0.32,1]">
+        
+        {/* Animated Visual Shell (Background) */}
+        <motion.div
+          layout
+          initial={false}
+          animate={{
+            width: scrolled ? "calc(100% - 2rem)" : "100%",
+            height: scrolled ? "64px" : "100%",
+            backgroundColor: scrolled ? "rgba(4, 7, 12, 0.75)" : "rgba(4, 7, 12, 0)",
+            backdropFilter: scrolled ? "blur(20px)" : "blur(0px)",
+            borderRadius: scrolled ? "9999px" : "0px",
+            border: scrolled ? "1px solid rgba(255, 255, 255, 0.08)" : "1px solid rgba(255, 255, 255, 0)",
+            y: scrolled ? 8 : 0,
+            boxShadow: scrolled ? "0 20px 40px rgba(0,0,0,0.3)" : "none",
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 260,
+            damping: 30,
+            mass: 1
+          }}
+          className="absolute inset-0 z-0 mx-auto"
+        />
+
+        {/* Content (Stable) */}
         <Link
           href="/"
-          className="pointer-events-auto group flex items-center gap-3"
+          className="relative z-10 pointer-events-auto group flex items-center gap-3"
         >
           <AnimatePresence mode="wait">
             {pathname !== "/" && (
@@ -49,7 +68,8 @@ export default function Navbar() {
             dhaafin<span className="text-accent">.</span>
           </Text>
         </Link>
-        <div className="pointer-events-auto">
+
+        <div className="relative z-10 pointer-events-auto">
           <NavExplorer />
         </div>
       </div>
