@@ -8,32 +8,20 @@ import Text from "@/components/atoms/Text";
 
 // --- Nodes Data (Astral Layout) ---
 const nodes = [
-  { id: "about",          label: "about.",          x: 20, y: 30, isRoot: true, href: "/#identity",       description: "who i am.",               color: "#F472B6", size: 28, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
-  { id: "projects",       label: "projects.",       x: 45, y: 45, isRoot: false, href: "/projects",       description: "selected works.",         color: "#A78BFA", size: 24, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
-  { id: "experience",     label: "experience.",     x: 35, y: 70, isRoot: false, href: "/experience",     description: "professional path.",      color: "#34D399", size: 22, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
-  { id: "certifications", label: "certifications.", x: 75, y: 35, isRoot: false, href: "/certifications", description: "verified skills.",        color: "#FACC15", size: 22, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
-  { id: "contact",        label: "contact.",        x: 85, y: 75, isRoot: false, href: "/contact",        description: "let's talk.",             color: "#FB923C", size: 26, randomDelay: 0.1 + Math.random() * 0.4, randomDuration: 4 + Math.random() },
+  { id: "about",          label: "about.",          x: 20, y: 30, isRoot: true, href: "/#identity",       description: "who i am.",               color: "#F472B6", size: 28, delay: 0.1, duration: 4.2 },
+  { id: "projects",       label: "projects.",       x: 45, y: 45, isRoot: false, href: "/projects",       description: "selected works.",         color: "#A78BFA", size: 24, delay: 0.2, duration: 4.5 },
+  { id: "experience",     label: "experience.",     x: 35, y: 70, isRoot: false, href: "/experience",     description: "professional path.",      color: "#34D399", size: 22, delay: 0.3, duration: 4.8 },
+  { id: "certifications", label: "certifications.", x: 75, y: 35, isRoot: false, href: "/certifications", description: "verified skills.",        color: "#FACC15", size: 22, delay: 0.4, duration: 4.1 },
+  { id: "contact",        label: "contact.",        x: 85, y: 75, isRoot: false, href: "/contact",        description: "let's talk.",             color: "#FB923C", size: 26, delay: 0.5, duration: 4.6 },
 ];
 
 const edges = [
-  { from: "about", to: "projects", duration: 3 + Math.random() * 2 },
-  { from: "projects", to: "experience", duration: 3 + Math.random() * 2 },
-  { from: "experience", to: "certifications", duration: 3 + Math.random() * 2 },
-  { from: "projects", to: "certifications", duration: 3 + Math.random() * 2 },
-  { from: "certifications", to: "contact", duration: 3 + Math.random() * 2 },
+  { from: "about", to: "projects", duration: 3.5 },
+  { from: "projects", to: "experience", duration: 4.2 },
+  { from: "experience", to: "certifications", duration: 3.8 },
+  { from: "projects", to: "certifications", duration: 4.5 },
+  { from: "certifications", to: "contact", duration: 3.2 },
 ];
-
-const INITIAL_PARTICLES = Array.from({ length: 40 }).map((_, i) => {
-  const pOpacity = Math.random() * 0.4 + 0.1;
-  return {
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 2 + 1,
-    opacity: pOpacity,
-    randomDuration: 3 + Math.random() * 4,
-  };
-});
 
 function GraphNode({ node, isActive, onClick, cw, ch }) {
   const cx = (node.x / 100) * cw;
@@ -44,18 +32,17 @@ function GraphNode({ node, isActive, onClick, cw, ch }) {
     <motion.g
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: node.randomDelay, duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+      transition={{ delay: node.delay, duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
       onClick={() => onClick(node)}
       style={{ cursor: "pointer" }}
     >
       {/* Outer ambient glow */}
       <motion.circle
-        cx={cx} cy={cy}
         r={node.size + 35}
         fill={`url(#glow-${node.id})`}
         opacity={active ? 0.7 : 0.25}
         animate={{ r: [node.size + 35, node.size + 50, node.size + 35], opacity: active ? [0.7, 0.4, 0.7] : [0.25, 0.15, 0.25] }}
-        transition={{ duration: node.randomDuration, repeat: Infinity, ease: "easeInOut" }}
+        transition={{ duration: node.duration, repeat: Infinity, ease: "easeInOut" }}
         style={{ pointerEvents: "none" }}
       />
 
@@ -144,11 +131,25 @@ function GraphEdge({ edge, cw, ch, activeNode }) {
 const GraphExplorer = ({ isOverlay = false, onNavigate }) => {
   const [activeNode, setActiveNode] = useState(null);
   const [containerSize, setContainerSize] = useState({ w: 900, h: 600 });
-  const pathname = usePathname();
+  const [particles, setParticles] = useState([]);
+  const [mounted, setMounted] = useState(false);
   
+  const pathname = usePathname();
   const wrapperRef = useRef(null);
 
-  const particles = INITIAL_PARTICLES;
+  useEffect(() => {
+    setMounted(true);
+    // Generate particles on client only
+    const generatedParticles = Array.from({ length: 40 }).map((_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 2 + 1,
+      opacity: Math.random() * 0.4 + 0.1,
+      duration: 3 + Math.random() * 4,
+    }));
+    setParticles(generatedParticles);
+  }, []);
 
   useEffect(() => {
     const updateSize = () => {
@@ -246,7 +247,7 @@ const GraphExplorer = ({ isOverlay = false, onNavigate }) => {
                 fill="white"
                 opacity={p.opacity}
                 animate={{ opacity: [p.opacity, p.opacity * 0.2, p.opacity] }}
-                transition={{ duration: p.randomDuration, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: p.duration, repeat: Infinity, ease: "easeInOut" }}
               />
             ))}
           </g>
@@ -317,6 +318,8 @@ const GraphExplorer = ({ isOverlay = false, onNavigate }) => {
         </AnimatePresence>
     </div>
   );
+
+  if (!mounted) return <div className="h-[75vh]" />;
 
   if (isOverlay) {
     return <div className="w-full h-full flex items-center justify-center">{content}</div>;
