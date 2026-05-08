@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
@@ -8,11 +9,71 @@ import Text from "@/components/atoms/Text";
 
 // --- Nodes Data (Astral Layout) ---
 const nodes = [
-  { id: "about",          label: "about.",          x: 20, y: 30, isRoot: true, href: "/#identity",       description: "who i am.",               color: "#F472B6", size: 28, delay: 0.1, duration: 4.2 },
-  { id: "projects",       label: "projects.",       x: 45, y: 45, isRoot: false, href: "/projects",       description: "selected works.",         color: "#A78BFA", size: 24, delay: 0.2, duration: 4.5 },
-  { id: "experience",     label: "experience.",     x: 35, y: 70, isRoot: false, href: "/experience",     description: "professional path.",      color: "#34D399", size: 22, delay: 0.3, duration: 4.8 },
-  { id: "certifications", label: "certifications.", x: 75, y: 35, isRoot: false, href: "/certifications", description: "verified skills.",        color: "#FACC15", size: 22, delay: 0.4, duration: 4.1 },
-  { id: "contact",        label: "contact.",        x: 85, y: 75, isRoot: false, href: "/contact",        description: "let's talk.",             color: "#FB923C", size: 26, delay: 0.5, duration: 4.6 },
+  {
+    id: "about",
+    label: "about.",
+    x: 20,
+    y: 30,
+    isRoot: true,
+    href: "/#identity",
+    description: "who i am.",
+    color: "#F472B6",
+    size: 28,
+    delay: 0.1,
+    duration: 4.2,
+  },
+  {
+    id: "projects",
+    label: "projects.",
+    x: 45,
+    y: 45,
+    isRoot: false,
+    href: "/projects",
+    description: "selected works.",
+    color: "#A78BFA",
+    size: 24,
+    delay: 0.2,
+    duration: 4.5,
+  },
+  {
+    id: "experience",
+    label: "experience.",
+    x: 35,
+    y: 70,
+    isRoot: false,
+    href: "/experience",
+    description: "professional path.",
+    color: "#34D399",
+    size: 22,
+    delay: 0.3,
+    duration: 4.8,
+  },
+  {
+    id: "certifications",
+    label: "certifications.",
+    x: 75,
+    y: 35,
+    isRoot: false,
+    href: "/certifications",
+    description: "verified skills.",
+    color: "#FACC15",
+    size: 22,
+    delay: 0.4,
+    duration: 4.1,
+  },
+  {
+    id: "contact",
+    label: "contact.",
+    x: 85,
+    y: 75,
+    isRoot: false,
+    href: "/contact",
+    description: "let's talk.",
+    color: "#FB923C",
+    size: 26,
+    delay: 0.5,
+    duration: 4.6,
+  },
 ];
 
 const edges = [
@@ -32,37 +93,55 @@ function GraphNode({ node, isActive, onClick, cw, ch }) {
     <motion.g
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: node.delay, duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+      transition={{
+        delay: node.delay,
+        duration: 0.8,
+        ease: [0.23, 1, 0.32, 1],
+      }}
       onClick={() => onClick(node)}
       style={{ cursor: "pointer" }}
     >
       {/* Outer ambient glow */}
       <motion.circle
-        cx={cx} cy={cy}
+        cx={cx}
+        cy={cy}
         r={node.size + 35}
         fill={`url(#glow-${node.id})`}
         opacity={active ? 0.7 : 0.25}
-        animate={{ r: [node.size + 35, node.size + 50, node.size + 35], opacity: active ? [0.7, 0.4, 0.7] : [0.25, 0.15, 0.25] }}
-        transition={{ duration: node.duration, repeat: Infinity, ease: "easeInOut" }}
+        animate={{
+          r: [node.size + 35, node.size + 50, node.size + 35],
+          opacity: active ? [0.7, 0.4, 0.7] : [0.25, 0.15, 0.25],
+        }}
+        transition={{
+          duration: node.duration,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
         style={{ pointerEvents: "none" }}
       />
 
       {/* Glassmorphic Core */}
       <motion.circle
-        cx={cx} cy={cy}
+        cx={cx}
+        cy={cy}
         r={node.size}
         fill={`${node.color}25`}
         stroke={active ? node.color : `${node.color}80`}
         strokeWidth={active ? 5 : 3}
         style={{ backdropFilter: "blur(12px)" }}
-        whileHover={{ scale: 1.1, fill: `${node.color}40`, strokeWidth: active ? 6 : 4 }}
+        whileHover={{
+          scale: 1.1,
+          fill: `${node.color}40`,
+          strokeWidth: active ? 6 : 4,
+        }}
         animate={{ scale: active ? 1.2 : 1 }}
         transition={{ duration: 0.4, ease: "backOut" }}
       />
-      
+
       {/* Inner Energy Point */}
       <motion.circle
-        cx={cx} cy={cy}
+        cx={cx}
+        cy={cy}
         r={node.size * 0.25}
         fill={node.color}
         opacity={active ? 1 : 0.9}
@@ -92,30 +171,39 @@ function GraphEdge({ edge, cw, ch, activeNode }) {
   const { from: fromId, to: toId, duration } = edge;
   const from = nodes.find((n) => n.id === fromId);
   const to = nodes.find((n) => n.id === toId);
-  
+
   const x1 = (from.x / 100) * cw;
   const y1 = (from.y / 100) * ch;
   const x2 = (to.x / 100) * cw;
   const y2 = (to.y / 100) * ch;
-  
-  const isConnectedToActive = activeNode && (fromId === activeNode || toId === activeNode);
+
+  const isConnectedToActive =
+    activeNode && (fromId === activeNode || toId === activeNode);
 
   return (
     <g>
       {/* Base Edge */}
       <motion.line
-        x1={x1} y1={y1} x2={x2} y2={y2}
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
         stroke={`url(#grad-${fromId}-${toId})`}
         strokeWidth={isConnectedToActive ? 4 : 2}
         opacity={activeNode ? (isConnectedToActive ? 0.9 : 0.1) : 0.4}
         initial={{ opacity: 0 }}
-        animate={{ opacity: activeNode ? (isConnectedToActive ? 0.9 : 0.1) : 0.4 }}
+        animate={{
+          opacity: activeNode ? (isConnectedToActive ? 0.9 : 0.1) : 0.4,
+        }}
         transition={{ duration: 0.6 }}
       />
 
       {/* Continuous Energy Flow */}
       <motion.line
-        x1={x1} y1={y1} x2={x2} y2={y2}
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
         stroke="url(#energy-grad)"
         strokeWidth={5}
         strokeLinecap="round"
@@ -134,7 +222,7 @@ const GraphExplorer = ({ isOverlay = false, onNavigate }) => {
   const [containerSize, setContainerSize] = useState({ w: 900, h: 600 });
   const [particles, setParticles] = useState([]);
   const [mounted, setMounted] = useState(false);
-  
+
   const pathname = usePathname();
   const wrapperRef = useRef(null);
 
@@ -177,153 +265,174 @@ const GraphExplorer = ({ isOverlay = false, onNavigate }) => {
       className={`relative w-full max-w-[1400px] mx-auto ${!isOverlay ? "rounded-3xl" : ""}`}
       style={{ height: isOverlay ? "100%" : "clamp(600px, 75vh, 900px)" }}
     >
-        {/* LAYER 0: Background Echo Text (Outline) */}
-        <AnimatePresence>
-          {activeNodeData && (
-            <motion.div
-              key={`echo-${activeNodeData.id}`}
-              initial={{ opacity: 0, scale: 0.9, filter: "blur(40px)" }}
-              animate={{ opacity: 0.15, scale: 1, filter: "blur(0px)" }}
-              exit={{ opacity: 0, scale: 1.05, filter: "blur(40px)" }}
-              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
+      {/* LAYER 0: Background Echo Text (Outline) */}
+      <AnimatePresence>
+        {activeNodeData && (
+          <motion.div
+            key={`echo-${activeNodeData.id}`}
+            initial={{ opacity: 0, scale: 0.9, filter: "blur(40px)" }}
+            animate={{ opacity: 0.15, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, scale: 1.05, filter: "blur(40px)" }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
+          >
+            <Text
+              className="font-black uppercase tracking-tighter leading-none text-transparent text-center px-10"
+              style={{
+                WebkitTextStroke: `2px ${activeNodeData.color}`,
+                fontSize: `clamp(4rem, ${Math.min(18, Math.max(8, 140 / activeNodeData.label.length))}vw, 15rem)`,
+              }}
             >
-              <Text 
-                className="font-black uppercase tracking-tighter leading-none text-transparent text-center px-10"
-                style={{ 
-                  WebkitTextStroke: `2px ${activeNodeData.color}`,
-                  fontSize: `clamp(4rem, ${Math.min(18, Math.max(8, 140 / activeNodeData.label.length))}vw, 15rem)`
-                }}
+              {activeNodeData.label.replace(".", "")}
+            </Text>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <svg
+        className="w-full h-full relative z-10"
+        viewBox={`0 0 ${containerSize.w} ${containerSize.h}`}
+        preserveAspectRatio="xMidYMid meet"
+        style={{ overflow: "visible" }}
+      >
+        <defs>
+          {nodes.map((n) => (
+            <radialGradient
+              key={`glow-${n.id}`}
+              id={`glow-${n.id}`}
+              cx="50%"
+              cy="50%"
+              r="50%"
+            >
+              <stop offset="0%" stopColor={n.color} stopOpacity="0.8" />
+              <stop offset="100%" stopColor={n.color} stopOpacity="0" />
+            </radialGradient>
+          ))}
+
+          {edges.map((edge) => {
+            const { from: fromId, to: toId } = edge;
+            const from = nodes.find((n) => n.id === fromId);
+            const to = nodes.find((n) => n.id === toId);
+            return (
+              <linearGradient
+                key={`grad-${fromId}-${toId}`}
+                id={`grad-${fromId}-${toId}`}
+                gradientUnits="userSpaceOnUse"
+                x1={(from.x / 100) * containerSize.w}
+                y1={(from.y / 100) * containerSize.h}
+                x2={(to.x / 100) * containerSize.w}
+                y2={(to.y / 100) * containerSize.h}
               >
-                {activeNodeData.label.replace('.', '')}
-              </Text>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                <stop offset="0%" stopColor={from.color} stopOpacity="1" />
+                <stop offset="100%" stopColor={to.color} stopOpacity="1" />
+              </linearGradient>
+            );
+          })}
 
-        <svg
-          className="w-full h-full relative z-10"
-          viewBox={`0 0 ${containerSize.w} ${containerSize.h}`}
-          preserveAspectRatio="xMidYMid meet"
-          style={{ overflow: "visible" }}
-        >
-          <defs>
-            {nodes.map((n) => (
-              <radialGradient key={`glow-${n.id}`} id={`glow-${n.id}`} cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor={n.color} stopOpacity="0.8" />
-                <stop offset="100%" stopColor={n.color} stopOpacity="0" />
-              </radialGradient>
-            ))}
+          <linearGradient id="energy-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0)" />
+            <stop offset="50%" stopColor="rgba(255,255,255,1)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+          </linearGradient>
+        </defs>
 
-            {edges.map((edge) => {
-              const { from: fromId, to: toId } = edge;
-              const from = nodes.find((n) => n.id === fromId);
-              const to   = nodes.find((n) => n.id === toId);
-              return (
-                <linearGradient key={`grad-${fromId}-${toId}`} id={`grad-${fromId}-${toId}`} gradientUnits="userSpaceOnUse"
-                  x1={(from.x / 100) * containerSize.w} y1={(from.y / 100) * containerSize.h}
-                  x2={(to.x / 100) * containerSize.w}   y2={(to.y / 100) * containerSize.h}
-                >
-                  <stop offset="0%"   stopColor={from.color} stopOpacity="1" />
-                  <stop offset="100%" stopColor={to.color}   stopOpacity="1" />
-                </linearGradient>
-              );
-            })}
-            
-            <linearGradient id="energy-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="rgba(255,255,255,0)" />
-              <stop offset="50%" stopColor="rgba(255,255,255,1)" />
-              <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-            </linearGradient>
-          </defs>
+        {/* LAYER 1: Deep Background (Void Particles) */}
+        <g>
+          {particles.map((p) => (
+            <motion.circle
+              key={p.id}
+              cx={(p.x / 100) * containerSize.w}
+              cy={(p.y / 100) * containerSize.h}
+              r={p.size}
+              fill="white"
+              opacity={p.opacity}
+              animate={{ opacity: [p.opacity, p.opacity * 0.2, p.opacity] }}
+              transition={{
+                duration: p.duration,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </g>
 
-          {/* LAYER 1: Deep Background (Void Particles) */}
-          <g>
-            {particles.map((p) => (
-              <motion.circle
-                key={p.id}
-                cx={(p.x / 100) * containerSize.w}
-                cy={(p.y / 100) * containerSize.h}
-                r={p.size}
-                fill="white"
-                opacity={p.opacity}
-                animate={{ opacity: [p.opacity, p.opacity * 0.2, p.opacity] }}
-                transition={{ duration: p.duration, repeat: Infinity, ease: "easeInOut" }}
-              />
-            ))}
-          </g>
+        {/* LAYER 2: Edges */}
+        <g>
+          {edges.map((edge) => (
+            <GraphEdge
+              key={`${edge.from}-${edge.to}`}
+              edge={edge}
+              cw={containerSize.w}
+              ch={containerSize.h}
+              activeNode={activeNode}
+            />
+          ))}
+        </g>
 
-          {/* LAYER 2: Edges */}
-          <g>
-            {edges.map((edge) => (
-              <GraphEdge 
-                key={`${edge.from}-${edge.to}`} 
-                edge={edge}
-                cw={containerSize.w} 
-                ch={containerSize.h} 
-                activeNode={activeNode} 
-              />
-            ))}
-          </g>
+        {/* LAYER 3: Nodes */}
+        <g>
+          {nodes.map((node) => (
+            <GraphNode
+              key={node.id}
+              node={node}
+              isActive={activeNode}
+              onClick={handleNodeClick}
+              cw={containerSize.w}
+              ch={containerSize.h}
+            />
+          ))}
+        </g>
+      </svg>
 
-          {/* LAYER 3: Nodes */}
-          <g>
-            {nodes.map((node) => (
-              <GraphNode
-                key={node.id}
-                node={node}
-                isActive={activeNode}
-                onClick={handleNodeClick}
-                cw={containerSize.w}
-                ch={containerSize.h}
-              />
-            ))}
-          </g>
-        </svg>
-
-        {/* Floating Proceed Pill */}
-        <AnimatePresence>
-          {activeNodeData && activeNodeData.href && (
-            <motion.div
-              key={`pill-${activeNodeData.id}`}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-              className="absolute bottom-12 left-1/2 -translate-x-1/2 z-50 pointer-events-auto"
-            >
-              <Link 
-                href={activeNodeData.href} 
-                onClick={(e) => {
-                  const href = activeNodeData.href;
-                  if (href.includes("#")) {
-                    const targetId = href.split("#")[1];
-                    // On home page, use Lenis for smooth scroll
-                    if (pathname === "/" || pathname === "" || pathname === null) {
-                      e.preventDefault();
-                      window.lenis?.scrollTo?.(`#${targetId}`, { offset: -100 });
-                    }
+      {/* Floating Proceed Pill */}
+      <AnimatePresence>
+        {activeNodeData && activeNodeData.href && (
+          <motion.div
+            key={`pill-${activeNodeData.id}`}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+            className="absolute bottom-12 left-1/2 -translate-x-1/2 z-50 pointer-events-auto"
+          >
+            <Link
+              href={activeNodeData.href}
+              onClick={(e) => {
+                const href = activeNodeData.href;
+                if (href.includes("#")) {
+                  const targetId = href.split("#")[1];
+                  // On home page, use Lenis for smooth scroll
+                  if (
+                    pathname === "/" ||
+                    pathname === "" ||
+                    pathname === null
+                  ) {
+                    e.preventDefault();
+                    window.lenis?.scrollTo?.(`#${targetId}`, { offset: -100 });
                   }
-                  if (onNavigate) onNavigate();
-                }}
-              >
-                <button
-                  className="px-10 py-4 rounded-full bg-white text-black text-[10px] font-black uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)] group overflow-hidden relative"
-                >
-                  <span className="relative z-10">proceed.</span>
-                  <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-10 transition-opacity" />
-                </button>
-              </Link>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                }
+                if (onNavigate) onNavigate();
+              }}
+            >
+              <button className="px-10 py-4 rounded-full bg-white text-black text-[10px] font-black uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)] group overflow-hidden relative">
+                <span className="relative z-10">proceed.</span>
+                <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-10 transition-opacity" />
+              </button>
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 
   if (!mounted) return <div className="h-[75vh]" />;
 
   if (isOverlay) {
-    return <div className="w-full h-full flex items-center justify-center">{content}</div>;
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        {content}
+      </div>
+    );
   }
 
   return (
@@ -334,4 +443,3 @@ const GraphExplorer = ({ isOverlay = false, onNavigate }) => {
 };
 
 export default GraphExplorer;
-
