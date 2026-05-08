@@ -1,51 +1,43 @@
 "use client";
 
-import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useState, useTransition, useRef } from "react";
 import Text from "@/components/atoms/Text";
-
-const BUCKET = "cv";
-const FILE_PATH = "resume.pdf";
+import { uploadCV } from "@/app/admin/(dashboard)/settings/actions";
 
 export default function CVUploader() {
   const [status, setStatus] = useState("idle"); // idle | uploading | success | error
-  const [uploadedUrl, setUploadedUrl] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
-  const supabase = createClient();
+  const [uploadedUrl, setUploadedUrl] = useState(null);
+  const [isPending, startTransition] = useTransition();
+  const inputRef = useRef(null);
 
-  async function handleFile(e) {
+  function handleFile(e) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.type !== "application/pdf") {
-      setErrorMsg("PDF files only (.pdf)");
-      setStatus("error");
-      return;
-    }
+    const formData = new FormData();
+    formData.append("file", file);
 
     setStatus("uploading");
     setErrorMsg("");
 
-    const { error } = await supabase.storage
-      .from(BUCKET)
-      .upload(FILE_PATH, file, { upsert: true, contentType: "application/pdf" });
+    startTransition(async () => {
+      const result = await uploadCV(formData);
 
-    if (error) {
-      console.error(error);
-      setErrorMsg(error.message ?? "Upload failed");
-      setStatus("error");
-      return;
-    }
+      if (result.error) {
+        setErrorMsg(result.error);
+        setStatus("error");
+      } else {
+        setUploadedUrl(result.url);
+        setStatus("success");
+      }
 
-    const { data: { publicUrl } } = supabase.storage
-      .from(BUCKET)
-      .getPublicUrl(FILE_PATH);
-
-    setUploadedUrl(publicUrl);
-    setStatus("success");
-    // reset input so same file can be re-uploaded
-    e.target.value = "";
+      // reset so same file can be re-uploaded
+      if (inputRef.current) inputRef.current.value = "";
+    });
   }
+
+  const isUploading = isPending || status === "uploading";
 
   return (
     <div className="flex flex-col gap-6">
@@ -59,13 +51,14 @@ export default function CVUploader() {
       </div>
 
       {/* Drop zone */}
-      <label className="relative flex flex-col items-center justify-center gap-4 p-12 border border-dashed border-white/10 rounded-2xl cursor-pointer hover:border-white/20 hover:bg-white/[0.02] transition-all duration-300 group">
+      <label className="relative flex flex-col items-center justify-center gap-4 p-12 border border-dashed border-white/10 rounded-2xl cursor-pointer hover:border-white/20 hover:bg-white/2 transition-all duration-300 group">
         <input
+          ref={inputRef}
           type="file"
           accept="application/pdf"
           className="sr-only"
           onChange={handleFile}
-          disabled={status === "uploading"}
+          disabled={isUploading}
         />
 
         {status === "idle" && (
@@ -87,19 +80,16 @@ export default function CVUploader() {
           </>
         )}
 
-        {status === "uploading" && (
+        {isUploading && (
           <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-[2px] bg-white/10 overflow-hidden relative rounded-full">
-              <div
-                className="absolute inset-y-0 left-0 bg-white/60 rounded-full animate-pulse"
-                style={{ width: "60%" }}
-              />
+            <div className="w-8 h-0.5 bg-white/10 overflow-hidden relative rounded-full">
+              <div className="absolute inset-y-0 left-0 bg-white/60 rounded-full animate-pulse" style={{ width: "60%" }} />
             </div>
             <Text className="text-[10px] uppercase tracking-widest text-white/30">Uploading…</Text>
           </div>
         )}
 
-        {status === "success" && (
+        {status === "success" && !isUploading && (
           <div className="flex flex-col items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#34D399" strokeWidth="2">
@@ -115,7 +105,7 @@ export default function CVUploader() {
           </div>
         )}
 
-        {status === "error" && (
+        {status === "error" && !isUploading && (
           <div className="flex flex-col items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F87171" strokeWidth="2">
@@ -137,8 +127,8 @@ export default function CVUploader() {
         )}
       </label>
 
-      {/* Current live link */}
-      {uploadedUrl && status === "success" && (
+      {/* Live link after success */}
+      {uploadedUrl && status === "success" && !isUploading && (
         <div className="flex items-center justify-between p-4 bg-white/2 border border-white/5 rounded-2xl">
           <Text className="text-[10px] uppercase tracking-widest text-white/30">Live at</Text>
           <a
