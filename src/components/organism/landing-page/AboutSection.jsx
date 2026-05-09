@@ -12,6 +12,8 @@ import Image from "next/image";
 import Text from "@/components/atoms/Text";
 
 const CV_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/cv/resume.pdf`;
+const smoothTransition = { duration: 0.2, ease: [0.23, 1, 0.32, 1] };
+const fastTransition = { duration: 0.05, ease: [0.23, 1, 0.32, 1] };
 
 // --- Sub-Components ---
 
@@ -40,19 +42,19 @@ const PrimaryCTA = memo(({ href, color, text }) => {
       >
         {/* Subtle Colored Background for Button Presence */}
         <div
-          className="absolute inset-0 rounded-lg opacity-[0.06] group-hover:opacity-[0.12] transition-opacity duration-[800ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+          className="absolute inset-0 rounded-lg opacity-[0.06] group-hover:opacity-[0.12] transition-opacity duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]"
           style={{ background: `linear-gradient(to top, ${color}, transparent)` }}
         />
 
         {/* Center-Growing Underline */}
         <div
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[1px] w-0 group-hover:w-full transition-all duration-[800ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[1px] w-0 group-hover:w-full transition-all duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]"
           style={{ backgroundColor: color }}
         />
 
         {/* Text */}
         <span
-          className="relative z-10 text-[10px] font-black uppercase tracking-[0.4em]"
+          className="relative z-10 text-[10px] font-black uppercase tracking-[0.4em] transition-colors duration-200"
           style={{ color: color }}
         >
           {text}
@@ -118,7 +120,6 @@ export default function AboutSection({
   ];
 
   const springTransition = { type: "spring", stiffness: 300, damping: 30 };
-  const smoothTransition = { duration: 0.2, ease: [0.23, 1, 0.32, 1] };
 
   return (
     <section
@@ -272,17 +273,13 @@ export default function AboutSection({
           <SectionLabel color="#34D399">academic foundation.</SectionLabel>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
             {educations.map((edu, i) => (
-              <motion.div
+              <div
                 key={i}
-                className="group relative overflow-hidden rounded-[2.5rem] border border-white/5 bg-surface transition-colors duration-700"
-                whileHover={{ borderColor: "rgba(255, 255, 255, 0.2)" }}
+                className="group relative overflow-hidden rounded-[2.5rem] border border-white/5 bg-surface hover:border-white/20 transition-colors duration-200"
               >
                 {/* Neon Light Top Border */}
-                <motion.div
-                  className="absolute top-0 left-0 right-0 h-[2px] z-20"
-                  initial={{ opacity: 0.3 }}
-                  whileHover={{ opacity: 1 }}
-                  transition={smoothTransition}
+                <div
+                  className="absolute top-0 left-0 right-0 h-[2px] z-20 opacity-30 group-hover:opacity-100 transition-opacity duration-150 ease-out"
                   style={{
                     background: `linear-gradient(90deg, transparent, ${edu.neon}, transparent)`,
                     boxShadow: `0 0 15px ${edu.neon}`,
@@ -290,22 +287,14 @@ export default function AboutSection({
                 />
 
                 {/* Ambient Neon Flare */}
-                <motion.div
-                  className="absolute -top-24 -left-24 w-48 h-48 rounded-full blur-[80px]"
-                  initial={{ opacity: 0 }}
-                  whileHover={{ opacity: 0.2 }}
-                  transition={smoothTransition}
+                <div
+                  className="absolute -top-24 -left-24 w-48 h-48 rounded-full blur-[80px] opacity-0 group-hover:opacity-20 transition-opacity duration-150 ease-out"
                   style={{ backgroundColor: edu.neon }}
                 />
 
                 {/* Background Image with luxury overlay */}
                 <div className="absolute inset-0 -z-10 overflow-hidden">
-                  <motion.div
-                    initial={{ scale: 1, opacity: 0.1 }}
-                    whileHover={{ scale: 1.1, opacity: 0.2 }}
-                    transition={smoothTransition}
-                    className="h-full w-full grayscale"
-                  >
+                  <div className="h-full w-full opacity-40 group-hover:opacity-70 scale-100 group-hover:scale-105 transition-all duration-150 ease-out">
                     <Image
                       src={edu.image}
                       alt={edu.institution}
@@ -314,8 +303,8 @@ export default function AboutSection({
                       className="object-cover"
                       priority={i < 2}
                     />
-                  </motion.div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/90 to-transparent" />
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
                 </div>
 
                 <div className="relative p-6 sm:p-8 md:p-10 lg:p-12 flex flex-col min-h-[200px] sm:min-h-[260px] md:min-h-[320px] justify-between">
@@ -359,7 +348,7 @@ export default function AboutSection({
                     </svg>
                   </motion.div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </motion.div>
