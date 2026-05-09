@@ -146,13 +146,13 @@ export default function AboutSection({
       <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-12 md:px-24 lg:px-48">
         {/* ── 1. HERO IDENTITY: Portrait + Intro ── */}
         <div className="py-16 sm:py-24 md:py-36 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
-          {/* Left: Portrait */}
+          {/* Left: Desktop Portrait */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
-            className="relative"
+            className="relative hidden lg:block"
           >
             <motion.div
               style={{ y: portraitY }}
@@ -177,18 +177,31 @@ export default function AboutSection({
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
-            className="flex flex-col gap-8"
+            className="flex flex-col gap-8 w-full"
           >
-            <div>
-              <Text
-                as="h2"
-                className="text-5xl md:text-6xl xl:text-7xl font-black lowercase tracking-tighter leading-none mb-2"
-              >
-                dhaafin<span className="text-accent">.</span>
-              </Text>
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted/40">
-                Software Engineer & Creative Developer
-              </p>
+            <div className="flex items-end justify-between gap-4">
+              <div className="min-w-0">
+                <Text
+                  as="h2"
+                  className="text-5xl sm:text-6xl md:text-7xl xl:text-8xl font-black lowercase tracking-tighter leading-none mb-2 truncate"
+                >
+                  dhaafin<span className="text-accent">.</span>
+                </Text>
+                <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] text-muted/40 truncate">
+                  Software Engineer & Creative Developer
+                </p>
+              </div>
+
+              {/* Mobile Portrait (Editorial Row) */}
+              <div className="lg:hidden relative w-12 sm:w-16 md:w-20 aspect-[3/4] rounded-lg overflow-hidden border border-white/10 shrink-0 mb-1 shadow-2xl">
+                <Image
+                  src="/profile.png"
+                  alt="Dhaafin Portrait"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
             </div>
 
             <div className="flex flex-col gap-4">
