@@ -36,22 +36,25 @@ const PrimaryCTA = memo(({ href, color, text }) => {
     <div className="mt-16 flex justify-center">
       <Link
         href={href}
-        className="group relative px-8 py-4 overflow-hidden rounded-full border transition-all duration-500"
-        style={{
-          borderColor: color,
-          backgroundColor: `${color}26`, // 15% opacity
-          color: color,
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = `${color}40`; // 25% opacity
-          e.currentTarget.style.color = "white";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = `${color}26`;
-          e.currentTarget.style.color = color;
-        }}
+        className="group relative px-10 py-5 flex items-center justify-center rounded-sm overflow-hidden"
       >
-        <span className="relative text-[10px] font-black uppercase tracking-[0.35em] transition-colors duration-500">
+        {/* Subtle Colored Background for Button Presence */}
+        <div
+          className="absolute inset-0 rounded-lg opacity-[0.06] group-hover:opacity-[0.12] transition-opacity duration-[800ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+          style={{ background: `linear-gradient(to top, ${color}, transparent)` }}
+        />
+
+        {/* Center-Growing Underline */}
+        <div
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[1px] w-0 group-hover:w-full transition-all duration-[800ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+          style={{ backgroundColor: color }}
+        />
+
+        {/* Text */}
+        <span
+          className="relative z-10 text-[10px] font-black uppercase tracking-[0.4em]"
+          style={{ color: color }}
+        >
           {text}
         </span>
       </Link>
@@ -67,7 +70,7 @@ const ViewAllLink = memo(({ href, color, text = "view full archive" }) => {
       className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.35em] text-muted/50 hover:text-foreground transition-colors duration-500 group mt-8 md:mt-12"
     >
       <span
-        className="h-[1px] w-8 transition-all duration-500 group-hover:w-16"
+        className="h-[1px] rounded-lg bg-linear-to-t from-w-8 transition-all duration-500 group-hover:w-16"
         style={{ background: color }}
       />
       {text}.<span style={{ color }}>↗</span>
@@ -208,7 +211,11 @@ export default function AboutSection({
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              transition={{
+                duration: 0.8,
+                delay: 0.3,
+                ease: [0.16, 1, 0.3, 1],
+              }}
             >
               <div className="flex items-center gap-3 px-5 py-3 rounded-full border border-white/10 bg-white/[0.02] group-hover:border-accent/40 group-hover:bg-accent/5 transition-all duration-500">
                 <motion.svg
@@ -220,9 +227,17 @@ export default function AboutSection({
                   strokeWidth="1.5"
                   className="text-white/30 group-hover:text-accent transition-colors duration-500"
                   animate={{ y: [0, 2, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                 >
-                  <path d="M6.5 1v7M6.5 8L4 5.5M6.5 8L9 5.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path
+                    d="M6.5 1v7M6.5 8L4 5.5M6.5 8L9 5.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                   <path d="M1 11h11" strokeLinecap="round" />
                 </motion.svg>
                 <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white/40 group-hover:text-white/80 transition-colors duration-300">
@@ -408,11 +423,7 @@ export default function AboutSection({
             ))}
           </div>
 
-          <PrimaryCTA
-            href="/projects"
-            color="#A78BFA"
-            text="the full archive ↗"
-          />
+          <PrimaryCTA href="/projects" color="#A78BFA" text="explore archive" />
         </motion.div>
 
         {/* ── 4. EXPERIENCES: The Path ("The Ticker") ── */}
@@ -477,7 +488,7 @@ export default function AboutSection({
           <PrimaryCTA
             href="/experience"
             color="#F472B6"
-            text="the complete journey →"
+            text="view trajectory"
           />
         </motion.div>
 
@@ -533,7 +544,7 @@ export default function AboutSection({
           <PrimaryCTA
             href="/certifications"
             color="#FACC15"
-            text="all credentials ↗"
+            text="examine credentials"
           />
         </motion.div>
       </div>
