@@ -93,8 +93,8 @@ function FloatingLens({ x, y, activeColor }) {
         }}
       >
         {/* Inner crosshair */}
-        <div className="absolute w-full h-[1px]" style={{ background: activeColor ? `${activeColor}40` : "transparent" }} />
-        <div className="absolute h-full w-[1px]" style={{ background: activeColor ? `${activeColor}40` : "transparent" }} />
+        <div className="absolute w-full h-px" style={{ background: activeColor ? `${activeColor}40` : "transparent" }} />
+        <div className="absolute h-full w-px" style={{ background: activeColor ? `${activeColor}40` : "transparent" }} />
         <motion.div
           className="w-2 h-2 rounded-full"
           animate={{ scale: activeColor ? [1, 1.3, 1] : 0 }}
@@ -119,7 +119,7 @@ function CertRow({ cert, index, onHover, onLeave, isHovered, anyHovered }) {
     >
       {/* Top separator — glows on hover */}
       <motion.div
-        className="absolute top-0 left-0 right-0 h-[1px]"
+        className="absolute top-0 left-0 right-0 h-px"
         animate={{
           background: isHovered
             ? `linear-gradient(90deg, transparent 0%, ${cert.color} 50%, transparent 100%)`
@@ -223,7 +223,7 @@ function CertRow({ cert, index, onHover, onLeave, isHovered, anyHovered }) {
 
       {/* Bottom separator on last item */}
       {index === MOCK_CERTIFICATIONS.length - 1 && (
-        <div className="absolute bottom-0 left-0 right-0 h-[1px]"
+        <div className="absolute bottom-0 left-0 right-0 h-px"
           style={{ background: "linear-gradient(90deg, transparent 0%, hsla(217,91%,60%,0.1) 50%, transparent 100%)" }}
         />
       )}
@@ -282,26 +282,61 @@ export default function CertificationLedger({ certifications = MOCK_CERTIFICATIO
       <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-12 md:px-24 lg:px-48">
 
         {/* Page Header */}
-        <motion.div
-          className="pt-36 pb-16 md:pb-20"
-          initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1] }}
-        >
-          <Text className="text-xs tracking-[0.4em] uppercase font-bold text-muted/40 mb-6">
-            verified skills.
-          </Text>
-          <Text as="h1" className="text-6xl md:text-8xl xl:text-[10rem] font-black lowercase tracking-tighter leading-none">
-            cert
-            <span className="text-accent">.</span>
-          </Text>
-          <div className="flex items-center gap-4 mt-8">
-            <div className="h-[1px] w-12 bg-accent/40" />
-            <Text className="text-muted/50 text-sm tracking-widest uppercase font-semibold">
-              {certifications.length} credentials issued
-            </Text>
+        <div className="pt-36 pb-20 md:pb-32 relative">
+          {/* Asymmetric Side Line */}
+          <motion.div 
+            initial={{ height: 0 }}
+            animate={{ height: "100%" }}
+            transition={{ duration: 1.5, ease: [0.23, 1, 0.32, 1] }}
+            className="absolute left-0 top-40 bottom-16 w-px bg-linear-to-b from-accent/20 via-white/5 to-transparent hidden md:block" 
+          />
+
+          <div className="md:pl-12">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="flex items-center gap-4 mb-6"
+            >
+              <div className="h-px w-6 bg-accent" />
+              <span className="text-[9px] font-black uppercase tracking-[0.5em] text-white/40">
+                Verified Credentials
+              </span>
+            </motion.div>
+
+            <div className="relative">
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.1 }}
+                className="text-6xl md:text-8xl xl:text-[10rem] font-black lowercase tracking-tighter leading-[0.8] text-white/90"
+              >
+                certifications
+                <span className="text-accent drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">.</span>
+              </motion.h1>
+              
+              <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full opacity-10 blur-[80px] pointer-events-none bg-accent" />
+            </div>
+
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.4 }}
+              className="flex items-center gap-6 mt-12"
+            >
+              <div className="text-[10px] font-black tracking-[0.4em] text-white/20 uppercase">
+                {String(certifications.length).padStart(2, "0")} Entries Found
+              </div>
+              <div className="flex-grow max-w-sm h-px bg-white/5 relative overflow-hidden">
+                <motion.div 
+                  animate={{ x: ["-100%", "200%"] }}
+                  transition={{ duration: 3, ease: "easeInOut", repeat: Infinity, repeatDelay: 1 }}
+                  className="absolute inset-0 w-1/2 bg-linear-to-r from-transparent via-white/20 to-transparent"
+                />
+              </div>
+            </motion.div>
           </div>
-        </motion.div>
+        </div>
 
         {/* The Ledger */}
         <div className="pb-32">
