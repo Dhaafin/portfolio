@@ -364,7 +364,10 @@ export default function AboutSection({
           <SectionLabel color="#A78BFA">selected works.</SectionLabel>
 
           <div className="flex flex-col border-t border-white/10 mt-12">
-            {projects.slice(0, 3).map((project, i) => (
+            {[...projects]
+              .sort((a, b) => (a.order ?? 99) - (b.order ?? 99))
+              .slice(0, 3)
+              .map((project, i) => (
               <Link href="/projects" key={project.id}>
                 <motion.div
                   className="group relative flex flex-col md:flex-row items-baseline justify-between gap-4 py-8 border-b border-white/10 overflow-hidden"
@@ -426,7 +429,10 @@ export default function AboutSection({
           <SectionLabel color="#F472B6">professional path.</SectionLabel>
 
           <div className="flex flex-col mt-12 gap-2 overflow-hidden">
-            {experiences.slice(0, 3).map((exp, i) => (
+            {[...experiences]
+              .sort((a, b) => (a.order ?? 99) - (b.order ?? 99))
+              .slice(0, 3)
+              .map((exp, i) => (
               <div
                 key={exp.id}
                 className="group flex items-stretch gap-6 opacity-80 hover:opacity-100 transition-opacity duration-300"
@@ -500,7 +506,10 @@ export default function AboutSection({
             </div>
 
             <div className="flex flex-col gap-4">
-              {certifications.slice(0, 3).map((cert) => (
+              {[...certifications]
+                .sort((a, b) => (a.order ?? 99) - (b.order ?? 99))
+                .slice(0, 3)
+                .map((cert) => (
                 <Link href="/certifications" key={cert.id}>
                   <motion.div className="flex flex-col sm:flex-row items-baseline gap-2 sm:gap-4 text-white/50 hover:text-[#FACC15] transition-colors duration-300 group cursor-pointer">
                     <span className="uppercase font-bold shrink-0 w-24 md:w-32 truncate text-white/80 group-hover:text-white">
