@@ -63,9 +63,9 @@ export default function TacticalConstellation({ initialExperiences }) {
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-background">
-      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-12 md:px-24 lg:px-48 pt-48 pb-32 flex flex-col">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-12 md:px-24 lg:px-48 pt-24 sm:pt-32 md:pt-48 pb-16 sm:pb-24 md:pb-32 flex flex-col">
         {/* Main layout */}
-        <div className="flex-1 flex flex-col lg:flex-row items-start justify-center gap-24 lg:gap-32 xl:gap-64 relative">
+        <div className="flex-1 flex flex-col lg:flex-row items-start justify-center gap-12 lg:gap-32 xl:gap-64 relative">
           {/* ── LEFT PANEL: Sticky Era Selector ── */}
           <aside className="sticky top-24 lg:top-32 flex flex-col justify-start items-start w-full lg:w-56 lg:min-w-[14rem] flex-shrink-0 z-30 bg-background/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none pb-6 lg:pb-0">
             <div className="hidden lg:block mb-12">
@@ -179,7 +179,7 @@ export default function TacticalConstellation({ initialExperiences }) {
           </aside>
 
           {/* ── RIGHT PANEL: Scrolling Experience List ── */}
-          <div className="w-full lg:w-[32rem] flex flex-col gap-24 sm:gap-48 md:gap-64">
+          <div className="w-full lg:w-[32rem] flex flex-col gap-16 sm:gap-24 md:gap-40 lg:gap-56">
             {experiences.map((exp) => (
               <ExperienceCard key={exp.id} exp={exp} />
             ))}
