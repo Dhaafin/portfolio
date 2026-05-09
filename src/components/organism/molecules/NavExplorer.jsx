@@ -101,10 +101,10 @@ export default function NavExplorer() {
         id="nav-trigger"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle navigation"
-        className="z-60 relative pointer-events-auto"
+        className="z-60 relative pointer-events-auto flex items-center"
       >
         <motion.span
-          className="text-xs font-bold uppercase tracking-[0.25em] text-foreground mix-blend-difference"
+          className="text-xs font-bold uppercase tracking-[0.25em] text-foreground mix-blend-difference leading-none flex items-center mt-[1px]"
           animate={{ opacity: isOpen ? 0.5 : 1 }}
         >
           {isOpen ? "close." : "explore."}
