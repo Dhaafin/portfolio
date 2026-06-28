@@ -67,37 +67,37 @@ export default function TacticalConstellation({ initialExperiences }) {
         {/* Main layout */}
         <div className="flex-1 flex flex-col lg:flex-row items-start justify-center gap-12 lg:gap-32 xl:gap-64 relative">
           {/* ── LEFT PANEL: Sticky Era Selector ── */}
-          <aside className="sticky top-24 lg:top-32 flex flex-col justify-start items-start w-full lg:w-56 lg:min-w-[14rem] flex-shrink-0 z-30 bg-background/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none pb-6 lg:pb-0">
-            <div className="hidden lg:block mb-12">
-              <Text className="text-[10px] uppercase tracking-[0.35em] font-bold text-muted/40 mb-1">
+          <aside className="sticky top-24 lg:top-32 flex flex-col justify-start items-start w-full lg:w-56 lg:min-w-[14rem] flex-shrink-0 z-30 bg-background/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none pb-6 lg:pb-0 text-left">
+            <div className="hidden lg:block mb-12 w-full text-left">
+              <Text className="text-[10px] uppercase tracking-[0.35em] font-bold text-muted/40 mb-1 text-left block">
                 where i&lsquo;ve been.
               </Text>
               <Text
                 as="h1"
-                className="text-5xl font-black lowercase tracking-tighter leading-none"
+                className="text-5xl font-black lowercase tracking-tighter leading-none text-left block"
               >
                 experience<span className="text-accent">.</span>
               </Text>
             </div>
 
             {/* Mobile heading - more compact */}
-            <div className="block lg:hidden mb-6 w-full">
+            <div className="block lg:hidden mb-6 w-full text-left">
               <Text
                 as="h1"
-                className="text-3xl font-black lowercase tracking-tighter leading-none"
+                className="text-3xl font-black lowercase tracking-tighter leading-none text-left block"
               >
                 experience<span className="text-accent">.</span>
               </Text>
             </div>
 
             {/* Era Tabs - Scrollable on mobile */}
-            <div className="relative w-full overflow-x-auto no-scrollbar lg:overflow-visible">
-              <div className="flex lg:flex-col gap-6 lg:gap-0 min-w-max lg:min-w-0 w-full lg:w-full border-b border-white/5 lg:border-none pb-2 lg:pb-0">
+            <div className="relative w-full overflow-x-auto no-scrollbar lg:overflow-visible text-left">
+              <div className="flex lg:flex-col justify-start gap-6 lg:gap-0 min-w-max lg:min-w-0 w-full lg:w-full border-b border-white/5 lg:border-none pb-2 lg:pb-0 text-left">
                 {experiences.map((e, i) => (
                   <button
                     key={e.id}
                     onClick={() => scrollTo(e.id)}
-                    className="group relative flex items-center gap-3 lg:gap-4 py-2 lg:py-4 transition-all duration-500 cursor-pointer flex-shrink-0"
+                    className="group relative flex items-center gap-3 lg:gap-4 py-2 lg:py-4 transition-all duration-500 cursor-pointer flex-shrink-0 text-left"
                   >
                     {/* Vertical Indicator (Desktop) */}
                     {active === i && (
@@ -127,7 +127,7 @@ export default function TacticalConstellation({ initialExperiences }) {
                       />
                     )}
 
-                    <div className="lg:pl-6 flex items-center gap-4">
+                    <div className="lg:pl-6 flex items-center gap-4 text-left w-full">
                       <motion.div
                         className="w-1.5 h-1.5 rounded-full flex-shrink-0 hidden lg:block"
                         animate={{
@@ -139,9 +139,9 @@ export default function TacticalConstellation({ initialExperiences }) {
                         }}
                         transition={TRANSITION}
                       />
-                      <div className="relative">
+                      <div className="relative text-left w-full">
                         <motion.p
-                          className="text-[10px] sm:text-xs uppercase tracking-[0.2em] font-black leading-none pb-1"
+                          className="text-[10px] sm:text-xs uppercase tracking-[0.2em] font-black leading-none pb-1 text-left"
                           animate={{
                             color:
                               active === i
@@ -159,7 +159,7 @@ export default function TacticalConstellation({ initialExperiences }) {
                         </div>
 
                         <motion.p
-                          className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] font-medium leading-none mt-1 lg:block"
+                          className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] font-medium leading-none mt-1 lg:block text-left"
                           animate={{
                             color:
                               active === i
