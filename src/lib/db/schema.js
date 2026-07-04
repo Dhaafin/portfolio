@@ -1,0 +1,53 @@
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
+
+export const projects = sqliteTable('projects', {
+  id: text('id').primaryKey(),
+  title: text('title').notNull(),
+  role: text('role'),
+  year: text('year'),
+  description: text('description'),
+  demo_url: text('demo_url'),
+  github_url: text('github_url'),
+  image_url: text('image_url'),
+  is_published: integer('is_published', { mode: 'boolean' }).default(false),
+  order: integer('order').default(0),
+  created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const experiences = sqliteTable('experiences', {
+  id: text('id').primaryKey(),
+  year: text('year'),
+  era: text('era'),
+  company: text('company').notNull(),
+  role: text('role').notNull(),
+  period: text('period'),
+  points: text('points', { mode: 'json' }),
+  color: text('color'),
+  order: integer('order').default(0),
+  skills: text('skills', { mode: 'json' }),
+  created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const certifications = sqliteTable('certifications', {
+  id: text('id').primaryKey(),
+  title: text('title').notNull(),
+  issuer: text('issuer').notNull(),
+  issuer_short: text('issuer_short'),
+  issue_date: text('issue_date'),
+  color: text('color').default('#60A5FA'),
+  skills: text('skills', { mode: 'json' }),
+  credential_url: text('credential_url'),
+  order: integer('order').default(0),
+  created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`)
+});
+
+export const visits = sqliteTable('visits', {
+  id: text('id').primaryKey(),
+  session_id: text('session_id'),
+  path: text('path').notNull(),
+  referrer: text('referrer'),
+  user_agent: text('user_agent'),
+  country: text('country'),
+  created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`)
+});
