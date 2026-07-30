@@ -1,5 +1,5 @@
 import HomePage from "@/components/organism/landing-page";
-import { createClient } from "@/lib/supabase/server";
+import { db } from "@/lib/db/index.js";
 
 export const metadata = {
   title: "Dhaafin — Full-Stack Developer",
@@ -7,17 +7,21 @@ export const metadata = {
 };
 
 export default async function LandingPage() {
-  const supabase = await createClient();
-
-  // Parallel data fetch for maximum performance
-  const [
-    { data: projects },
-    { data: experiences },
-    { data: certifications },
-  ] = await Promise.all([
-    supabase.from("projects").select("id, title, role, year, description, demo_url, github_url, order").eq("is_published", true).order("order", { ascending: true }).limit(3),
-    supabase.from("experiences").select("id, role, company, era, color, period, order").order("order", { ascending: true }).limit(3),
-    supabase.from("certifications").select("id, title, issuer, issuer_short, issue_date, color, order").order("order", { ascending: true }).limit(3),
+  // Parallel data fetch from Turso DB for maximum performance
+  const [projects, experiences, certifications] = await Promise.all([
+    db.query.projects.findMany({
+      where: (projects, { eq }) => eq(projects.is_published, true),
+      orderBy: (projects, { asc }) => [asc(projects.order)],
+      limit: 3,
+    }),
+    db.query.experiences.findMany({
+      orderBy: (experiences, { asc }) => [asc(experiences.order)],
+      limit: 3,
+    }),
+    db.query.certifications.findMany({
+      orderBy: (certifications, { asc }) => [asc(certifications.order)],
+      limit: 3,
+    }),
   ]);
 
   return (

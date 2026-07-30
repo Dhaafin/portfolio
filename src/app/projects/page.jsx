@@ -1,6 +1,6 @@
 import Text from "@/components/atoms/Text";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { db } from "@/lib/db/index.js";
 
 export const metadata = { title: "Projects | Dhaafin" };
 
@@ -34,11 +34,9 @@ const mockProjects = [
 export default async function ProjectsPage() {
   const nodeColor = "#A78BFA";
 
-  const supabase = await createClient();
-  const { data: dbProjects } = await supabase
-    .from("projects")
-    .select("*")
-    .order("order", { ascending: true });
+  const dbProjects = await db.query.projects.findMany({
+    orderBy: (projects, { asc }) => [asc(projects.order)],
+  });
 
   // Use DB projects if available, otherwise fallback to mock data
   const projects = dbProjects?.length > 0 ? dbProjects : mockProjects;

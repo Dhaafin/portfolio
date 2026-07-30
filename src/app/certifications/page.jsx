@@ -1,5 +1,5 @@
 import CertificationLedger from "@/components/organism/certifications/CertificationLedger";
-import { createClient } from "@/lib/supabase/server";
+import { db } from "@/lib/db/index.js";
 
 export const metadata = {
   title: "Certifications | Dhaafin",
@@ -7,12 +7,9 @@ export const metadata = {
 };
 
 export default async function CertificationsPage() {
-  const supabase = await createClient();
-
-  const { data: certifications } = await supabase
-    .from("certifications")
-    .select("*")
-    .order("order", { ascending: true });
+  const certifications = await db.query.certifications.findMany({
+    orderBy: (certifications, { asc }) => [asc(certifications.order)],
+  });
 
   return (
     <main>
