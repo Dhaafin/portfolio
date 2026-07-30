@@ -243,7 +243,7 @@ const Hero = () => {
         {/* CV download — small, unobtrusive */}
         <motion.a
           variants={REVEAL}
-          href={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/cv/resume.pdf`}
+          href="/cv"
           download="dhaafin-cv.pdf"
           target="_blank"
           rel="noopener noreferrer"

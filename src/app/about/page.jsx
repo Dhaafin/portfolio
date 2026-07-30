@@ -2,7 +2,7 @@ import CVDownloadButton from "@/components/organism/about/CVDownloadButton";
 
 export const metadata = { title: "About | Dhaafin" };
 
-const CV_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/cv/resume.pdf`;
+const CV_URL = "/cv";
 
 export default function AboutPage() {
   return (

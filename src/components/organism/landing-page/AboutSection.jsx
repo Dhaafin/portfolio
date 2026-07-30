@@ -11,7 +11,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Text from "@/components/atoms/Text";
 
-const CV_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/cv/resume.pdf`;
+const CV_URL = "/cv";
 const smoothTransition = { duration: 0.2, ease: [0.23, 1, 0.32, 1] };
 const fastTransition = { duration: 0.05, ease: [0.23, 1, 0.32, 1] };
 

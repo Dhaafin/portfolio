@@ -72,7 +72,7 @@ export default function Navbar() {
 
         <div className="relative z-10 flex items-center gap-6">
           <motion.a
-            href={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/cv/resume.pdf`}
+            href="/cv"
             download="dhaafin-cv.pdf"
             target="_blank"
             rel="noopener noreferrer"
