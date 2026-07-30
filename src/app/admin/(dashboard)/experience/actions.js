@@ -1,27 +1,33 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { db } from "@/lib/db/index.js";
+import { experiences } from "@/lib/db/schema.js";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createExperience(formData) {
-  const supabase = await createClient();
-
+  const id = crypto.randomUUID();
   const data = {
-    year: formData.get("year"),
-    era: formData.get("era"),
+    id,
+    year: formData.get("year") || null,
+    era: formData.get("era") || null,
     company: formData.get("company"),
     role: formData.get("role"),
-    period: formData.get("period"),
-    points: formData.get("points").split("\n").map(s => s.trim()).filter(Boolean),
-    color: formData.get("color"),
+    period: formData.get("period") || null,
+    points: formData.get("points")
+      ? formData.get("points").split("\n").map(s => s.trim()).filter(Boolean)
+      : [],
+    color: formData.get("color") || null,
     order: parseInt(formData.get("order") || "0", 10),
-    skills: formData.get("skills").split(",").map(s => s.trim()).filter(Boolean),
+    skills: formData.get("skills")
+      ? formData.get("skills").split(",").map(s => s.trim()).filter(Boolean)
+      : [],
   };
 
-  const { error } = await supabase.from("experiences").insert([data]);
-
-  if (error) {
+  try {
+    await db.insert(experiences).values(data);
+  } catch (error) {
     console.error("Error creating experience:", error);
     return { error: error.message };
   }
@@ -32,23 +38,25 @@ export async function createExperience(formData) {
 }
 
 export async function updateExperience(id, formData) {
-  const supabase = await createClient();
-
   const data = {
-    year: formData.get("year"),
-    era: formData.get("era"),
+    year: formData.get("year") || null,
+    era: formData.get("era") || null,
     company: formData.get("company"),
     role: formData.get("role"),
-    period: formData.get("period"),
-    points: formData.get("points").split("\n").map(s => s.trim()).filter(Boolean),
-    color: formData.get("color"),
+    period: formData.get("period") || null,
+    points: formData.get("points")
+      ? formData.get("points").split("\n").map(s => s.trim()).filter(Boolean)
+      : [],
+    color: formData.get("color") || null,
     order: parseInt(formData.get("order") || "0", 10),
-    skills: formData.get("skills").split(",").map(s => s.trim()).filter(Boolean),
+    skills: formData.get("skills")
+      ? formData.get("skills").split(",").map(s => s.trim()).filter(Boolean)
+      : [],
   };
 
-  const { error } = await supabase.from("experiences").update(data).eq("id", id);
-
-  if (error) {
+  try {
+    await db.update(experiences).set(data).where(eq(experiences.id, id));
+  } catch (error) {
     console.error("Error updating experience:", error);
     return { error: error.message };
   }
@@ -59,11 +67,9 @@ export async function updateExperience(id, formData) {
 }
 
 export async function deleteExperience(id) {
-  const supabase = await createClient();
-
-  const { error } = await supabase.from("experiences").delete().eq("id", id);
-
-  if (error) {
+  try {
+    await db.delete(experiences).where(eq(experiences.id, id));
+  } catch (error) {
     console.error("Error deleting experience:", error);
     return { error: error.message };
   }
@@ -73,13 +79,15 @@ export async function deleteExperience(id) {
 }
 
 export async function reorderExperiences(items) {
-  const supabase = await createClient();
-
-  await Promise.all(
-    items.map(({ id, order }) =>
-      supabase.from("experiences").update({ order }).eq("id", id)
-    )
-  );
+  try {
+    await Promise.all(
+      items.map(({ id, order }) =>
+        db.update(experiences).set({ order }).where(eq(experiences.id, id))
+      )
+    );
+  } catch (error) {
+    console.error("Error reordering experiences:", error);
+  }
 
   revalidatePath("/admin/experience");
   revalidatePath("/experience");

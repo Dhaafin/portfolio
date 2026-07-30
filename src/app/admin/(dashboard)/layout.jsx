@@ -1,21 +1,23 @@
-import { createClient } from "@/lib/supabase/server";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { verifyJWT } from "@/lib/auth.js";
 import Link from "next/link";
 import Text from "@/components/atoms/Text";
 import AdminSidebar from "@/components/organism/admin/AdminSidebar";
 import { logout } from "../login/actions";
 
 export default async function AdminLayout({ children }) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const cookieStore = await cookies();
+  const token = cookieStore.get("admin_session")?.value;
+  const session = token ? await verifyJWT(token, process.env.ADMIN_SECRET_KEY) : null;
 
   // Redirect to login if not authenticated
-  if (!user) {
+  if (!session) {
     return redirect("/admin/login");
   }
+
+  // Mimic Supabase user object format for compatibility with sidebar
+  const user = { email: process.env.ADMIN_USERNAME || "admin" };
 
   return (
     <div className="min-h-screen bg-[#050505] text-foreground flex flex-col md:flex-row">

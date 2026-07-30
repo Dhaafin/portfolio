@@ -1,20 +1,17 @@
 import ProjectForm from "@/components/organism/admin/ProjectForm";
 import Text from "@/components/atoms/Text";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { db } from "@/lib/db/index.js";
 import { notFound } from "next/navigation";
 
 export const metadata = { title: "Edit Project | Admin" };
 
 export default async function EditProjectPage({ params }) {
   const { id } = await params;
-  const supabase = await createClient();
 
-  const { data: project } = await supabase
-    .from("projects")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const project = await db.query.projects.findFirst({
+    where: (projects, { eq }) => eq(projects.id, id),
+  });
 
   if (!project) {
     notFound();

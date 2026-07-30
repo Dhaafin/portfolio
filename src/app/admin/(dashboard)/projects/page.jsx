@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { db } from "@/lib/db/index.js";
 import Text from "@/components/atoms/Text";
 import Link from "next/link";
 import SortableProjectList from "@/components/organism/admin/SortableProjectList";
@@ -6,12 +6,9 @@ import SortableProjectList from "@/components/organism/admin/SortableProjectList
 export const metadata = { title: "Manage Projects | Admin" };
 
 export default async function AdminProjectsPage() {
-  const supabase = await createClient();
-
-  const { data: projects } = await supabase
-    .from("projects")
-    .select("*")
-    .order("order", { ascending: true });
+  const projects = await db.query.projects.findMany({
+    orderBy: (projects, { asc }) => [asc(projects.order)],
+  });
 
   const nodeColor = "#A78BFA";
 

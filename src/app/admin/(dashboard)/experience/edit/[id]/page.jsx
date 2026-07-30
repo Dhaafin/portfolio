@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { db } from "@/lib/db/index.js";
 import Text from "@/components/atoms/Text";
 import ExperienceForm from "../../components/ExperienceForm";
 import { notFound } from "next/navigation";
@@ -7,13 +7,10 @@ export const metadata = { title: "Edit Experience | Admin" };
 
 export default async function EditExperiencePage({ params }) {
   const { id } = await params;
-  const supabase = await createClient();
 
-  const { data: experience } = await supabase
-    .from("experiences")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const experience = await db.query.experiences.findFirst({
+    where: (experiences, { eq }) => eq(experiences.id, id),
+  });
 
   if (!experience) {
     notFound();

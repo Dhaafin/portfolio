@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { db } from "@/lib/db/index.js";
 import Text from "@/components/atoms/Text";
 import Link from "next/link";
 import SortableCertificationList from "@/components/organism/admin/SortableCertificationList";
@@ -6,12 +6,9 @@ import SortableCertificationList from "@/components/organism/admin/SortableCerti
 export const metadata = { title: "Manage Certifications | Admin" };
 
 export default async function AdminCertificationsPage() {
-  const supabase = await createClient();
-
-  const { data: certifications } = await supabase
-    .from("certifications")
-    .select("*")
-    .order("order", { ascending: true });
+  const certifications = await db.query.certifications.findMany({
+    orderBy: (certifications, { asc }) => [asc(certifications.order)],
+  });
 
   const nodeColor = "#FACC15";
 

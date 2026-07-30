@@ -1,27 +1,45 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { db } from "@/lib/db/index.js";
+import { projects } from "@/lib/db/schema.js";
+import { eq } from "drizzle-orm";
+import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export async function createProject(formData) {
-  const supabase = await createClient();
+// Upload helper for project thumbnails to Vercel Blob
+export async function uploadImageAction(formData) {
+  const file = formData.get("file");
+  if (!file) {
+    throw new Error("No file provided");
+  }
 
+  const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+  const blob = await put(`projects/${filename}`, file, {
+    access: "public",
+  });
+
+  return blob.url;
+}
+
+export async function createProject(formData) {
+  const id = crypto.randomUUID();
   const projectData = {
+    id,
     title: formData.get("title"),
-    github_url: formData.get("github_url"),
-    demo_url: formData.get("demo_url"),
-    role: formData.get("role"),
-    year: formData.get("year"),
-    description: formData.get("description"),
-    image_url: formData.get("image_url"),
+    github_url: formData.get("github_url") || null,
+    demo_url: formData.get("demo_url") || null,
+    role: formData.get("role") || null,
+    year: formData.get("year") || null,
+    description: formData.get("description") || null,
+    image_url: formData.get("image_url") || null,
     is_published: formData.get("is_published") === "true",
     order: parseInt(formData.get("order") || "0", 10),
   };
 
-  const { error } = await supabase.from("projects").insert([projectData]);
-
-  if (error) {
+  try {
+    await db.insert(projects).values(projectData);
+  } catch (error) {
     console.error("Error creating project:", error);
     return { error: error.message };
   }
@@ -32,23 +50,21 @@ export async function createProject(formData) {
 }
 
 export async function updateProject(id, formData) {
-  const supabase = await createClient();
-
   const projectData = {
     title: formData.get("title"),
-    github_url: formData.get("github_url"),
-    demo_url: formData.get("demo_url"),
-    role: formData.get("role"),
-    year: formData.get("year"),
-    description: formData.get("description"),
-    image_url: formData.get("image_url"),
+    github_url: formData.get("github_url") || null,
+    demo_url: formData.get("demo_url") || null,
+    role: formData.get("role") || null,
+    year: formData.get("year") || null,
+    description: formData.get("description") || null,
+    image_url: formData.get("image_url") || null,
     is_published: formData.get("is_published") === "true",
     order: parseInt(formData.get("order") || "0", 10),
   };
 
-  const { error } = await supabase.from("projects").update(projectData).eq("id", id);
-
-  if (error) {
+  try {
+    await db.update(projects).set(projectData).where(eq(projects.id, id));
+  } catch (error) {
     console.error("Error updating project:", error);
     return { error: error.message };
   }
@@ -59,11 +75,9 @@ export async function updateProject(id, formData) {
 }
 
 export async function deleteProject(id) {
-  const supabase = await createClient();
-
-  const { error } = await supabase.from("projects").delete().eq("id", id);
-
-  if (error) {
+  try {
+    await db.delete(projects).where(eq(projects.id, id));
+  } catch (error) {
     console.error("Error deleting project:", error);
     return { error: error.message };
   }
@@ -73,13 +87,15 @@ export async function deleteProject(id) {
 }
 
 export async function reorderProjects(items) {
-  const supabase = await createClient();
-
-  await Promise.all(
-    items.map(({ id, order }) =>
-      supabase.from("projects").update({ order }).eq("id", id)
-    )
-  );
+  try {
+    await Promise.all(
+      items.map(({ id, order }) =>
+        db.update(projects).set({ order }).where(eq(projects.id, id))
+      )
+    );
+  } catch (error) {
+    console.error("Error reordering projects:", error);
+  }
 
   revalidatePath("/admin/projects");
   revalidatePath("/projects");

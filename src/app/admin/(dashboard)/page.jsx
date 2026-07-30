@@ -1,4 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
+import { db } from "@/lib/db/index.js";
+import { projects as projectsTable, experiences as experiencesTable, certifications as certificationsTable } from "@/lib/db/schema.js";
 import Text from "@/components/atoms/Text";
 import Link from "next/link";
 import {
@@ -25,16 +26,10 @@ function toChartData(grouped, labelKey) {
 }
 
 export default async function AdminOverviewPage() {
-  const supabase = await createClient();
-
-  const [
-    { data: projects },
-    { data: experiences },
-    { data: certifications },
-  ] = await Promise.all([
-    supabase.from("projects").select("year, is_published"),
-    supabase.from("experiences").select("era"),
-    supabase.from("certifications").select("issuer_short"),
+  const [projects, experiences, certifications] = await Promise.all([
+    db.select({ year: projectsTable.year, is_published: projectsTable.is_published }).from(projectsTable),
+    db.select({ era: experiencesTable.era }).from(experiencesTable),
+    db.select({ issuer_short: certificationsTable.issuer_short }).from(certificationsTable),
   ]);
 
   const projectsByYear = toChartData(groupBy(projects ?? [], "year"), "year");

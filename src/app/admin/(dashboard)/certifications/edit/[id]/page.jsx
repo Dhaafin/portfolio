@@ -1,20 +1,17 @@
 import CertificationForm from "@/components/organism/admin/CertificationForm";
 import Text from "@/components/atoms/Text";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { db } from "@/lib/db/index.js";
 import { notFound } from "next/navigation";
 
 export const metadata = { title: "Edit Credential | Admin" };
 
 export default async function EditCertificationPage({ params }) {
   const { id } = await params;
-  const supabase = await createClient();
 
-  const { data: certification } = await supabase
-    .from("certifications")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const certification = await db.query.certifications.findFirst({
+    where: (certifications, { eq }) => eq(certifications.id, id),
+  });
 
   if (!certification) {
     notFound();

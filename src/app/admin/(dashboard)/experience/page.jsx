@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { db } from "@/lib/db/index.js";
 import Text from "@/components/atoms/Text";
 import Link from "next/link";
 import SortableExperienceList from "@/components/organism/admin/SortableExperienceList";
@@ -6,12 +6,9 @@ import SortableExperienceList from "@/components/organism/admin/SortableExperien
 export const metadata = { title: "Manage Experience | Admin" };
 
 export default async function AdminExperiencePage() {
-  const supabase = await createClient();
-
-  const { data: experiences } = await supabase
-    .from("experiences")
-    .select("*")
-    .order("order", { ascending: true });
+  const experiences = await db.query.experiences.findMany({
+    orderBy: (experiences, { asc }) => [asc(experiences.order)],
+  });
 
   const nodeColor = "#6366F1";
 

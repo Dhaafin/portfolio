@@ -1,14 +1,13 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { uploadImageAction } from "@/app/admin/(dashboard)/projects/actions.js";
 import Text from "@/components/atoms/Text";
 
 export default function ImageUploader({ currentUrl, onUpload, error }) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(currentUrl);
   const fileInputRef = useRef(null);
-  const supabase = createClient();
 
   const handleUpload = async (event) => {
     try {
@@ -16,21 +15,10 @@ export default function ImageUploader({ currentUrl, onUpload, error }) {
       const file = event.target.files[0];
       if (!file) return;
 
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random()}-${Math.floor(Date.now() / 1000)}.${fileExt}`;
-      const filePath = `projects/${fileName}`;
+      const formData = new FormData();
+      formData.append("file", file);
 
-      const { error: uploadError } = await supabase.storage
-        .from("projects")
-        .upload(filePath, file);
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { data: { publicUrl } } = supabase.storage
-        .from("projects")
-        .getPublicUrl(filePath);
+      const publicUrl = await uploadImageAction(formData);
 
       setPreview(publicUrl);
       onUpload(publicUrl);
