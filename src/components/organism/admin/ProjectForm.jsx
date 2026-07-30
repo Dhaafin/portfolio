@@ -28,6 +28,9 @@ const projectSchema = z.z.object({
   description: z.z
     .string()
     .min(10, "Description must be at least 10 characters"),
+  details: z.z.string().optional().or(z.z.literal("")),
+  technologies: z.z.string().optional().or(z.z.literal("")),
+  project_type: z.z.string().optional().or(z.z.literal("")),
   image_url: z.z
     .string()
     .url("Must be a valid URL")
@@ -36,11 +39,11 @@ const projectSchema = z.z.object({
   order: z.z.number().int().default(0),
   is_published: z.z.boolean().default(false),
 });
-
+ 
 export default function ProjectForm({ initialData, id }) {
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
-
+ 
   const {
     register,
     handleSubmit,
@@ -48,17 +51,29 @@ export default function ProjectForm({ initialData, id }) {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(projectSchema),
-    defaultValues: initialData || {
-      title: "",
-      github_url: "",
-      demo_url: "",
-      role: "",
-      year: new Date().getFullYear().toString(),
-      description: "",
-      image_url: "",
-      order: 0,
-      is_published: false,
-    },
+    defaultValues: initialData
+      ? {
+          ...initialData,
+          technologies: Array.isArray(initialData.technologies)
+            ? initialData.technologies.join(", ")
+            : initialData.technologies || "",
+          details: initialData.details || "",
+          project_type: initialData.project_type || "",
+        }
+      : {
+          title: "",
+          github_url: "",
+          demo_url: "",
+          role: "",
+          year: new Date().getFullYear().toString(),
+          description: "",
+          details: "",
+          technologies: "",
+          project_type: "",
+          image_url: "",
+          order: 0,
+          is_published: false,
+        },
   });
 
   const onSubmit = async (data) => {
@@ -120,19 +135,53 @@ export default function ProjectForm({ initialData, id }) {
         />
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FormField
+          label="Project Type"
+          id="project_type"
+          register={register}
+          error={errors.project_type?.message}
+          placeholder="web application, design system, CLI tool"
+        />
+        <FormField
+          label="Technologies (comma-separated)"
+          id="technologies"
+          register={register}
+          error={errors.technologies?.message}
+          placeholder="next.js, tailwind css, react, go"
+        />
+      </div>
+
       <div className="flex flex-col gap-2">
         <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold ml-1">
           Description
         </label>
         <textarea
           {...register("description")}
-          rows={4}
+          rows={3}
           className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm focus:outline-none focus:border-primary/50 transition-all resize-none"
-          placeholder="Describe the project..."
+          placeholder="Describe the project briefly..."
         />
         {errors.description && (
           <span className="text-[10px] text-red-500 font-bold uppercase tracking-tighter mt-1 ml-1">
             {errors.description.message}
+          </span>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold ml-1">
+          Detailed Story / Insights (Markdown supported)
+        </label>
+        <textarea
+          {...register("details")}
+          rows={6}
+          className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm focus:outline-none focus:border-primary/50 transition-all resize-y"
+          placeholder="Long-form engineering details, challenges, solutions..."
+        />
+        {errors.details && (
+          <span className="text-[10px] text-red-500 font-bold uppercase tracking-tighter mt-1 ml-1">
+            {errors.details.message}
           </span>
         )}
       </div>

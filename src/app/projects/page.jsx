@@ -10,6 +10,8 @@ const mockProjects = [
     title: "project one.",
     role: "full-stack",
     year: "2026",
+    project_type: "web application",
+    technologies: ["next.js", "supabase", "react", "three.js"],
     description:
       "a state-of-the-art e-commerce platform built with next.js and supabase. features real-time inventory management and a custom 3d product configurator.",
   },
@@ -18,6 +20,8 @@ const mockProjects = [
     title: "project two.",
     role: "frontend",
     year: "2025",
+    project_type: "design system",
+    technologies: ["react", "webgl", "tailwind css", "framer motion"],
     description:
       "an award-winning marketing site for a luxury automotive brand. intense focus on webgl animations and scroll-linked micro-interactions.",
   },
@@ -26,6 +30,8 @@ const mockProjects = [
     title: "project three.",
     role: "backend",
     year: "2025",
+    project_type: "system service",
+    technologies: ["go", "websockets", "redis", "docker"],
     description:
       "a high-performance microservice architecture designed to handle millions of concurrent websocket connections for a live auction application.",
   },
@@ -103,7 +109,7 @@ export default async function ProjectsPage() {
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border/20 pb-8">
                   <div className="flex flex-col gap-2">
                     <Text className="text-muted/50 text-sm tracking-[0.2em] uppercase font-bold">
-                      {project.id} — {project.year}
+                      {project.id} — {project.year} {project.project_type && `// ${project.project_type}`}
                     </Text>
                     <Text
                       as="h2"
@@ -126,6 +132,20 @@ export default async function ProjectsPage() {
                 <Text className="text-muted/80 text-lg md:text-xl font-medium max-w-2xl leading-relaxed wrap-break-word">
                   {project.description}
                 </Text>
+
+                {/* Technologies Pills */}
+                {project.technologies && Array.isArray(project.technologies) && (
+                  <div className="flex flex-wrap gap-2 -mt-4">
+                    {project.technologies.map((tech) => (
+                      <span
+                        key={tech}
+                        className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] font-bold px-2.5 py-1 rounded bg-accent/5 border border-border text-accent/90"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                )}
 
                 {/* Project Links */}
                 {(project.github_url || project.demo_url) && (

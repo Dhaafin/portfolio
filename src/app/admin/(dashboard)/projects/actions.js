@@ -24,6 +24,11 @@ export async function uploadImageAction(formData) {
 
 export async function createProject(formData) {
   const id = crypto.randomUUID();
+  const technologiesRaw = formData.get("technologies");
+  const technologies = technologiesRaw
+    ? technologiesRaw.split(",").map((t) => t.trim()).filter(Boolean)
+    : null;
+
   const projectData = {
     id,
     title: formData.get("title"),
@@ -32,6 +37,9 @@ export async function createProject(formData) {
     role: formData.get("role") || null,
     year: formData.get("year") || null,
     description: formData.get("description") || null,
+    details: formData.get("details") || null,
+    project_type: formData.get("project_type") || null,
+    technologies: technologies,
     image_url: formData.get("image_url") || null,
     is_published: formData.get("is_published") === "true",
     order: parseInt(formData.get("order") || "0", 10),
@@ -50,6 +58,11 @@ export async function createProject(formData) {
 }
 
 export async function updateProject(id, formData) {
+  const technologiesRaw = formData.get("technologies");
+  const technologies = technologiesRaw
+    ? technologiesRaw.split(",").map((t) => t.trim()).filter(Boolean)
+    : null;
+
   const projectData = {
     title: formData.get("title"),
     github_url: formData.get("github_url") || null,
@@ -57,6 +70,9 @@ export async function updateProject(id, formData) {
     role: formData.get("role") || null,
     year: formData.get("year") || null,
     description: formData.get("description") || null,
+    details: formData.get("details") || null,
+    project_type: formData.get("project_type") || null,
+    technologies: technologies,
     image_url: formData.get("image_url") || null,
     is_published: formData.get("is_published") === "true",
     order: parseInt(formData.get("order") || "0", 10),
