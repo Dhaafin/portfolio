@@ -187,25 +187,13 @@ export default function ProjectsList({ projects }) {
               {/* Close Button */}
               <button
                 onClick={() => setActiveProject(null)}
-                className="absolute top-6 right-6 sm:top-8 sm:right-8 text-xs font-bold uppercase tracking-[0.2em] text-white/80 hover:text-white transition-all bg-black/40 hover:bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 cursor-pointer z-20"
+                className="absolute top-6 right-6 sm:top-8 sm:right-8 w-8 h-8 flex items-center justify-center text-xl text-white/70 hover:text-white transition-all bg-white/5 hover:bg-white/15 rounded-full border border-white/10 cursor-pointer z-20 font-light"
               >
-                close.
+                ×
               </button>
 
-              {/* Cinematic Banner Image */}
-              {activeProject.image_url && (
-                <div className="w-full aspect-16/9 sm:aspect-21/9 bg-surface border border-border/20 rounded-2xl overflow-hidden relative shrink-0">
-                  <img
-                    src={activeProject.image_url}
-                    alt={activeProject.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                </div>
-              )}
-
               {/* Modal Header */}
-              <header className="flex flex-col gap-2 border-b border-border/20 pb-6 pr-12">
+              <header className="flex flex-col gap-2 border-b border-border/20 pb-6 pr-12 shrink-0">
                 <Text className="text-muted/50 text-[10px] sm:text-xs tracking-[0.25em] uppercase font-bold">
                   {activeProject.id} — {activeProject.year} {activeProject.project_type && `// ${activeProject.project_type}`}
                 </Text>
@@ -222,6 +210,18 @@ export default function ProjectsList({ projects }) {
                   {activeProject.role}
                 </Text>
               </header>
+
+              {/* Cinematic Banner Image */}
+              {activeProject.image_url && (
+                <div className="w-full aspect-16/9 sm:aspect-21/9 bg-surface border border-border/20 rounded-2xl overflow-hidden relative shrink-0">
+                  <img
+                    src={activeProject.image_url}
+                    alt={activeProject.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                </div>
+              )}
 
               {/* Detailed Content */}
               <div className="flex flex-col gap-6">
