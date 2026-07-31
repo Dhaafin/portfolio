@@ -13,6 +13,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
+import ChatbotWidget from "@/components/organism/ChatbotWidget";
 
 export const metadata = {
   title: "Dhaafin | Full-stack Developer",
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
           <Navbar />
           <main className="grow">{children}</main>
           <Footer />
+          <ChatbotWidget />
         </SmoothScrollProvider>
       </body>
     </html>
