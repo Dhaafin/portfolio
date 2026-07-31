@@ -5,6 +5,46 @@ import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import Text from "@/components/atoms/Text";
 
+const parseMarkdown = (text) => {
+  if (!text) return "";
+  const lines = text.split("\n");
+  
+  return lines.map((line, idx) => {
+    const isListItem = line.trim().startsWith("- ") || line.trim().startsWith("* ") || /^\d+\.\s/.test(line.trim());
+    let cleanLine = line;
+    if (line.trim().startsWith("- ") || line.trim().startsWith("* ")) {
+      cleanLine = line.trim().substring(2);
+    } else if (/^\d+\.\s/.test(line.trim())) {
+      cleanLine = line.trim().replace(/^\d+\.\s/, "");
+    }
+    
+    const parts = cleanLine.split(/(\*\*.*?\*\*|`.*?`)/g);
+    const parsedElements = parts.map((part, pIdx) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return <strong key={pIdx} className="font-extrabold">{part.slice(2, -2)}</strong>;
+      }
+      if (part.startsWith("`") && part.endsWith("`")) {
+        return <code key={pIdx} className="px-1.5 py-0.5 rounded bg-white/10 font-mono text-[10px] text-accent">{part.slice(1, -1)}</code>;
+      }
+      return part;
+    });
+
+    if (isListItem) {
+      return (
+        <li key={idx} className="ml-4 list-disc mb-1 list-inside text-left">
+          {parsedElements}
+        </li>
+      );
+    }
+    
+    return (
+      <p key={idx} className={`${idx > 0 ? "mt-2" : ""} text-left`}>
+        {parsedElements}
+      </p>
+    );
+  });
+};
+
 export default function ChatbotWidget() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -238,7 +278,7 @@ export default function ChatbotWidget() {
                         : "bg-white/5 border border-white/5 text-white/90 rounded-tl-none"
                     }`}
                   >
-                    {msg.content}
+                    {parseMarkdown(msg.content)}
                   </div>
                 </div>
               ))}
