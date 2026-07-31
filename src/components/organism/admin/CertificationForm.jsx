@@ -120,6 +120,7 @@ export default function CertificationForm({ certification = null }) {
           defaultValue={certification?.skills?.join(", ")}
           placeholder="e.g., Cloud Architecture, EC2, S3"
           className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-white/20 outline-none transition-all resize-none"
+          data-lenis-prevent
         />
       </div>
 

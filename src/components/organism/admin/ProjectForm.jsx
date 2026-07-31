@@ -161,6 +161,7 @@ export default function ProjectForm({ initialData, id }) {
           rows={3}
           className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm focus:outline-none focus:border-primary/50 transition-all resize-none"
           placeholder="Describe the project briefly..."
+          data-lenis-prevent
         />
         {errors.description && (
           <span className="text-[10px] text-red-500 font-bold uppercase tracking-tighter mt-1 ml-1">
@@ -178,6 +179,7 @@ export default function ProjectForm({ initialData, id }) {
           rows={6}
           className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm focus:outline-none focus:border-primary/50 transition-all resize-y"
           placeholder="Long-form engineering details, challenges, solutions..."
+          data-lenis-prevent
         />
         {errors.details && (
           <span className="text-[10px] text-red-500 font-bold uppercase tracking-tighter mt-1 ml-1">

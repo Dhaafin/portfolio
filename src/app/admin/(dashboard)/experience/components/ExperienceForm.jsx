@@ -169,6 +169,7 @@ export default function ExperienceForm({ initialData }) {
           rows={6}
           className="bg-white/5 border border-white/10 rounded-xl p-4 text-sm focus:border-accent outline-none transition-all resize-none"
           placeholder="Developed high-performance visual engines...&#10;Collaborated with cross-functional teams...&#10;Optimized WebGL rendering pipelines..."
+          data-lenis-prevent
         />
       </div>
 
