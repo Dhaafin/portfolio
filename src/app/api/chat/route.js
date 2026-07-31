@@ -1,5 +1,5 @@
 import { db } from "@/lib/db/index.js";
-import { documents, chatLogs } from "@/lib/db/schema.js";
+import { documents, chatLogs, projects, experiences, certifications } from "@/lib/db/schema.js";
 import { verifyJWT } from "@/lib/auth.js";
 
 export async function POST(req) {
@@ -56,11 +56,60 @@ export async function POST(req) {
       }
     }
 
-    // Retrieve documents context for RAG injection
-    const allDocs = await db.select().from(documents);
-    const context = allDocs
-      .map((doc) => `[Category: ${doc.category || "General"}] ${doc.title}:\n${doc.content}`)
-      .join("\n\n---\n\n");
+    const formatArray = (value) => {
+      if (!value) return "none";
+      if (Array.isArray(value)) return value.join(", ");
+      try {
+        const parsed = JSON.parse(value);
+        if (Array.isArray(parsed)) return parsed.join(", ");
+      } catch {}
+      return String(value);
+    };
+
+    const formatPoints = (value) => {
+      if (!value) return "";
+      if (Array.isArray(value)) return value.join(". ");
+      try {
+        const parsed = JSON.parse(value);
+        if (Array.isArray(parsed)) return parsed.join(". ");
+      } catch {}
+      return String(value);
+    };
+
+    // Retrieve documents, projects, experiences, and certifications context for RAG injection
+    const [allDocs, allProjects, allExperiences, allCertifications] = await Promise.all([
+      db.select().from(documents),
+      db.select().from(projects),
+      db.select().from(experiences),
+      db.select().from(certifications)
+    ]);
+
+    const docsContext = allDocs
+      .map((doc) => `[Document - Category: ${doc.category || "General"}] ${doc.title}:\n${doc.content}`)
+      .join("\n\n");
+
+    const projectsContext = allProjects
+      .map((proj) => `[Project] ${proj.title} (${proj.year}) - Role: ${proj.role}. Type: ${proj.project_type}. Tech Stack: ${formatArray(proj.technologies)}.\nDescription: ${proj.description}\nDetails: ${proj.details || "None"}`)
+      .join("\n\n");
+
+    const experiencesContext = allExperiences
+      .map((exp) => `[Experience] Company: ${exp.company}. Role: ${exp.role} (${exp.period || exp.year}). Era: ${exp.era}.\nPoints: ${formatPoints(exp.points)}\nSkills Used: ${formatArray(exp.skills)}`)
+      .join("\n\n");
+
+    const certificationsContext = allCertifications
+      .map((cert) => `[Certification] ${cert.title} issued by ${cert.issuer} (${cert.issue_date || ""}). Skills: ${formatArray(cert.skills)}`)
+      .join("\n\n");
+
+    const context = [
+      "=== Documents & Bio ===",
+      docsContext || "No custom documents.",
+      "=== Projects ===",
+      projectsContext || "No projects listed.",
+      "=== Work Experience ===",
+      experiencesContext || "No experience listed.",
+      "=== Certifications ===",
+      certificationsContext || "No certifications listed."
+    ].join("\n\n");
 
     const systemPrompt = `You are a professional, helpful AI assistant representing Dhaafin, a software engineer.
 Your task is to answer questions about Dhaafin's projects, experience, education, and skills.
