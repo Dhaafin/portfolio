@@ -54,3 +54,11 @@ export const visits = sqliteTable('visits', {
   country: text('country'),
   created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`)
 });
+
+export const documents = sqliteTable('documents', {
+  id: text('id').primaryKey(),
+  title: text('title').notNull(),
+  content: text('content').notNull(),
+  category: text('category'),
+  created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`)
+});
