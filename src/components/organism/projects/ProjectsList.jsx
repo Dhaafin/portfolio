@@ -1,12 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Text from "@/components/atoms/Text";
 
 export default function ProjectsList({ projects }) {
   const [activeProject, setActiveProject] = useState(null);
   const nodeColor = "#A78BFA";
+
+  useEffect(() => {
+    if (activeProject) {
+      document.body.style.overflow = "hidden";
+      window.lenis?.stop();
+    } else {
+      document.body.style.overflow = "";
+      window.lenis?.start();
+    }
+    return () => {
+      document.body.style.overflow = "";
+      window.lenis?.start();
+    };
+  }, [activeProject]);
 
   return (
     <div className="relative">
@@ -167,6 +181,7 @@ export default function ProjectsList({ projects }) {
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ type: "spring", stiffness: 300, damping: 30, mass: 1 }}
               className="relative w-full max-w-3xl glass max-h-[85vh] overflow-y-auto rounded-3xl p-6 sm:p-10 md:p-12 flex flex-col gap-8 shadow-2xl z-10"
+              data-lenis-prevent
             >
               {/* Close Button */}
               <button
