@@ -70,23 +70,23 @@ ${context}
 ---
 Please answer the user's query based ONLY on the verified context above. If the context does not contain the answer, say "I'm sorry, I don't have that information in my records." Keep your responses concise, professional, and aligned with the "Luxury Nonchalance" aesthetic.`;
 
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.NARAYA_API_KEY;
     let aiReply = "";
 
     if (!apiKey) {
       console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-      console.log(`[DEV MODE] OpenAI API key missing. Mocking response for: "${message}"`);
+      console.log(`[DEV MODE] NARAYA_API_KEY missing. Mocking response for: "${message}"`);
       console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
-      aiReply = `[DEV MODE] This is a simulated response. To enable real AI responses, please add OPENAI_API_KEY to your .env.local file. Received message: "${message}"`;
+      aiReply = `[DEV MODE] This is a simulated response. To enable real AI responses, please add NARAYA_API_KEY to your .env.local file. Received message: "${message}"`;
     } else {
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      const response = await fetch("https://router.bynara.id/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: "gpt-4o-mini",
+          model: "agnes-2.5-flash",
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: message }
@@ -97,7 +97,7 @@ Please answer the user's query based ONLY on the verified context above. If the 
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error?.message || "OpenAI API error");
+        throw new Error(errorData.error?.message || "Naraya API error");
       }
 
       const data = await response.json();
