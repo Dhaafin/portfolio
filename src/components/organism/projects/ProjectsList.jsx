@@ -109,7 +109,8 @@ export default function ProjectsList({ projects }) {
                 {project.details && (
                   <button
                     onClick={() => setActiveProject(project)}
-                    className="text-[10px] uppercase tracking-[0.25em] font-bold text-accent hover:text-white transition-colors border border-accent/20 hover:border-accent/50 px-4 py-2 rounded-full cursor-pointer"
+                    className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-950 transition-all duration-300 hover:scale-[1.03] active:scale-95 shadow-[0_0_15px_rgba(167,139,250,0.25)] hover:shadow-[0_0_25px_rgba(167,139,250,0.5)] px-5 py-2.5 rounded-full cursor-pointer hover:brightness-110"
+                    style={{ backgroundColor: nodeColor }}
                   >
                     explore details.
                   </button>
