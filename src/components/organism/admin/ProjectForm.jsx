@@ -15,9 +15,20 @@ const projectSchema = z.z.object({
   title: z.z.string().min(1, "Title is required"),
   github_url: z.z
     .string()
-    .url("Must be a valid URL")
     .optional()
-    .or(z.z.literal("")),
+    .or(z.z.literal(""))
+    .refine((val) => {
+      if (!val) return true;
+      const urls = val.split(",").map(u => u.trim()).filter(Boolean);
+      return urls.every(url => {
+        try {
+          new URL(url);
+          return true;
+        } catch (e) {
+          return false;
+        }
+      });
+    }, "Must be valid URL(s) separated by commas"),
   demo_url: z.z
     .string()
     .url("Must be a valid URL")
@@ -190,11 +201,11 @@ export default function ProjectForm({ initialData, id }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField
-          label="GitHub URL (Optional)"
+          label="GitHub URL(s) (comma-separated for multiple)"
           id="github_url"
           register={register}
           error={errors.github_url?.message}
-          placeholder="https://github.com/..."
+          placeholder="https://github.com/fe, https://github.com/be"
         />
         <FormField
           label="Demo URL (Optional)"

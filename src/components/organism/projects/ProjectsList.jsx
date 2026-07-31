@@ -4,6 +4,23 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Text from "@/components/atoms/Text";
 
+const parseGithubUrls = (urlStr) => {
+  if (!urlStr) return [];
+  return urlStr.split(",")
+    .map(url => url.trim())
+    .filter(url => url.length > 0);
+};
+
+const getGithubLabel = (url, index) => {
+  try {
+    const parts = url.replace(/\/$/, "").split("/");
+    if (parts.length >= 2) {
+      return parts[parts.length - 1];
+    }
+  } catch (e) {}
+  return `github #${index + 1}`;
+};
+
 export default function ProjectsList({ projects }) {
   const [activeProject, setActiveProject] = useState(null);
   const nodeColor = "#A78BFA";
@@ -116,16 +133,17 @@ export default function ProjectsList({ projects }) {
                   </button>
                 )}
 
-                {project.github_url && (
+                {parseGithubUrls(project.github_url).map((url, index, arr) => (
                   <a
-                    href={project.github_url}
+                    key={url}
+                    href={url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[10px] uppercase tracking-[0.25em] font-bold text-muted hover:text-white transition-colors flex items-center gap-2"
                   >
-                    github <span className="text-accent">↗</span>
+                    {arr.length > 1 ? getGithubLabel(url, index) : "github"} <span className="text-accent">↗</span>
                   </a>
-                )}
+                ))}
                 {project.demo_url && (
                   <a
                     href={project.demo_url}
@@ -251,16 +269,17 @@ export default function ProjectsList({ projects }) {
 
               {/* Footer Actions / Links */}
               <footer className="flex items-center gap-6 mt-4 pt-6 border-t border-border/20">
-                {activeProject.github_url && (
+                {parseGithubUrls(activeProject.github_url).map((url, index, arr) => (
                   <a
-                    href={activeProject.github_url}
+                    key={url}
+                    href={url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[10px] uppercase tracking-[0.25em] font-bold text-muted hover:text-white transition-colors flex items-center gap-2"
                   >
-                    github <span className="text-accent">↗</span>
+                    {arr.length > 1 ? getGithubLabel(url, index) : "github"} <span className="text-accent">↗</span>
                   </a>
-                )}
+                ))}
                 {activeProject.demo_url && (
                   <a
                     href={activeProject.demo_url}
