@@ -30,11 +30,8 @@ export default function AdminSidebar({ user, logoutAction }) {
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="mb-12">
-          <Text className="text-xs tracking-[0.3em] uppercase font-bold text-white/40 mb-2">
-            Control Center
-          </Text>
-          <Text className="text-xl font-black lowercase tracking-tighter">
-            antigravity<span className="text-primary">.</span>
+          <Text className="text-xl font-black lowercase tracking-tighter text-white">
+            portfolio<span className="text-primary">.</span>
           </Text>
         </div>
 
