@@ -63,7 +63,7 @@ export async function POST(req) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
-      from: "Portfolio Chatbot <onboarding@resend.dev>",
+      from: "onboarding@resend.dev",
       to: email,
       subject: `verification code: ${code}`,
       html: `
