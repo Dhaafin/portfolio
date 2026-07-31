@@ -62,3 +62,16 @@ export const documents = sqliteTable('documents', {
   category: text('category'),
   created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`)
 });
+
+export const otps = sqliteTable('otps', {
+  email: text('email').primaryKey(),
+  code: text('code').notNull(),
+  expires_at: integer('expires_at').notNull()
+});
+
+export const chatLogs = sqliteTable('chat_logs', {
+  id: text('id').primaryKey(),
+  ip: text('ip').notNull(),
+  email: text('email'),
+  created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`)
+});
