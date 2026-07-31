@@ -187,10 +187,22 @@ export default function ProjectsList({ projects }) {
               {/* Close Button */}
               <button
                 onClick={() => setActiveProject(null)}
-                className="absolute top-6 right-8 text-xs font-bold uppercase tracking-[0.2em] text-muted hover:text-white transition-colors cursor-pointer"
+                className="absolute top-6 right-6 sm:top-8 sm:right-8 text-xs font-bold uppercase tracking-[0.2em] text-white/80 hover:text-white transition-all bg-black/40 hover:bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 cursor-pointer z-20"
               >
                 close.
               </button>
+
+              {/* Cinematic Banner Image */}
+              {activeProject.image_url && (
+                <div className="w-full aspect-16/9 sm:aspect-21/9 bg-surface border border-border/20 rounded-2xl overflow-hidden relative shrink-0">
+                  <img
+                    src={activeProject.image_url}
+                    alt={activeProject.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                </div>
+              )}
 
               {/* Modal Header */}
               <header className="flex flex-col gap-2 border-b border-border/20 pb-6 pr-12">
