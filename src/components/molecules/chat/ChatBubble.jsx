@@ -22,7 +22,7 @@ const parseMarkdown = (text) => {
         return <strong key={pIdx} className="font-extrabold">{part.slice(2, -2)}</strong>;
       }
       if (part.startsWith("`") && part.endsWith("`")) {
-        return <code key={pIdx} className="px-1.5 py-0.5 rounded bg-white/10 font-mono text-[10px] text-accent">{part.slice(1, -1)}</code>;
+        return <code key={pIdx} className="px-1.5 py-0.5 rounded bg-black/30 border border-white/5 font-mono text-[10px] text-[#A78BFA]">{part.slice(1, -1)}</code>;
       }
       return part;
     });
@@ -73,18 +73,18 @@ export default function ChatBubble({ msg, shouldAnimate }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12, scale: 0.95 }}
+      initial={{ opacity: 0, y: 16, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ type: "spring", stiffness: 350, damping: 26 }}
-      className={`flex flex-col max-w-[80%] gap-1.5 ${
+      transition={{ type: "spring", stiffness: 300, damping: 24, mass: 0.9 }}
+      className={`flex flex-col max-w-[85%] gap-1 ${
         isUser ? "self-end items-end" : "self-start items-start"
       }`}
     >
       <div
-        className={`px-4 py-3 rounded-2xl text-xs leading-relaxed ${
+        className={`px-4 py-3 rounded-2xl text-[12px] leading-relaxed shadow-lg ${
           isUser
-            ? "bg-[#A78BFA] text-black font-medium rounded-tr-none"
-            : "bg-white/5 border border-white/5 text-white/90 rounded-tl-none"
+            ? "bg-gradient-to-tr from-[#A78BFA]/95 to-[#C084FC]/95 text-black font-semibold rounded-tr-none shadow-[0_4px_24px_rgba(167,139,250,0.2)]"
+            : "bg-white/[0.03] backdrop-blur-md border border-white/5 text-white/90 rounded-tl-none shadow-[0_8px_32px_rgba(0,0,0,0.2)]"
         }`}
       >
         {!isUser ? (
@@ -93,6 +93,9 @@ export default function ChatBubble({ msg, shouldAnimate }) {
           parseMarkdown(msg.content)
         )}
       </div>
+      <span className="text-[8px] tracking-widest text-white/20 uppercase font-black px-1 mt-0.5">
+        {isUser ? "you" : "slime"}
+      </span>
     </motion.div>
   );
 }

@@ -24,7 +24,7 @@ export default function ChatbotWidget() {
     { role: "assistant", content: "blup. hello! ask me anything about my projects, skills, or experience." }
   ]);
   const [input, setInput] = useState("");
-  const [turnstileToken, setTurnstileToken] = useState(null);
+  const [turnstileToken, setTokenState] = useState(null);
   const [needsVerification, setNeedsVerification] = useState(false);
   const [queriesLeft, setQueriesLeft] = useState(3);
   const [loadingText, setLoadingText] = useState("thinking...");
@@ -94,9 +94,9 @@ export default function ChatbotWidget() {
           try {
             window.turnstile.render(turnstileContainerRef.current, {
               sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA",
-              callback: (tToken) => setTurnstileToken(tToken),
-              "expired-callback": () => setTurnstileToken(null),
-              "error-callback": () => setTurnstileToken(null)
+              callback: (tToken) => setTokenState(tToken),
+              "expired-callback": () => setTokenState(null),
+              "error-callback": () => setTokenState(null)
             });
           } catch (e) {
             console.error("Turnstile render error:", e);
@@ -258,7 +258,7 @@ export default function ChatbotWidget() {
       {/* Floating Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full bg-[#A78BFA] text-[#050505] flex items-center justify-center shadow-[0_0_20px_rgba(167,139,250,0.4)] hover:shadow-[0_0_30px_rgba(167,139,250,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer ${isOpen ? 'hidden sm:flex' : 'flex'}`}
+        className={`fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full bg-[#A78BFA] text-[#050505] flex items-center justify-center shadow-[0_0_24px_rgba(167,139,250,0.4)] hover:shadow-[0_0_40px_rgba(167,139,250,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer ${isOpen ? 'hidden sm:flex' : 'flex'}`}
       >
         {isOpen ? (
           <span className="text-xl font-light">×</span>
@@ -277,8 +277,15 @@ export default function ChatbotWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 350, damping: 30 }}
-            className="fixed inset-0 w-full h-full rounded-none sm:inset-auto sm:bottom-24 sm:right-6 sm:w-[380px] sm:h-[520px] sm:rounded-3xl bg-black/80 sm:bg-black/70 backdrop-blur-xl border-0 sm:border border-white/10 shadow-2xl flex flex-col overflow-hidden z-[100]"
+            className="fixed inset-0 w-full h-full rounded-none sm:inset-auto sm:bottom-24 sm:right-6 sm:w-[380px] sm:h-[520px] sm:rounded-3xl bg-[#04070c]/90 sm:bg-[#04070c]/75 backdrop-blur-2xl border-0 sm:border border-white/10 shadow-[0_24px_64px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden z-[100]"
           >
+            {/* Ambient Background Glow Orb */}
+            <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#A78BFA]/10 blur-[90px] rounded-full pointer-events-none" />
+            <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-64 h-64 bg-[#C084FC]/5 blur-[90px] rounded-full pointer-events-none" />
+
+            {/* Grid Pattern Overlay */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none" />
+
             {/* Header */}
             <ChatHeader
               token={token}
@@ -288,7 +295,7 @@ export default function ChatbotWidget() {
 
             {/* Messages Area */}
             <div
-              className="flex-1 overflow-y-auto p-6 flex flex-col gap-4"
+              className="relative flex-1 overflow-y-auto p-6 flex flex-col gap-5 z-10"
               data-lenis-prevent
             >
               {messages.map((msg, i) => {
@@ -311,7 +318,7 @@ export default function ChatbotWidget() {
               />
 
               {loading && !needsVerification && (
-                <div className="self-start flex gap-3 items-center bg-white/5 border border-white/5 px-4 py-3 rounded-2xl rounded-tl-none shrink-0">
+                <div className="self-start flex gap-3 items-center bg-white/[0.02] border border-white/5 px-4 py-3 rounded-2xl rounded-tl-none shrink-0 shadow-sm">
                   <Spinner size="xs" color="primary" />
                   <span className="text-[10px] text-white/45 lowercase tracking-wider font-mono">
                     {loadingText}
