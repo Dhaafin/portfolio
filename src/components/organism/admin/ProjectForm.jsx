@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Text from "@/components/atoms/Text";
+import Spinner from "@/components/atoms/Spinner";
 import {
   createProject,
   updateProject,
@@ -270,9 +271,18 @@ export default function ProjectForm({ initialData, id }) {
       <button
         type="submit"
         disabled={isPending}
-        className="mt-4 px-12 py-4 rounded-full bg-white text-black text-xs font-black uppercase tracking-[0.2em] hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all"
+        className="mt-4 px-12 py-4 rounded-full bg-white text-black text-xs font-black uppercase tracking-[0.2em] hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all flex items-center justify-center gap-2 cursor-pointer"
       >
-        {isPending ? "Syncing..." : id ? "Update Project" : "Create Project"}
+        {isPending ? (
+          <>
+            <Spinner size="xs" color="black" />
+            <span>Syncing...</span>
+          </>
+        ) : id ? (
+          "Update Project"
+        ) : (
+          "Create Project"
+        )}
       </button>
     </form>
   );

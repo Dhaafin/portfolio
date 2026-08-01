@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { login } from "./actions";
 import Text from "@/components/atoms/Text";
+import Spinner from "@/components/atoms/Spinner";
 
 export default function LoginPage() {
   const [isPending, setIsPending] = useState(false);
@@ -76,9 +77,16 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isPending}
-            className="mt-4 w-full py-5 rounded-full bg-white text-black text-xs font-black uppercase tracking-[0.3em] hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all duration-300"
+            className="mt-4 w-full py-5 rounded-full bg-white text-black text-xs font-black uppercase tracking-[0.3em] hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
           >
-            {isPending ? "Establishing Link..." : "Enter Void"}
+            {isPending ? (
+              <>
+                <Spinner size="xs" color="black" />
+                <span>Establishing Link...</span>
+              </>
+            ) : (
+              "Enter Void"
+            )}
           </button>
         </form>
 

@@ -3,6 +3,7 @@
 import { useState, useTransition, useRef } from "react";
 import Text from "@/components/atoms/Text";
 import { uploadCV } from "@/app/admin/(dashboard)/settings/actions";
+import Spinner from "@/components/atoms/Spinner";
 
 export default function CVUploader() {
   const [status, setStatus] = useState("idle"); // idle | uploading | success | error
@@ -82,9 +83,7 @@ export default function CVUploader() {
 
         {isUploading && (
           <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-0.5 bg-white/10 overflow-hidden relative rounded-full">
-              <div className="absolute inset-y-0 left-0 bg-white/60 rounded-full animate-pulse" style={{ width: "60%" }} />
-            </div>
+            <Spinner size="sm" color="primary" />
             <Text className="text-[10px] uppercase tracking-widest text-white/30">Uploading…</Text>
           </div>
         )}

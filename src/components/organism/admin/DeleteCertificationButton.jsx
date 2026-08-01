@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { deleteCertification } from "@/app/admin/(dashboard)/certifications/actions";
 import { motion, AnimatePresence } from "framer-motion";
+import Spinner from "@/components/atoms/Spinner";
 
 export default function DeleteCertificationButton({ id, title }) {
   const [isConfirming, setIsConfirming] = useState(false);
@@ -53,9 +54,16 @@ export default function DeleteCertificationButton({ id, title }) {
                 <button
                   onClick={handleDelete}
                   disabled={isDeleting}
-                  className="flex-1 px-6 py-3 rounded-xl bg-red-500 text-white text-xs font-bold uppercase tracking-widest hover:bg-red-600 transition-all disabled:opacity-50"
+                  className="flex-1 px-6 py-3 rounded-xl bg-red-500 text-white text-xs font-bold uppercase tracking-widest hover:bg-red-600 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  {isDeleting ? "Purging..." : "Confirm Purge"}
+                  {isDeleting ? (
+                    <>
+                      <Spinner size="xs" color="white" />
+                      <span>Purging...</span>
+                    </>
+                  ) : (
+                    "Confirm Purge"
+                  )}
                 </button>
               </div>
             </div>

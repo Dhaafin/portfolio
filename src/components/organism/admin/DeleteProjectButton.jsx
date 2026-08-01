@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { deleteProject } from "@/app/admin/(dashboard)/projects/actions";
+import Spinner from "@/components/atoms/Spinner";
 
 export default function DeleteProjectButton({ id, title }) {
   const [isConfirming, setIsConfirming] = useState(false);
@@ -24,9 +25,16 @@ export default function DeleteProjectButton({ id, title }) {
         <button
           onClick={handleDelete}
           disabled={isPending}
-          className="px-4 py-2 rounded-lg bg-red-500 text-white text-[10px] font-black uppercase tracking-widest hover:bg-red-600 transition-all disabled:opacity-50"
+          className="px-4 py-2 rounded-lg bg-red-500 text-white text-[10px] font-black uppercase tracking-widest hover:bg-red-600 transition-all disabled:opacity-50 flex items-center justify-center gap-1.5"
         >
-          {isPending ? "Deleting..." : "Confirm?"}
+          {isPending ? (
+            <>
+              <Spinner size="xs" color="white" />
+              <span>Deleting...</span>
+            </>
+          ) : (
+            "Confirm?"
+          )}
         </button>
         <button
           onClick={() => setIsConfirming(false)}

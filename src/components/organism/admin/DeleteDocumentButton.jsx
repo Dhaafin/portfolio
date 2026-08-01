@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { deleteDocument } from "@/app/admin/(dashboard)/documents/actions";
 import Text from "@/components/atoms/Text";
+import Spinner from "@/components/atoms/Spinner";
 
 export default function DeleteDocumentButton({ id, title }) {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -41,9 +42,16 @@ export default function DeleteDocumentButton({ id, title }) {
               <button
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="flex-1 px-6 py-3 rounded-xl bg-red-500 text-white text-xs font-bold uppercase tracking-widest hover:scale-105 active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
+                className="flex-1 px-6 py-3 rounded-xl bg-red-500 text-white text-xs font-bold uppercase tracking-widest hover:scale-105 active:scale-95 transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
               >
-                {isDeleting ? "Deleting..." : "Confirm"}
+                {isDeleting ? (
+                  <>
+                    <Spinner size="xs" color="white" />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  "Confirm"
+                )}
               </button>
             </div>
           </div>

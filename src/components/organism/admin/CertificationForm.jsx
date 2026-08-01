@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createCertification, updateCertification } from "@/app/admin/(dashboard)/certifications/actions";
 import Text from "@/components/atoms/Text";
+import Spinner from "@/components/atoms/Spinner";
 
 export default function CertificationForm({ certification = null }) {
   const [error, setError] = useState(null);
@@ -127,9 +128,18 @@ export default function CertificationForm({ certification = null }) {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full md:w-max px-12 py-4 rounded-xl bg-white text-black text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
+        className="w-full md:w-max px-12 py-4 rounded-xl bg-white text-black text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
       >
-        {isPending ? "Syncing with records..." : certification ? "Update Credential" : "Seal Credential"}
+        {isPending ? (
+          <>
+            <Spinner size="xs" color="black" />
+            <span>Syncing with records...</span>
+          </>
+        ) : certification ? (
+          "Update Credential"
+        ) : (
+          "Seal Credential"
+        )}
       </button>
     </form>
   );

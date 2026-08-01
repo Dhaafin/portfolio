@@ -4,6 +4,7 @@ import { useState } from "react";
 import Text from "@/components/atoms/Text";
 import { createExperience, updateExperience } from "../actions";
 import { motion } from "framer-motion";
+import Spinner from "@/components/atoms/Spinner";
 
 const PRESET_COLORS = [
   { name: "Vibrant Blue", value: "hsl(217, 91%, 60%)" },
@@ -188,9 +189,18 @@ export default function ExperienceForm({ initialData }) {
         <button
           type="submit"
           disabled={loading}
-          className="px-12 py-4 rounded-full bg-white text-black text-xs font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
+          className="px-12 py-4 rounded-full bg-white text-black text-xs font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
         >
-          {loading ? "Syncing..." : isEdit ? "Update Era" : "Initialize Era"}
+          {loading ? (
+            <>
+              <Spinner size="xs" color="black" />
+              <span>Syncing...</span>
+            </>
+          ) : isEdit ? (
+            "Update Era"
+          ) : (
+            "Initialize Era"
+          )}
         </button>
         <button
           type="button"

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createDocument, updateDocument } from "@/app/admin/(dashboard)/documents/actions";
 import Text from "@/components/atoms/Text";
+import Spinner from "@/components/atoms/Spinner";
 
 export default function DocumentForm({ document = null }) {
   const [error, setError] = useState(null);
@@ -79,9 +80,18 @@ export default function DocumentForm({ document = null }) {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full md:w-max px-12 py-4 rounded-xl bg-white text-black text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 cursor-pointer"
+        className="w-full md:w-max px-12 py-4 rounded-xl bg-white text-black text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
       >
-        {isPending ? "Saving changes..." : document ? "Update Document" : "Create Document"}
+        {isPending ? (
+          <>
+            <Spinner size="xs" color="black" />
+            <span>Saving changes...</span>
+          </>
+        ) : document ? (
+          "Update Document"
+        ) : (
+          "Create Document"
+        )}
       </button>
     </form>
   );
