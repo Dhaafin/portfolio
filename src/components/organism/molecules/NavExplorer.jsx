@@ -61,7 +61,7 @@ export default function NavExplorer() {
 
           {/* Back button — aligned with content container */}
           <div className="absolute top-0 left-0 right-0 z-50 pointer-events-none">
-            <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-12 md:px-24 lg:px-48 pt-8">
+            <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-12 md:px-24 lg:px-48 pt-10">
               <motion.button
                 onClick={() => setIsOpen(false)}
                 className="cursor-pointer flex items-center gap-2 pointer-events-auto group"
