@@ -1,5 +1,6 @@
 import Hero from "./Hero";
 import GraphExplorer from "./GraphExplorer";
+import ChatbotShowcase from "./ChatbotShowcase";
 import AboutSection from "./AboutSection";
 
 const HomePage = ({ projects = [], experiences = [], certifications = [] }) => {
@@ -15,7 +16,12 @@ const HomePage = ({ projects = [], experiences = [], certifications = [] }) => {
         <GraphExplorer />
       </section>
 
-      {/* Section 3: Identity Archive — about + records briefs */}
+      {/* Section 3: Chatbot Showcase — AI assistant feature reveal */}
+      <section id="chatbot">
+        <ChatbotShowcase />
+      </section>
+
+      {/* Section 4: Identity Archive — about + records briefs */}
       <section id="identity">
         <AboutSection
           projects={projects}
