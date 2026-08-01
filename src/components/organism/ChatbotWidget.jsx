@@ -64,6 +64,7 @@ export default function ChatbotWidget() {
   const [needsVerification, setNeedsVerification] = useState(false);
   const [queriesLeft, setQueriesLeft] = useState(3);
   const [loadingText, setLoadingText] = useState("thinking...");
+  const [suggestedQuestions, setSuggestedQuestions] = useState([]);
 
   const messagesEndRef = useRef(null);
   const turnstileContainerRef = useRef(null);
@@ -81,6 +82,19 @@ export default function ChatbotWidget() {
     if (savedCount) {
       setQueriesLeft(Math.max(0, 3 - parseInt(savedCount, 10)));
     }
+
+    const questionPool = [
+      "what are your top projects?",
+      "how can I contact you?",
+      "what is your technical stack?",
+      "tell me about your background.",
+      "are you open to freelance projects?",
+      "what certifications do you hold?",
+      "why did you choose turso & drizzle?",
+      "how would you describe your coding style?"
+    ];
+    const shuffled = [...questionPool].sort(() => 0.5 - Math.random());
+    setSuggestedQuestions(shuffled.slice(0, 3));
   }, []);
 
   const [telemetryIndex, setTelemetryIndex] = useState(0);
@@ -188,12 +202,9 @@ export default function ChatbotWidget() {
     }
   };
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!input.trim() || loading) return;
+  const performSend = async (userMessage) => {
+    if (!userMessage.trim() || loading) return;
 
-    const userMessage = input.trim();
-    setInput("");
     setMessages(prev => [...prev, { role: "user", content: userMessage }]);
     
     const loadingPhrases = [
@@ -247,6 +258,14 @@ export default function ChatbotWidget() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+    const msg = input.trim();
+    setInput("");
+    await performSend(msg);
   };
 
   return (
@@ -327,6 +346,26 @@ export default function ChatbotWidget() {
                   </div>
                 </div>
               ))}
+              
+              {messages.length === 1 && (
+                <div className="flex flex-col gap-2 mt-2 self-start max-w-[85%] pl-1">
+                  <span className="text-[10px] text-white/35 uppercase tracking-widest font-bold pl-0.5">
+                    suggested questions:
+                  </span>
+                  <div className="flex flex-col gap-1.5 items-start">
+                    {suggestedQuestions.map((q, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => performSend(q)}
+                        disabled={loading}
+                        className="text-left px-3.5 py-2.5 rounded-xl border border-white/5 bg-white/3 hover:bg-white/5 hover:border-white/10 text-white/75 hover:text-white transition-all text-[11px] focus:outline-none cursor-pointer active:scale-[0.97]"
+                      >
+                        {q}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               {loading && !needsVerification && (
                 <div className="self-start flex gap-3 items-center bg-white/5 border border-white/5 px-4 py-3 rounded-2xl rounded-tl-none">
                   <Spinner size="xs" color="primary" />
