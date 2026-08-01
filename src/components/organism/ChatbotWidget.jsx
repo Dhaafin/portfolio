@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import Text from "@/components/atoms/Text";
+import Spinner from "@/components/atoms/Spinner";
 
 const parseMarkdown = (text) => {
   if (!text) return "";
@@ -315,14 +316,10 @@ export default function ChatbotWidget() {
               ))}
               {loading && !needsVerification && (
                 <div className="self-start flex gap-3 items-center bg-white/5 border border-white/5 px-4 py-3 rounded-2xl rounded-tl-none">
+                  <Spinner size="xs" color="primary" />
                   <span className="text-[10px] text-white/45 lowercase tracking-wider font-mono">
                     {loadingText}
                   </span>
-                  <div className="flex gap-1">
-                    <div className="w-1 h-1 rounded-full bg-white/30 animate-bounce" />
-                    <div className="w-1 h-1 rounded-full bg-white/30 animate-bounce delay-150" />
-                    <div className="w-1 h-1 rounded-full bg-white/30 animate-bounce delay-300" />
-                  </div>
                 </div>
               )}
               <div ref={messagesEndRef} />
@@ -363,7 +360,14 @@ export default function ChatbotWidget() {
                       disabled={loading || (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken)}
                       className="w-full py-3 rounded-xl bg-white text-black text-xs font-black uppercase tracking-widest hover:scale-102 active:scale-98 transition-all disabled:opacity-50 cursor-pointer"
                     >
-                      {loading ? "sending code..." : "get verify code."}
+                      {loading ? (
+                        <div className="flex items-center justify-center gap-2">
+                          <Spinner size="xs" color="black" />
+                          <span>sending code...</span>
+                        </div>
+                      ) : (
+                        "get verify code."
+                      )}
                     </button>
                     <button
                       type="button"
@@ -391,7 +395,14 @@ export default function ChatbotWidget() {
                       disabled={loading}
                       className="w-full py-3 rounded-xl bg-[#A78BFA] text-black text-xs font-black uppercase tracking-widest hover:scale-102 active:scale-98 transition-all disabled:opacity-50 cursor-pointer"
                     >
-                      {loading ? "verifying..." : "verify & unlock."}
+                      {loading ? (
+                        <div className="flex items-center justify-center gap-2">
+                          <Spinner size="xs" color="black" />
+                          <span>verifying...</span>
+                        </div>
+                      ) : (
+                        "verify & unlock."
+                      )}
                     </button>
                     <div className="flex justify-between items-center px-1">
                       <button
