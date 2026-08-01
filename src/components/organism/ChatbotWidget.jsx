@@ -246,10 +246,14 @@ export default function ChatbotWidget() {
           >
             {/* Header */}
             <header className="px-6 py-4 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/2">
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#A78BFA] animate-pulse" />
-                <Text className="text-sm font-black tracking-widest uppercase text-white font-jost">
-                  assistant<span className="text-[#A78BFA]">.</span>
+              <div className="flex items-center gap-3">
+                <img
+                  src="/profile.png"
+                  alt="Dhaafin's Assistant Profile"
+                  className="w-6 h-6 rounded-full object-cover border border-white/10 shrink-0"
+                />
+                <Text className="text-xs font-black tracking-widest uppercase text-white font-jost">
+                  dhaafin's assistant<span className="text-[#A78BFA]">.</span>
                 </Text>
               </div>
               <div className="flex items-center gap-4">
