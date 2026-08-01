@@ -9,7 +9,7 @@ import Spinner from "@/components/atoms/Spinner";
 const parseMarkdown = (text) => {
   if (!text) return "";
   const lines = text.split("\n");
-  
+
   return lines.map((line, idx) => {
     const isListItem = line.trim().startsWith("- ") || line.trim().startsWith("* ") || /^\d+\.\s/.test(line.trim());
     let cleanLine = line;
@@ -18,7 +18,7 @@ const parseMarkdown = (text) => {
     } else if (/^\d+\.\s/.test(line.trim())) {
       cleanLine = line.trim().replace(/^\d+\.\s/, "");
     }
-    
+
     const parts = cleanLine.split(/(\*\*.*?\*\*|`.*?`)/g);
     const parsedElements = parts.map((part, pIdx) => {
       if (part.startsWith("**") && part.endsWith("**")) {
@@ -37,7 +37,7 @@ const parseMarkdown = (text) => {
         </li>
       );
     }
-    
+
     return (
       <p key={idx} className={`${idx > 0 ? "mt-2" : ""} text-left`}>
         {parsedElements}
@@ -55,9 +55,9 @@ export default function ChatbotWidget() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "hello. ask me anything about my projects, skills, or experience." }
+    { role: "assistant", content: "blup. hello! ask me anything about my projects, skills, or experience." }
   ]);
   const [input, setInput] = useState("");
   const [turnstileToken, setTurnstileToken] = useState(null);
@@ -209,7 +209,7 @@ export default function ChatbotWidget() {
     if (!userMessage.trim() || loading) return;
 
     setMessages(prev => [...prev, { role: "user", content: userMessage }]);
-    
+
     const loadingPhrases = [
       "thinking...",
       "analyzing records...",
@@ -239,9 +239,9 @@ export default function ChatbotWidget() {
         headers,
         body: JSON.stringify({ message: userMessage })
       });
-      
+
       const data = await res.json();
-      
+
       if (res.status === 401 || data.needsVerification) {
         setNeedsVerification(true);
         setMessages(prev => [...prev, { role: "assistant", content: "you have reached your free query limit. please verify your email to unlock 10 more queries." }]);
@@ -301,12 +301,12 @@ export default function ChatbotWidget() {
             <header className="px-6 py-4 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/2">
               <div className="flex items-center gap-3">
                 <img
-                  src="/profile.png"
-                  alt="Dhaafin's Assistant Profile"
+                  src="/slime.png"
+                  alt="Astral Slime Profile"
                   className="w-6 h-6 rounded-full object-cover border border-white/10 shrink-0"
                 />
                 <Text className="text-xs font-black tracking-widest uppercase text-white font-jost">
-                  dhaafin's assistant<span className="text-[#A78BFA]">.</span>
+                  Chatbot
                 </Text>
               </div>
               <div className="flex items-center gap-4">
@@ -334,22 +334,20 @@ export default function ChatbotWidget() {
               {messages.map((msg, i) => (
                 <div
                   key={i}
-                  className={`flex flex-col max-w-[80%] gap-1.5 ${
-                    msg.role === "user" ? "self-end items-end" : "self-start items-start"
-                  }`}
+                  className={`flex flex-col max-w-[80%] gap-1.5 ${msg.role === "user" ? "self-end items-end" : "self-start items-start"
+                    }`}
                 >
                   <div
-                    className={`px-4 py-3 rounded-2xl text-xs leading-relaxed ${
-                      msg.role === "user"
-                        ? "bg-[#A78BFA] text-black font-medium rounded-tr-none"
-                        : "bg-white/5 border border-white/5 text-white/90 rounded-tl-none"
-                    }`}
+                    className={`px-4 py-3 rounded-2xl text-xs leading-relaxed ${msg.role === "user"
+                      ? "bg-[#A78BFA] text-black font-medium rounded-tr-none"
+                      : "bg-white/5 border border-white/5 text-white/90 rounded-tl-none"
+                      }`}
                   >
                     {parseMarkdown(msg.content)}
                   </div>
                 </div>
               ))}
-              
+
               {messages.length === 1 && (
                 <div className="flex flex-col gap-2 mt-2 self-start max-w-[85%] pl-1">
                   <span className="text-[10px] text-white/35 uppercase tracking-widest font-bold pl-0.5">
@@ -453,7 +451,7 @@ export default function ChatbotWidget() {
                           placeholder="enter your email..."
                           className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-xs text-white placeholder-white/20 focus:border-[#A78BFA] outline-none transition-all"
                         />
-                        
+
                         {/* Cloudflare Turnstile Container */}
                         <div ref={turnstileContainerRef} className="my-1 flex justify-center scale-90 origin-center" />
 
