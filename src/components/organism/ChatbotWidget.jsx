@@ -46,6 +46,31 @@ const parseMarkdown = (text) => {
   });
 };
 
+function TypewriterMessage({ content, shouldAnimate }) {
+  const [displayedText, setDisplayedText] = useState(shouldAnimate ? "" : content);
+
+  useEffect(() => {
+    if (!shouldAnimate) {
+      setDisplayedText(content);
+      return;
+    }
+
+    setDisplayedText("");
+    let i = 0;
+    const interval = setInterval(() => {
+      i += 3;
+      setDisplayedText(content.substring(0, i));
+      if (i >= content.length) {
+        clearInterval(interval);
+      }
+    }, 12);
+
+    return () => clearInterval(interval);
+  }, [content, shouldAnimate]);
+
+  return <>{parseMarkdown(displayedText)}</>;
+}
+
 export default function ChatbotWidget() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -331,22 +356,36 @@ export default function ChatbotWidget() {
               className="flex-1 overflow-y-auto p-6 flex flex-col gap-4"
               data-lenis-prevent
             >
-              {messages.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`flex flex-col max-w-[80%] gap-1.5 ${msg.role === "user" ? "self-end items-end" : "self-start items-start"
+              {messages.map((msg, i) => {
+                const isLatest = i === messages.length - 1;
+                const shouldAnimate = msg.role === "assistant" && isLatest;
+
+                return (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 12, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ type: "spring", stiffness: 350, damping: 26 }}
+                    className={`flex flex-col max-w-[80%] gap-1.5 ${
+                      msg.role === "user" ? "self-end items-end" : "self-start items-start"
                     }`}
-                >
-                  <div
-                    className={`px-4 py-3 rounded-2xl text-xs leading-relaxed ${msg.role === "user"
-                      ? "bg-[#A78BFA] text-black font-medium rounded-tr-none"
-                      : "bg-white/5 border border-white/5 text-white/90 rounded-tl-none"
-                      }`}
                   >
-                    {parseMarkdown(msg.content)}
-                  </div>
-                </div>
-              ))}
+                    <div
+                      className={`px-4 py-3 rounded-2xl text-xs leading-relaxed ${
+                        msg.role === "user"
+                          ? "bg-[#A78BFA] text-black font-medium rounded-tr-none"
+                          : "bg-white/5 border border-white/5 text-white/90 rounded-tl-none"
+                      }`}
+                    >
+                      {msg.role === "assistant" ? (
+                        <TypewriterMessage content={msg.content} shouldAnimate={shouldAnimate} />
+                      ) : (
+                        parseMarkdown(msg.content)
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
 
               {messages.length === 1 && (
                 <div className="flex flex-col gap-2 mt-2 self-start max-w-[85%] pl-1">
