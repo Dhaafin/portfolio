@@ -62,6 +62,7 @@ export default function ChatbotWidget() {
   const [turnstileToken, setTurnstileToken] = useState(null);
   const [needsVerification, setNeedsVerification] = useState(false);
   const [queriesLeft, setQueriesLeft] = useState(3);
+  const [loadingText, setLoadingText] = useState("thinking...");
 
   const messagesEndRef = useRef(null);
   const turnstileContainerRef = useRef(null);
@@ -180,6 +181,22 @@ export default function ChatbotWidget() {
     const userMessage = input.trim();
     setInput("");
     setMessages(prev => [...prev, { role: "user", content: userMessage }]);
+    
+    const loadingPhrases = [
+      "thinking...",
+      "analyzing records...",
+      "querying knowledgebase...",
+      "retrieving database...",
+      "generating response...",
+      "synthesizing answer...",
+      "processing query...",
+      "searching documents...",
+      "aligning context...",
+      "accessing database..."
+    ];
+    const randomPhrase = loadingPhrases[Math.floor(Math.random() * loadingPhrases.length)];
+    setLoadingText(randomPhrase);
+
     setLoading(true);
     setError(null);
 
@@ -297,10 +314,15 @@ export default function ChatbotWidget() {
                 </div>
               ))}
               {loading && !needsVerification && (
-                <div className="self-start flex gap-1.5 items-center bg-white/5 border border-white/5 px-4 py-3 rounded-2xl rounded-tl-none">
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/30 animate-bounce" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/30 animate-bounce delay-150" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/30 animate-bounce delay-300" />
+                <div className="self-start flex gap-3 items-center bg-white/5 border border-white/5 px-4 py-3 rounded-2xl rounded-tl-none">
+                  <span className="text-[10px] text-white/45 lowercase tracking-wider font-mono">
+                    {loadingText}
+                  </span>
+                  <div className="flex gap-1">
+                    <div className="w-1 h-1 rounded-full bg-white/30 animate-bounce" />
+                    <div className="w-1 h-1 rounded-full bg-white/30 animate-bounce delay-150" />
+                    <div className="w-1 h-1 rounded-full bg-white/30 animate-bounce delay-300" />
+                  </div>
                 </div>
               )}
               <div ref={messagesEndRef} />
