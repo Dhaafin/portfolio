@@ -336,11 +336,13 @@ export default function ChatbotWidget() {
                 );
               })}
 
-              <SuggestedQuestions
-                suggestedQuestions={suggestedQuestions}
-                onSelect={handleSelectSuggestedQuestion}
-                loading={loading}
-              />
+              {!loading && !needsVerification && messages.length > 0 && messages[messages.length - 1].role === "assistant" && (
+                <SuggestedQuestions
+                  suggestedQuestions={suggestedQuestions}
+                  onSelect={handleSelectSuggestedQuestion}
+                  loading={loading}
+                />
+              )}
 
               {loading && !needsVerification && (
                 <div className="self-start flex gap-3 items-center bg-white/[0.02] border border-white/5 px-4 py-3 rounded-2xl rounded-tl-none shrink-0 shadow-sm">
