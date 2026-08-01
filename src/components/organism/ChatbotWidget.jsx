@@ -70,6 +70,15 @@ export default function ChatbotWidget() {
       setQueriesLeft(Math.max(0, 3 - parseInt(savedCount, 10)));
     }
 
+    // Initialize or load chat session ID (UUID)
+    let sessionId = localStorage.getItem("chat_session_id");
+    if (!sessionId) {
+      sessionId = typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : Math.random().toString(36).substring(2) + Date.now().toString(36);
+      localStorage.setItem("chat_session_id", sessionId);
+    }
+
     const questionPool = [
       "what are your top projects?",
       "how can I contact you?",
@@ -216,7 +225,11 @@ export default function ChatbotWidget() {
     setError(null);
 
     try {
-      const headers = { "Content-Type": "application/json" };
+      const sessionId = localStorage.getItem("chat_session_id") || "";
+      const headers = { 
+        "Content-Type": "application/json",
+        "X-Session-ID": sessionId
+      };
       if (token) {
         headers["Authorization"] = `Bearer ${token}`;
       }
@@ -224,7 +237,7 @@ export default function ChatbotWidget() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers,
-        body: JSON.stringify({ message: userMessage })
+        body: JSON.stringify({ message: userMessage, sessionId })
       });
       
       const data = await res.json();

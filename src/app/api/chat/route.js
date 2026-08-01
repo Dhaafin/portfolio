@@ -4,11 +4,15 @@ import { verifyJWT } from "@/lib/auth.js";
 
 export async function POST(req) {
   try {
-    const { message } = await req.json();
+    const reqBody = await req.json();
+    const { message, sessionId: bodySessionId } = reqBody;
 
     if (!message || !message.trim()) {
       return Response.json({ error: "Message is required" }, { status: 400 });
     }
+
+    const headerSessionId = req.headers.get("x-session-id");
+    const sessionId = bodySessionId || headerSessionId || "anonymous-session";
 
     // Get client IP address safely
     const rawIp = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "127.0.0.1";
@@ -158,7 +162,28 @@ Please answer the user's query based ONLY on the verified context above. If the 
       aiReply = data.choices[0].message.content;
     }
 
-    // Log the chat query
+    // Log messages to chat_messages table
+    try {
+      await db.insert(chatMessages).values({
+        id: crypto.randomUUID(),
+        session_id: sessionId,
+        email: email,
+        role: "user",
+        content: message,
+      });
+
+      await db.insert(chatMessages).values({
+        id: crypto.randomUUID(),
+        session_id: sessionId,
+        email: email,
+        role: "assistant",
+        content: aiReply,
+      });
+    } catch (dbErr) {
+      console.error("Failed to log chat messages to database:", dbErr);
+    }
+
+    // Log the chat query limit check
     await db.insert(chatLogs).values({
       id: crypto.randomUUID(),
       ip: clientIp,

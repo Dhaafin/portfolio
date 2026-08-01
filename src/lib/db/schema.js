@@ -84,3 +84,12 @@ export const chatUsers = sqliteTable('chat_users', {
   last_active: text('last_active').default(sql`(CURRENT_TIMESTAMP)`),
   created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`)
 });
+
+export const chatMessages = sqliteTable('chat_messages', {
+  id: text('id').primaryKey(),
+  session_id: text('session_id').notNull(),
+  email: text('email'),
+  role: text('role').notNull(),
+  content: text('content').notNull(),
+  created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`)
+});
