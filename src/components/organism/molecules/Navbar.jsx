@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -17,22 +18,31 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   if (pathname?.startsWith("/admin")) return null;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none pt-4 sm:pt-6">
+    <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none pt-0 md:pt-6">
       <motion.div 
         layout
         initial={false}
         animate={{
-          width: scrolled ? "calc(100% - 2rem)" : "100%",
-          maxWidth: scrolled ? "1100px" : "1400px",
-          height: scrolled ? "64px" : "96px",
+          width: isMobile ? "100%" : (scrolled ? "calc(100% - 2rem)" : "100%"),
+          maxWidth: isMobile ? "100%" : (scrolled ? "1100px" : "1400px"),
+          height: isMobile ? (scrolled ? "60px" : "72px") : (scrolled ? "64px" : "96px"),
           backgroundColor: scrolled ? "rgba(4, 7, 12, 0.75)" : "rgba(4, 7, 12, 0)",
           backdropFilter: scrolled ? "blur(20px)" : "blur(0px)",
-          borderRadius: scrolled ? "9999px" : "0px",
+          borderRadius: isMobile ? "0px" : (scrolled ? "9999px" : "0px"),
           borderColor: scrolled ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0)",
-          boxShadow: scrolled ? "0 20px 40px rgba(0,0,0,0.3)" : "none",
+          boxShadow: isMobile ? (scrolled ? "0 4px 20px rgba(0,0,0,0.15)" : "none") : (scrolled ? "0 20px 40px rgba(0,0,0,0.3)" : "none"),
         }}
         transition={{
           type: "spring",
