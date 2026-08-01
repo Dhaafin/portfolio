@@ -3,73 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
-import Text from "@/components/atoms/Text";
+import ChatHeader from "../molecules/chat/ChatHeader";
+import ChatBubble from "../molecules/chat/ChatBubble";
+import SuggestedQuestions from "../molecules/chat/SuggestedQuestions";
+import OtpGate from "../molecules/chat/OtpGate";
+import ChatInput from "../molecules/chat/ChatInput";
 import Spinner from "@/components/atoms/Spinner";
-
-const parseMarkdown = (text) => {
-  if (!text) return "";
-  const lines = text.split("\n");
-
-  return lines.map((line, idx) => {
-    const isListItem = line.trim().startsWith("- ") || line.trim().startsWith("* ") || /^\d+\.\s/.test(line.trim());
-    let cleanLine = line;
-    if (line.trim().startsWith("- ") || line.trim().startsWith("* ")) {
-      cleanLine = line.trim().substring(2);
-    } else if (/^\d+\.\s/.test(line.trim())) {
-      cleanLine = line.trim().replace(/^\d+\.\s/, "");
-    }
-
-    const parts = cleanLine.split(/(\*\*.*?\*\*|`.*?`)/g);
-    const parsedElements = parts.map((part, pIdx) => {
-      if (part.startsWith("**") && part.endsWith("**")) {
-        return <strong key={pIdx} className="font-extrabold">{part.slice(2, -2)}</strong>;
-      }
-      if (part.startsWith("`") && part.endsWith("`")) {
-        return <code key={pIdx} className="px-1.5 py-0.5 rounded bg-white/10 font-mono text-[10px] text-accent">{part.slice(1, -1)}</code>;
-      }
-      return part;
-    });
-
-    if (isListItem) {
-      return (
-        <li key={idx} className="ml-4 list-disc mb-1 list-inside text-left">
-          {parsedElements}
-        </li>
-      );
-    }
-
-    return (
-      <p key={idx} className={`${idx > 0 ? "mt-2" : ""} text-left`}>
-        {parsedElements}
-      </p>
-    );
-  });
-};
-
-function TypewriterMessage({ content, shouldAnimate }) {
-  const [displayedText, setDisplayedText] = useState(shouldAnimate ? "" : content);
-
-  useEffect(() => {
-    if (!shouldAnimate) {
-      setDisplayedText(content);
-      return;
-    }
-
-    setDisplayedText("");
-    let i = 0;
-    const interval = setInterval(() => {
-      i += 3;
-      setDisplayedText(content.substring(0, i));
-      if (i >= content.length) {
-        clearInterval(interval);
-      }
-    }, 12);
-
-    return () => clearInterval(interval);
-  }, [content, shouldAnimate]);
-
-  return <>{parseMarkdown(displayedText)}</>;
-}
 
 export default function ChatbotWidget() {
   const pathname = usePathname();
@@ -80,7 +19,7 @@ export default function ChatbotWidget() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  
   const [messages, setMessages] = useState([
     { role: "assistant", content: "blup. hello! ask me anything about my projects, skills, or experience." }
   ]);
@@ -154,7 +93,7 @@ export default function ChatbotWidget() {
           clearInterval(checkTurnstileInterval);
           try {
             window.turnstile.render(turnstileContainerRef.current, {
-              sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA", // fallback to CF test sitekey
+              sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA",
               callback: (tToken) => setTurnstileToken(tToken),
               "expired-callback": () => setTurnstileToken(null),
               "error-callback": () => setTurnstileToken(null)
@@ -234,7 +173,7 @@ export default function ChatbotWidget() {
     if (!userMessage.trim() || loading) return;
 
     setMessages(prev => [...prev, { role: "user", content: userMessage }]);
-
+    
     const loadingPhrases = [
       "thinking...",
       "analyzing records...",
@@ -264,9 +203,9 @@ export default function ChatbotWidget() {
         headers,
         body: JSON.stringify({ message: userMessage })
       });
-
+      
       const data = await res.json();
-
+      
       if (res.status === 401 || data.needsVerification) {
         setNeedsVerification(true);
         setMessages(prev => [...prev, { role: "assistant", content: "you have reached your free query limit. please verify your email to unlock 10 more queries." }]);
@@ -304,11 +243,14 @@ export default function ChatbotWidget() {
   };
 
   const handleSendMessage = async (e) => {
-    e.preventDefault();
     if (!input.trim()) return;
     const msg = input.trim();
     setInput("");
     await performSend(msg);
+  };
+
+  const handleSelectSuggestedQuestion = async (q) => {
+    await performSend(q);
   };
 
   return (
@@ -338,33 +280,11 @@ export default function ChatbotWidget() {
             className="fixed inset-0 w-full h-full rounded-none sm:inset-auto sm:bottom-24 sm:right-6 sm:w-[380px] sm:h-[520px] sm:rounded-3xl bg-black/80 sm:bg-black/70 backdrop-blur-xl border-0 sm:border border-white/10 shadow-2xl flex flex-col overflow-hidden z-[100]"
           >
             {/* Header */}
-            <header className="px-6 py-4 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/2">
-              <div className="flex items-center gap-3">
-                <img
-                  src="/slime.png"
-                  alt="Astral Slime Profile"
-                  className="w-6 h-6 rounded-full object-cover border border-white/10 shrink-0"
-                />
-                <Text className="text-xs font-black tracking-widest uppercase text-white font-jost">
-                  Chatbot
-                </Text>
-              </div>
-              <div className="flex items-center gap-4">
-                {!token && (
-                  <Text className="text-[10px] uppercase tracking-widest text-white/40 font-bold">
-                    {queriesLeft} free query left
-                  </Text>
-                )}
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="sm:hidden text-white/60 hover:text-white text-xl font-light focus:outline-none w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors cursor-pointer"
-                  aria-label="Close Assistant"
-                >
-                  ×
-                </button>
-              </div>
-            </header>
+            <ChatHeader
+              token={token}
+              queriesLeft={queriesLeft}
+              onClose={() => setIsOpen(false)}
+            />
 
             {/* Messages Area */}
             <div
@@ -376,68 +296,22 @@ export default function ChatbotWidget() {
                 const shouldAnimate = msg.role === "assistant" && isLatest;
 
                 return (
-                  <motion.div
+                  <ChatBubble
                     key={i}
-                    initial={{ opacity: 0, y: 12, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ type: "spring", stiffness: 350, damping: 26 }}
-                    className={`flex flex-col max-w-[80%] gap-1.5 ${
-                      msg.role === "user" ? "self-end items-end" : "self-start items-start"
-                    }`}
-                  >
-                    <div
-                      className={`px-4 py-3 rounded-2xl text-xs leading-relaxed ${
-                        msg.role === "user"
-                          ? "bg-[#A78BFA] text-black font-medium rounded-tr-none"
-                          : "bg-white/5 border border-white/5 text-white/90 rounded-tl-none"
-                      }`}
-                    >
-                      {msg.role === "assistant" ? (
-                        <TypewriterMessage content={msg.content} shouldAnimate={shouldAnimate} />
-                      ) : (
-                        parseMarkdown(msg.content)
-                      )}
-                    </div>
-                  </motion.div>
+                    msg={msg}
+                    shouldAnimate={shouldAnimate}
+                  />
                 );
               })}
 
-              {!loading && messages.length > 0 && messages[messages.length - 1].role === "assistant" && (
-                <div className="flex flex-col gap-2 mt-2 self-start max-w-[85%] pl-1">
-                  <span className="text-[10px] text-white/35 uppercase tracking-widest font-bold pl-0.5">
-                    suggested questions:
-                  </span>
-                  <div className="flex flex-col gap-1.5 items-start">
-                    {suggestedQuestions.map((q, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => {
-                          performSend(q);
-                          // Shuffle new suggestions for the next turn
-                          const questionPool = [
-                            "what are your top projects?",
-                            "how can I contact you?",
-                            "what is your technical stack?",
-                            "tell me about your background.",
-                            "are you open to freelance projects?",
-                            "what certifications do you hold?",
-                            "why did you choose turso & drizzle?",
-                            "how would you describe your coding style?"
-                          ];
-                          const shuffled = [...questionPool].filter(item => item !== q).sort(() => 0.5 - Math.random());
-                          setSuggestedQuestions(shuffled.slice(0, 3));
-                        }}
-                        disabled={loading}
-                        className="text-left px-3.5 py-2.5 rounded-xl border border-white/5 bg-white/3 hover:bg-white/5 hover:border-white/10 text-white/75 hover:text-white transition-all text-[11px] focus:outline-none cursor-pointer active:scale-[0.97]"
-                      >
-                        {q}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <SuggestedQuestions
+                suggestedQuestions={suggestedQuestions}
+                onSelect={handleSelectSuggestedQuestion}
+                loading={loading}
+              />
+
               {loading && !needsVerification && (
-                <div className="self-start flex gap-3 items-center bg-white/5 border border-white/5 px-4 py-3 rounded-2xl rounded-tl-none">
+                <div className="self-start flex gap-3 items-center bg-white/5 border border-white/5 px-4 py-3 rounded-2xl rounded-tl-none shrink-0">
                   <Spinner size="xs" color="primary" />
                   <span className="text-[10px] text-white/45 lowercase tracking-wider font-mono">
                     {loadingText}
@@ -449,162 +323,33 @@ export default function ChatbotWidget() {
 
             {/* OTP Verification Gate Overlay */}
             {needsVerification && (
-              <div className="absolute inset-0 bg-black/90 backdrop-blur-md flex flex-col justify-center p-8 z-10">
-                {loading ? (
-                  // Gamified Loading Screen
-                  <div className="flex flex-col items-center justify-center gap-6">
-                    <div className="relative w-16 h-16 flex items-center justify-center">
-                      <div className="absolute inset-0 rounded-full border border-[#A78BFA]/20 animate-ping" />
-                      <Spinner size="xl" color="primary" className="absolute animate-spin" />
-                      <div className="w-2 h-2 rounded-full bg-[#A78BFA]" />
-                    </div>
-
-                    <div className="flex flex-col items-center gap-1 text-center">
-                      <Text className="text-[9px] uppercase tracking-[0.22em] font-black text-[#A78BFA]">
-                        secure connection active
-                      </Text>
-                      <Text className="text-lg font-black text-white tracking-tight lowercase font-jost">
-                        transmitting otp.
-                      </Text>
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div className="w-full bg-white/5 border border-white/10 rounded-full h-1 overflow-hidden">
-                      <div
-                        className="bg-[#A78BFA] h-full transition-all duration-300 ease-out"
-                        style={{ width: `${(telemetryIndex + 1) * 20}%` }}
-                      />
-                    </div>
-
-                    {/* Telemetry Logs Terminal */}
-                    <div className="w-full bg-black/50 border border-white/5 p-4 rounded-xl font-mono text-[9px] text-white/40 flex flex-col gap-1 text-left min-h-[90px] justify-end">
-                      {Array.from({ length: telemetryIndex + 1 }).map((_, logIdx) => {
-                        const logs = [
-                          "establishing handshake...",
-                          "resolving captcha challenge...",
-                          "connecting to smtp.gmail.com...",
-                          "signing payload tokens...",
-                          "code dispatched. check your inbox."
-                        ];
-                        const isActive = logIdx === telemetryIndex;
-                        return (
-                          <div key={logIdx} className={`${isActive ? "text-[#A78BFA] font-bold" : "text-white/30"}`}>
-                            &gt; {logs[logIdx]}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <Text className="text-lg font-black text-white mb-2 tracking-tight">
-                      verification required.
-                    </Text>
-                    <Text className="text-xs text-white/60 mb-6 leading-relaxed">
-                      you have used your 3 free queries. please enter a valid email to get an access code and unlock 10 more queries.
-                    </Text>
-
-                    {error && (
-                      <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl text-[10px] font-bold uppercase tracking-wider mb-4">
-                        {error}
-                      </div>
-                    )}
-
-                    {!otpSent ? (
-                      <form onSubmit={handleSendOtp} className="flex flex-col gap-4">
-                        <input
-                          type="email"
-                          required
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="enter your email..."
-                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-xs text-white placeholder-white/20 focus:border-[#A78BFA] outline-none transition-all"
-                        />
-
-                        {/* Cloudflare Turnstile Container */}
-                        <div ref={turnstileContainerRef} className="my-1 flex justify-center scale-90 origin-center" />
-
-                        <button
-                          type="submit"
-                          disabled={loading || (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken)}
-                          className="w-full py-3 rounded-xl bg-white text-black text-xs font-black uppercase tracking-widest hover:scale-102 active:scale-98 transition-all disabled:opacity-50 cursor-pointer"
-                        >
-                          get verify code.
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setNeedsVerification(false)}
-                          className="w-full text-center text-[10px] uppercase tracking-widest font-bold text-white/30 hover:text-white transition-colors py-1 cursor-pointer"
-                        >
-                          cancel
-                        </button>
-                      </form>
-                    ) : (
-                      <form onSubmit={handleVerifyOtp} className="flex flex-col gap-4">
-                        <Text className="text-[10px] text-white/40 uppercase tracking-widest font-bold">
-                          sent to {email}
-                        </Text>
-                        <input
-                          type="text"
-                          required
-                          value={otpCode}
-                          onChange={(e) => setOtpCode(e.target.value)}
-                          placeholder="enter 6-digit code..."
-                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder-white/20 focus:border-[#A78BFA] outline-none transition-all text-center tracking-widest font-mono text-lg"
-                        />
-                        <button
-                          type="submit"
-                          disabled={loading}
-                          className="w-full py-3 rounded-xl bg-[#A78BFA] text-black text-xs font-black uppercase tracking-widest hover:scale-102 active:scale-98 transition-all disabled:opacity-50 cursor-pointer"
-                        >
-                          verify & unlock.
-                        </button>
-                        <div className="flex justify-between items-center px-1">
-                          <button
-                            type="button"
-                            onClick={() => setOtpSent(false)}
-                            className="text-[10px] uppercase tracking-widest font-bold text-white/30 hover:text-white transition-colors cursor-pointer"
-                          >
-                            ← back
-                          </button>
-                          <button
-                            type="button"
-                            onClick={handleSendOtp}
-                            className="text-[10px] uppercase tracking-widest font-bold text-[#A78BFA]/60 hover:text-[#A78BFA] transition-colors cursor-pointer"
-                          >
-                            resend code.
-                          </button>
-                        </div>
-                      </form>
-                    )}
-                  </>
-                )}
-              </div>
+              <OtpGate
+                loading={loading}
+                error={error}
+                otpSent={otpSent}
+                email={email}
+                setEmail={setEmail}
+                otpCode={otpCode}
+                setOtpCode={setOtpCode}
+                handleSendOtp={handleSendOtp}
+                handleVerifyOtp={handleVerifyOtp}
+                setNeedsVerification={setNeedsVerification}
+                setOtpSent={setOtpSent}
+                telemetryIndex={telemetryIndex}
+                turnstileContainerRef={turnstileContainerRef}
+                turnstileToken={turnstileToken}
+                hasTurnstileKey={!!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+              />
             )}
 
             {/* Input Footer */}
-            <form
+            <ChatInput
+              loading={loading}
+              needsVerification={needsVerification}
+              input={input}
+              setInput={setInput}
               onSubmit={handleSendMessage}
-              className="p-4 border-t border-white/5 flex gap-2 items-center bg-white/2 shrink-0"
-            >
-              <input
-                type="text"
-                disabled={loading || needsVerification}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={needsVerification ? "verification required..." : "type a message..."}
-                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-xs text-white placeholder-white/20 focus:border-[#A78BFA] outline-none transition-all disabled:opacity-50"
-              />
-              <button
-                type="submit"
-                disabled={loading || !input.trim() || needsVerification}
-                className="w-10 h-10 rounded-xl bg-white text-black hover:scale-105 active:scale-95 transition-all flex items-center justify-center disabled:opacity-30 disabled:scale-100 shrink-0 cursor-pointer"
-              >
-                <svg className="w-4 h-4 transform rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
-              </button>
-            </form>
+            />
           </motion.div>
         )}
       </AnimatePresence>
