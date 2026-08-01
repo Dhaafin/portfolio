@@ -91,7 +91,10 @@ export async function POST(req) {
       .join("\n\n");
 
     const projectsContext = allProjects
-      .map((proj) => `[Project] ${proj.title} (${proj.year}) - Role: ${proj.role}. Type: ${proj.project_type}. Tech Stack: ${formatArray(proj.technologies)}.\nDescription: ${proj.description}\nDetails: ${proj.details || "None"}`)
+      .map((proj) => {
+        const highlightMarker = proj.is_featured ? " [HIGHLIGHTED/FEATURED PROJECT - The owner wants to highlight/showcase this project]" : "";
+        return `[Project] ${proj.title} (${proj.year})${highlightMarker} - Role: ${proj.role}. Type: ${proj.project_type}. Tech Stack: ${formatArray(proj.technologies)}.\nDescription: ${proj.description}\nDetails: ${proj.details || "None"}`;
+      })
       .join("\n\n");
 
     const experiencesContext = allExperiences

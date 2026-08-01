@@ -42,6 +42,7 @@ export async function createProject(formData) {
     technologies: technologies,
     image_url: formData.get("image_url") || null,
     is_published: formData.get("is_published") === "true",
+    is_featured: formData.get("is_featured") === "true",
     order: parseInt(formData.get("order") || "0", 10),
   };
 
@@ -75,6 +76,7 @@ export async function updateProject(id, formData) {
     technologies: technologies,
     image_url: formData.get("image_url") || null,
     is_published: formData.get("is_published") === "true",
+    is_featured: formData.get("is_featured") === "true",
     order: parseInt(formData.get("order") || "0", 10),
   };
 

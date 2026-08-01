@@ -49,6 +49,7 @@ const projectSchema = z.z.object({
     .or(z.z.literal("")),
   order: z.z.number().int().default(0),
   is_published: z.z.boolean().default(false),
+  is_featured: z.z.boolean().default(false),
 });
  
 export default function ProjectForm({ initialData, id }) {
@@ -84,6 +85,7 @@ export default function ProjectForm({ initialData, id }) {
           image_url: "",
           order: 0,
           is_published: false,
+          is_featured: false,
         },
   });
 
@@ -235,6 +237,21 @@ export default function ProjectForm({ initialData, id }) {
             className="text-xs font-bold uppercase tracking-widest text-white/60 cursor-pointer"
           >
             Published
+          </label>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="is_featured"
+            {...register("is_featured")}
+            className="w-4 h-4 rounded bg-white/5 border-white/10 text-primary focus:ring-0 focus:ring-offset-0 transition-all cursor-pointer"
+          />
+          <label
+            htmlFor="is_featured"
+            className="text-xs font-bold uppercase tracking-widest text-white/60 cursor-pointer"
+          >
+            Featured / Highlighted
           </label>
         </div>
 

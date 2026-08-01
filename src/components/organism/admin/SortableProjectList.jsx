@@ -59,6 +59,11 @@ function SortableProjectItem({ project }) {
                 Draft
               </span>
             )}
+            {project.is_featured && (
+              <span className="px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-400 text-[8px] font-black uppercase tracking-widest">
+                Featured
+              </span>
+            )}
           </div>
           <Text className="text-xs text-muted/60 tracking-wider">
             {project.role} — {project.year}
