@@ -223,7 +223,7 @@ export default function ChatbotWidget() {
       {/* Floating Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full bg-[#A78BFA] text-[#050505] flex items-center justify-center shadow-[0_0_20px_rgba(167,139,250,0.4)] hover:shadow-[0_0_30px_rgba(167,139,250,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
+        className={`fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full bg-[#A78BFA] text-[#050505] flex items-center justify-center shadow-[0_0_20px_rgba(167,139,250,0.4)] hover:shadow-[0_0_30px_rgba(167,139,250,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer ${isOpen ? 'hidden sm:flex' : 'flex'}`}
       >
         {isOpen ? (
           <span className="text-xl font-light">×</span>
@@ -242,7 +242,7 @@ export default function ChatbotWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 350, damping: 30 }}
-            className="fixed bottom-24 right-6 w-[360px] sm:w-[380px] h-[520px] bg-black/70 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden z-[100]"
+            className="fixed inset-0 w-full h-full rounded-none sm:inset-auto sm:bottom-24 sm:right-6 sm:w-[380px] sm:h-[520px] sm:rounded-3xl bg-black/80 sm:bg-black/70 backdrop-blur-xl border-0 sm:border border-white/10 shadow-2xl flex flex-col overflow-hidden z-[100]"
           >
             {/* Header */}
             <header className="px-6 py-4 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/2">
@@ -252,11 +252,21 @@ export default function ChatbotWidget() {
                   assistant<span className="text-[#A78BFA]">.</span>
                 </Text>
               </div>
-              {!token && (
-                <Text className="text-[10px] uppercase tracking-widest text-white/40 font-bold">
-                  {queriesLeft} free query left
-                </Text>
-              )}
+              <div className="flex items-center gap-4">
+                {!token && (
+                  <Text className="text-[10px] uppercase tracking-widest text-white/40 font-bold">
+                    {queriesLeft} free query left
+                  </Text>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="sm:hidden text-white/60 hover:text-white text-xl font-light focus:outline-none w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors cursor-pointer"
+                  aria-label="Close Assistant"
+                >
+                  ×
+                </button>
+              </div>
             </header>
 
             {/* Messages Area */}
@@ -316,7 +326,7 @@ export default function ChatbotWidget() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="enter your email..."
-                      className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder-white/20 focus:border-[#A78BFA] outline-none transition-all"
+                      className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-xs text-white placeholder-white/20 focus:border-[#A78BFA] outline-none transition-all"
                     />
                     
                     {/* Cloudflare Turnstile Container */}
@@ -389,7 +399,7 @@ export default function ChatbotWidget() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={needsVerification ? "verification required..." : "type a message..."}
-                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder-white/20 focus:border-[#A78BFA] outline-none transition-all disabled:opacity-50"
+                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-base sm:text-xs text-white placeholder-white/20 focus:border-[#A78BFA] outline-none transition-all disabled:opacity-50"
               />
               <button
                 type="submit"
