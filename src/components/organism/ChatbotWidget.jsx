@@ -272,6 +272,21 @@ export default function ChatbotWidget() {
         setMessages(prev => [...prev, { role: "assistant", content: "you have reached your free query limit. please verify your email to unlock 10 more queries." }]);
       } else if (res.ok) {
         setMessages(prev => [...prev, { role: "assistant", content: data.reply }]);
+        
+        // Shuffle new suggested questions
+        const questionPool = [
+          "what are your top projects?",
+          "how can I contact you?",
+          "what is your technical stack?",
+          "tell me about your background.",
+          "are you open to freelance projects?",
+          "what certifications do you hold?",
+          "why did you choose turso & drizzle?",
+          "how would you describe your coding style?"
+        ];
+        const shuffled = [...questionPool].filter(item => item !== userMessage).sort(() => 0.5 - Math.random());
+        setSuggestedQuestions(shuffled.slice(0, 3));
+
         if (!token) {
           const currentCount = parseInt(localStorage.getItem("chat_free_count") || "0", 10) + 1;
           localStorage.setItem("chat_free_count", currentCount.toString());
@@ -387,7 +402,7 @@ export default function ChatbotWidget() {
                 );
               })}
 
-              {messages.length === 1 && (
+              {!loading && messages.length > 0 && messages[messages.length - 1].role === "assistant" && (
                 <div className="flex flex-col gap-2 mt-2 self-start max-w-[85%] pl-1">
                   <span className="text-[10px] text-white/35 uppercase tracking-widest font-bold pl-0.5">
                     suggested questions:
@@ -396,7 +411,22 @@ export default function ChatbotWidget() {
                     {suggestedQuestions.map((q, idx) => (
                       <button
                         key={idx}
-                        onClick={() => performSend(q)}
+                        onClick={() => {
+                          performSend(q);
+                          // Shuffle new suggestions for the next turn
+                          const questionPool = [
+                            "what are your top projects?",
+                            "how can I contact you?",
+                            "what is your technical stack?",
+                            "tell me about your background.",
+                            "are you open to freelance projects?",
+                            "what certifications do you hold?",
+                            "why did you choose turso & drizzle?",
+                            "how would you describe your coding style?"
+                          ];
+                          const shuffled = [...questionPool].filter(item => item !== q).sort(() => 0.5 - Math.random());
+                          setSuggestedQuestions(shuffled.slice(0, 3));
+                        }}
                         disabled={loading}
                         className="text-left px-3.5 py-2.5 rounded-xl border border-white/5 bg-white/3 hover:bg-white/5 hover:border-white/10 text-white/75 hover:text-white transition-all text-[11px] focus:outline-none cursor-pointer active:scale-[0.97]"
                       >
