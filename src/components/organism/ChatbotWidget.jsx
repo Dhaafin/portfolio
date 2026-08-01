@@ -32,6 +32,29 @@ export default function ChatbotWidget() {
 
   const messagesEndRef = useRef(null);
   const turnstileContainerRef = useRef(null);
+  const widgetRef = useRef(null);
+  const toggleButtonRef = useRef(null);
+
+  // Close widget when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        isOpen &&
+        widgetRef.current &&
+        !widgetRef.current.contains(event.target) &&
+        toggleButtonRef.current &&
+        !toggleButtonRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [isOpen]);
 
   // Read session token and query counts from localStorage on mount
   useEffect(() => {
@@ -257,6 +280,7 @@ export default function ChatbotWidget() {
     <>
       {/* Floating Toggle Button */}
       <button
+        ref={toggleButtonRef}
         onClick={() => setIsOpen(!isOpen)}
         className={`fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full bg-[#A78BFA] text-[#050505] flex items-center justify-center shadow-[0_0_24px_rgba(167,139,250,0.4)] hover:shadow-[0_0_40px_rgba(167,139,250,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer ${isOpen ? 'hidden sm:flex' : 'flex'}`}
       >
@@ -273,6 +297,7 @@ export default function ChatbotWidget() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            ref={widgetRef}
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
