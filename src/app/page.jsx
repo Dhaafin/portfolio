@@ -2,7 +2,7 @@ import HomePage from "@/components/organism/landing-page";
 import { db } from "@/lib/db/index.js";
 
 export const metadata = {
-  title: "Dhaafin — Full-Stack Developer",
+  title: "Dhaafin's Portfolio",
   description: "I build things that live on the internet. Premium digital experiences, full-stack architecture, and expressive UI.",
 };
 
