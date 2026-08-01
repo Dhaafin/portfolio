@@ -94,7 +94,7 @@ export default function ChatBubble({ msg, shouldAnimate }) {
         )}
       </div>
       <span className="text-[8px] tracking-widest text-white/20 uppercase font-black px-1 mt-0.5">
-        {isUser ? "you" : "slime"}
+        {isUser ? "you" : "blob"}
       </span>
     </motion.div>
   );

@@ -17,7 +17,7 @@ export default function ChatHeader({ token, queriesLeft, onClose }) {
         </div>
         <div className="flex flex-col">
           <Text className="text-[11px] font-black tracking-[0.2em] uppercase text-white font-jost leading-tight">
-            astral slime<span className="text-[#A78BFA]">.</span>
+            chat-blob<span className="text-[#A78BFA]">.</span>
           </Text>
           <span className="text-[8px] tracking-widest text-[#A78BFA]/75 font-mono uppercase font-bold mt-0.5">
             active link

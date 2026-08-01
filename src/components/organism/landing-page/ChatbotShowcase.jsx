@@ -66,7 +66,7 @@ function DemoBubble({ msg, delay = 0 }) {
         })}
       </div>
       <span className="text-[8px] tracking-widest text-white/20 uppercase font-black px-1">
-        {isUser ? "you" : "slime"}
+        {isUser ? "you" : "blob"}
       </span>
     </motion.div>
   );
@@ -199,12 +199,12 @@ export default function ChatbotShowcase() {
               <div className="relative px-5 py-4 border-b border-white/5 flex items-center gap-3 bg-white/[0.02] shrink-0 z-10">
                 <div className="relative flex items-center">
                   <div className="absolute -inset-0.5 rounded-full bg-gradient-to-tr from-[#A78BFA]/30 to-[#C084FC]/30 blur-[2px]" />
-                  <img src="/slime.png" alt="Astral Slime" className="relative w-7 h-7 rounded-full object-cover border border-white/10" />
+                  <img src="/slime.png" alt="Chat Blob" className="relative w-7 h-7 rounded-full object-cover border border-white/10" />
                   <span className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 rounded-full border-2 border-[#04070c] shadow-[0_0_6px_rgba(16,185,129,0.7)] animate-pulse" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[11px] font-black tracking-[0.2em] uppercase text-white font-jost leading-tight">
-                    astral slime<span className="text-[#A78BFA]">.</span>
+                    chat-blob<span className="text-[#A78BFA]">.</span>
                   </span>
                   <span className="text-[8px] tracking-widest text-[#A78BFA]/70 font-mono uppercase font-bold mt-0.5">
                     active link
