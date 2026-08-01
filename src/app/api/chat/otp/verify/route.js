@@ -1,5 +1,5 @@
 import { db } from "@/lib/db/index.js";
-import { otps } from "@/lib/db/schema.js";
+import { otps, chatUsers } from "@/lib/db/schema.js";
 import { eq } from "drizzle-orm";
 import { signJWT } from "@/lib/auth.js";
 
@@ -34,6 +34,23 @@ export async function POST(req) {
 
     // Delete the OTP after successful verification to prevent reuse
     await db.delete(otps).where(eq(otps.email, email));
+
+    // Save email address in analytics database
+    try {
+      await db.insert(chatUsers).values({
+        email,
+        verified_at: new Date().toISOString(),
+        last_active: new Date().toISOString(),
+        query_count: 0
+      }).onConflictDoUpdate({
+        target: chatUsers.email,
+        set: {
+          last_active: new Date().toISOString()
+        }
+      });
+    } catch (dbErr) {
+      console.error("Failed logging chat user:", dbErr);
+    }
 
     // Sign a secure JWT session token for the chatbot
     const chatbotSecret = process.env.ADMIN_SECRET_KEY || "chatbotDefaultFallbackSecret99";

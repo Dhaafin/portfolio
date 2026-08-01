@@ -1,5 +1,5 @@
 import { db } from "@/lib/db/index.js";
-import { documents, chatLogs, projects, experiences, certifications } from "@/lib/db/schema.js";
+import { documents, chatLogs, projects, experiences, certifications, chatUsers } from "@/lib/db/schema.js";
 import { verifyJWT } from "@/lib/auth.js";
 
 export async function POST(req) {
@@ -159,6 +159,31 @@ Please answer the user's query based ONLY on the verified context above. If the 
       ip: clientIp,
       email: email,
     });
+
+    if (email) {
+      try {
+        const existingUser = await db.query.chatUsers.findFirst({
+          where: (chatUsers, { eq }) => eq(chatUsers.email, email)
+        });
+
+        const newCount = (existingUser?.query_count || 0) + 1;
+
+        await db.insert(chatUsers).values({
+          email,
+          verified_at: new Date().toISOString(),
+          query_count: newCount,
+          last_active: new Date().toISOString()
+        }).onConflictDoUpdate({
+          target: chatUsers.email,
+          set: {
+            query_count: newCount,
+            last_active: new Date().toISOString()
+          }
+        });
+      } catch (dbErr) {
+        console.error("Failed updating chat user analytics:", dbErr);
+      }
+    }
 
     return Response.json({ reply: aiReply });
   } catch (error) {

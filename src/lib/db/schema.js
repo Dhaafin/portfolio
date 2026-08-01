@@ -75,3 +75,11 @@ export const chatLogs = sqliteTable('chat_logs', {
   email: text('email'),
   created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`)
 });
+
+export const chatUsers = sqliteTable('chat_users', {
+  email: text('email').primaryKey(),
+  verified_at: text('verified_at').default(sql`(CURRENT_TIMESTAMP)`),
+  query_count: integer('query_count').default(0),
+  last_active: text('last_active').default(sql`(CURRENT_TIMESTAMP)`),
+  created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`)
+});

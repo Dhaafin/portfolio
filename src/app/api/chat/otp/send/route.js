@@ -1,6 +1,6 @@
 import { db } from "@/lib/db/index.js";
 import { otps } from "@/lib/db/schema.js";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { eq } from "drizzle-orm";
 
 async function verifyTurnstile(token) {
@@ -53,19 +53,26 @@ export async function POST(req) {
       }
     });
 
-    // Send email via Resend
-    if (!process.env.RESEND_API_KEY) {
+    // Send email via Gmail SMTP
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
       console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
       console.log(`[DEV MODE] OTP for ${email}: ${code}`);
       console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
       return Response.json({ success: true, dev: true });
     }
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    await resend.emails.send({
-      from: "onboarding@resend.dev",
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS
+      }
+    });
+
+    await transporter.sendMail({
+      from: `"Portfolio Chatbot" <${process.env.GMAIL_USER}>`,
       to: email,
-      subject: `verification code: ${code}`,
+      subject: `Verification Code: ${code}`,
       html: `
         <div style="font-family: sans-serif; padding: 24px; background: #050505; color: #fff; border-radius: 16px; border: 1px solid #222;">
           <h2 style="font-size: 20px; font-weight: 900; margin-bottom: 16px;">Chatbot Verification Code</h2>

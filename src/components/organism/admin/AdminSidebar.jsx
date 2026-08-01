@@ -41,6 +41,7 @@ export default function AdminSidebar({ user, logoutAction }) {
           <AdminNavLink href="/admin/experience" label="experience." active={pathname.startsWith("/admin/experience")} onClick={() => setIsOpen(false)} />
           <AdminNavLink href="/admin/certifications" label="certifications." active={pathname.startsWith("/admin/certifications")} onClick={() => setIsOpen(false)} />
           <AdminNavLink href="/admin/documents" label="documents." active={pathname.startsWith("/admin/documents")} onClick={() => setIsOpen(false)} />
+          <AdminNavLink href="/admin/analytics" label="analytics." active={pathname.startsWith("/admin/analytics")} onClick={() => setIsOpen(false)} />
           <AdminNavLink href="/admin/settings" label="settings." active={pathname === "/admin/settings"} onClick={() => setIsOpen(false)} />
         </nav>
 
