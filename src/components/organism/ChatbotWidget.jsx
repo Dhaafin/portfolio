@@ -191,7 +191,10 @@ export default function ChatbotWidget() {
         setToken(data.token);
         setNeedsVerification(false);
         setOtpSent(false);
-        setMessages(prev => [...prev, { role: "assistant", content: "verification successful. you have unlocked 10 more queries." }]);
+        const successContent = email === "dhaafinm@gmail.com"
+          ? "verification successful. you have unlocked unlimited queries."
+          : "verification successful. you have unlocked 10 more queries.";
+        setMessages(prev => [...prev, { role: "assistant", content: successContent }]);
       } else {
         setError(data.error || "Verification failed");
       }

@@ -33,12 +33,14 @@ export async function POST(req) {
     }
 
     if (isAuthenticated) {
-      // 10 queries limit for authenticated emails
-      const logs = await db.query.chatLogs.findMany({
-        where: (chatLogs, { eq }) => eq(chatLogs.email, email)
-      });
-      if (logs.length >= 10) {
-        return Response.json({ error: "Query limit reached. Maximum 10 queries allowed." }, { status: 403 });
+      // 10 queries limit for authenticated emails (except owner/admin)
+      if (email !== "dhaafinm@gmail.com") {
+        const logs = await db.query.chatLogs.findMany({
+          where: (chatLogs, { eq }) => eq(chatLogs.email, email)
+        });
+        if (logs.length >= 10) {
+          return Response.json({ error: "Query limit reached. Maximum 10 queries allowed." }, { status: 403 });
+        }
       }
     } else {
       // 3 free queries limit per IP for unauthenticated users
