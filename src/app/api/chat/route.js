@@ -1,5 +1,5 @@
 import { db } from "@/lib/db/index.js";
-import { documents, chatLogs, projects, experiences, certifications, chatUsers } from "@/lib/db/schema.js";
+import { documents, chatLogs, projects, experiences, certifications, chatUsers, chatMessages } from "@/lib/db/schema.js";
 import { verifyJWT } from "@/lib/auth.js";
 
 export async function POST(req) {
