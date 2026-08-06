@@ -144,7 +144,7 @@ Please answer the user's query based ONLY on the verified context above. If the 
           "Authorization": `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: "agnes-2.5-flash",
+          model: "agnes-2.0-flash",
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: message }
