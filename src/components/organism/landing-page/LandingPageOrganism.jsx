@@ -3,7 +3,7 @@ import GraphExplorer from "./GraphExplorer";
 import ChatbotShowcase from "./ChatbotShowcase";
 import AboutSection from "./AboutSection";
 
-const HomePage = ({ projects = [], experiences = [], certifications = [] }) => {
+const LandingPageOrganism = ({ projects = [], experiences = [], certifications = [] }) => {
   return (
     <div className="bg-background">
       {/* Section 1: Hero — full viewport cinematic entrance */}
@@ -33,4 +33,4 @@ const HomePage = ({ projects = [], experiences = [], certifications = [] }) => {
   );
 };
 
-export default HomePage;
+export default LandingPageOrganism;

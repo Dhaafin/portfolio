@@ -1,4 +1,5 @@
-import HomePage from "@/components/organism/landing-page";
+import LandingPageOrganism from "@/components/organism/landing-page/LandingPageOrganism";
+
 import { db } from "@/lib/db/index.js";
 
 export const metadata = {
@@ -25,7 +26,7 @@ export default async function LandingPage() {
   ]);
 
   return (
-    <HomePage
+    <LandingPageOrganism
       projects={projects || []}
       experiences={experiences || []}
       certifications={certifications || []}
