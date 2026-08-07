@@ -5,6 +5,7 @@ import { CHAT_CONFIG } from "@/config/chat.config.js";
 
 export default function useChatbot() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSystemPaused, setIsSystemPaused] = useState(false);
   const [email, setEmail] = useState("");
   const [otpCode, setOtpCode] = useState("");
   const [token, setToken] = useState(null);
@@ -48,6 +49,23 @@ export default function useChatbot() {
       document.removeEventListener("touchstart", handleClickOutside);
     };
   }, [isOpen]);
+
+  // Fetch status on mount
+  useEffect(() => {
+    async function checkStatus() {
+      try {
+        const res = await fetch("/api/chat/status");
+        const data = await res.json();
+        if (data.paused) {
+          setIsSystemPaused(true);
+          setIsOpen(false);
+        }
+      } catch (err) {
+        console.error("Failed to check status:", err);
+      }
+    }
+    checkStatus();
+  }, []);
 
   // Read session token and query counts from localStorage on mount
   useEffect(() => {
@@ -214,6 +232,9 @@ export default function useChatbot() {
       if (res.status === 401 || data.needsVerification) {
         setNeedsVerification(true);
         setMessages(prev => [...prev, { role: "assistant", content: `you have reached your free query limit. please verify your email to unlock ${CHAT_CONFIG.limits.authQueriesPerEmail} more queries.` }]);
+      } else if (res.status === 503) {
+        setIsSystemPaused(true);
+        setIsOpen(false);
       } else if (res.ok) {
         setMessages(prev => [...prev, { role: "assistant", content: data.reply }]);
         
@@ -250,6 +271,7 @@ export default function useChatbot() {
 
   return {
     isOpen, setIsOpen,
+    isSystemPaused,
     email, setEmail,
     otpCode, setOtpCode,
     token,

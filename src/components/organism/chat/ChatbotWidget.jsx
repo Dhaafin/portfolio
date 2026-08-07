@@ -15,6 +15,7 @@ export default function ChatbotWidget() {
   
   const {
     isOpen, setIsOpen,
+    isSystemPaused,
     email, setEmail,
     otpCode, setOtpCode,
     token,
@@ -42,26 +43,49 @@ export default function ChatbotWidget() {
   // Hide on admin routes
   if (pathname?.startsWith("/admin")) return null;
 
+  const handleToggle = () => {
+    if (isSystemPaused) return;
+    setIsOpen(!isOpen);
+  };
+
   return (
     <>
-      {/* Floating Toggle Button */}
-      <button
-        ref={toggleButtonRef}
-        onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full bg-[#A78BFA] text-[#050505] flex items-center justify-center shadow-[0_0_24px_rgba(167,139,250,0.4)] hover:shadow-[0_0_40px_rgba(167,139,250,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer ${isOpen ? 'hidden sm:flex' : 'flex'}`}
-      >
-        {isOpen ? (
-          <span className="text-xl font-light">×</span>
-        ) : (
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-          </svg>
+      {/* Floating Toggle Button Wrapper */}
+      <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end group">
+        {/* Tooltip on Maintenance */}
+        {isSystemPaused && (
+          <div className="absolute bottom-16 right-0 bg-[#0c0f17]/95 border border-red-500/20 text-red-400 text-[10px] tracking-wider uppercase font-black px-3.5 py-2 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] whitespace-nowrap mb-2 pointer-events-none opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse mr-2" />
+            chatbot on maintenance
+          </div>
         )}
-      </button>
+
+        <button
+          ref={toggleButtonRef}
+          onClick={handleToggle}
+          className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all cursor-pointer ${
+            isSystemPaused 
+              ? 'bg-[#121620]/80 text-white/30 border border-white/5 cursor-not-allowed opacity-60' 
+              : 'bg-[#A78BFA] text-[#050505] shadow-[0_0_24px_rgba(167,139,250,0.4)] hover:shadow-[0_0_40px_rgba(167,139,250,0.6)] hover:scale-105 active:scale-95'
+          } ${isOpen ? 'hidden sm:flex' : 'flex'}`}
+        >
+          {isSystemPaused ? (
+            <svg className="w-5 h-5 text-red-500/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          ) : isOpen ? (
+            <span className="text-xl font-light">×</span>
+          ) : (
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          )}
+        </button>
+      </div>
 
       {/* Chat Window Panel */}
       <AnimatePresence>
-        {isOpen && (
+        {isOpen && !isSystemPaused && (
           <motion.div
             ref={widgetRef}
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
