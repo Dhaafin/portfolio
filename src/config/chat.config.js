@@ -2,7 +2,7 @@ export const CHAT_CONFIG = {
   // Model Settings
   provider: {
     baseUrl: "https://router.bynara.id/v1",
-    model: "agnes-2.5-flash",
+    model: "agnes-2.0-flash",
     temperature: 0.7,
   },
   
