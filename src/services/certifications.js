@@ -6,3 +6,9 @@ export async function getLandingCertifications() {
     limit: 3,
   });
 }
+
+export async function getAllCertifications() {
+  return db.query.certifications.findMany({
+    orderBy: (certifications, { asc }) => [asc(certifications.order)],
+  });
+}

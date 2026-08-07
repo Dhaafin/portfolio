@@ -1,5 +1,5 @@
-import CertificationLedger from "@/components/organism/certifications/CertificationLedger";
-import { db } from "@/lib/db/index.js";
+import CertificationsOrganism from "@/components/organism/certifications/CertificationsOrganism";
+import { getAllCertifications } from "@/services/certifications";
 
 export const metadata = {
   title: "Certifications | Dhaafin",
@@ -7,13 +7,11 @@ export const metadata = {
 };
 
 export default async function CertificationsPage() {
-  const certifications = await db.query.certifications.findMany({
-    orderBy: (certifications, { asc }) => [asc(certifications.order)],
-  });
+  const certifications = await getAllCertifications();
 
   return (
     <main>
-      <CertificationLedger certifications={certifications || []} />
+      <CertificationsOrganism certifications={certifications || []} />
     </main>
   );
 }
