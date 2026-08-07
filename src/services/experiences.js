@@ -6,3 +6,9 @@ export async function getLandingExperiences() {
     limit: 3,
   });
 }
+
+export async function getAllExperiences() {
+  return db.query.experiences.findMany({
+    orderBy: (experiences, { desc }) => [desc(experiences.order)],
+  });
+}

@@ -1,16 +1,14 @@
-import { db } from "@/lib/db/index.js";
-import TacticalConstellation from "@/components/organism/experience/TacticalConstellation";
+import ExperienceOrganism from "@/components/organism/experience/ExperienceOrganism";
+import { getAllExperiences } from "@/services/experiences";
 
 export const metadata = { title: "Experience | Dhaafin" };
 
 export default async function ExperiencePage() {
-  const experiences = await db.query.experiences.findMany({
-    orderBy: (experiences, { desc }) => [desc(experiences.order)],
-  });
+  const experiences = await getAllExperiences();
 
   return (
     <main className="bg-background selection:bg-accent/30">
-      <TacticalConstellation initialExperiences={experiences || []} />
+      <ExperienceOrganism experiences={experiences || []} />
     </main>
   );
 }
