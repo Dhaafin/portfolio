@@ -122,14 +122,14 @@ export async function POST(req) {
     ].join("\n\n");
 
     const systemPrompt = CHAT_CONFIG.systemPrompt(context);
-    const apiKey = process.env.NARAYA_API_KEY;
+    const apiKey = process.env.AI_API_KEY;
     let aiReply = "";
 
     if (!apiKey) {
       console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-      console.log(`[DEV MODE] NARAYA_API_KEY missing. Mocking response for: "${message}"`);
+      console.log(`[DEV MODE] AI_API_KEY missing. Mocking response for: "${message}"`);
       console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
-      aiReply = `[DEV MODE] This is a simulated response. To enable real AI responses, please add NARAYA_API_KEY to your .env.local file. Received message: "${message}"`;
+      aiReply = `[DEV MODE] This is a simulated response. To enable real AI responses, please add AI_API_KEY to your .env.local file. Received message: "${message}"`;
     } else {
       const response = await fetch(`${CHAT_CONFIG.provider.baseUrl}/chat/completions`, {
         method: "POST",
