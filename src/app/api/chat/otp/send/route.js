@@ -1,6 +1,6 @@
 import { db } from "@/lib/db/index.js";
 import { otps } from "@/lib/db/schema.js";
-import nodemailer from "nodemailer";
+import { sendMail } from "@/lib/mail.js";
 import { eq } from "drizzle-orm";
 
 async function verifyTurnstile(token) {
@@ -53,26 +53,8 @@ export async function POST(req) {
       }
     });
 
-    // Send email via Gmail SMTP
-    if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
-      console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-      console.log(`[DEV MODE] OTP for ${email}: ${code}`);
-      console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
-      return Response.json({ success: true, dev: true });
-    }
-
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS
-      }
-    });
-
-    await transporter.sendMail({
-      from: `"Portfolio Chatbot" <${process.env.GMAIL_USER}>`,
+    // Send email using the unified sendMail helper
+    const mailResult = await sendMail({
       to: email,
       subject: `Verification Code: ${code}`,
       html: `
@@ -85,7 +67,7 @@ export async function POST(req) {
       `
     });
 
-    return Response.json({ success: true });
+    return Response.json({ success: true, dev: !!mailResult?.dev });
   } catch (error) {
     console.error("OTP send error:", error);
     return Response.json({ error: error.message }, { status: 500 });

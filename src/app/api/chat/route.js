@@ -2,9 +2,25 @@ import { db } from "@/lib/db/index.js";
 import { documents, chatLogs, projects, experiences, certifications, chatUsers, chatMessages } from "@/lib/db/schema.js";
 import { verifyJWT } from "@/lib/auth.js";
 import { CHAT_CONFIG } from "@/config/chat.config.js";
+import { sendMail } from "@/lib/mail.js";
 
 export async function POST(req) {
   try {
+    // Check if chatbot is paused/standby (Failsafe flag stored in documents table)
+    const chatbotStatusDoc = await db.query.documents.findFirst({
+      where: (documents, { and, eq }) => and(
+        eq(documents.id, "system_chatbot_paused"),
+        eq(documents.category, "system")
+      )
+    });
+
+    if (chatbotStatusDoc && chatbotStatusDoc.content === "true") {
+      return Response.json(
+        { error: "The AI assistant is temporarily on standby. Please try again later." },
+        { status: 503 }
+      );
+    }
+
     const reqBody = await req.json();
     const { message, sessionId: bodySessionId } = reqBody;
 
@@ -131,29 +147,73 @@ export async function POST(req) {
       console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
       aiReply = `[DEV MODE] This is a simulated response. To enable real AI responses, please add AI_API_KEY to your .env.local file. Received message: "${message}"`;
     } else {
-      const response = await fetch(`${CHAT_CONFIG.provider.baseUrl}/chat/completions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: CHAT_CONFIG.provider.model,
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: message }
-          ],
-          temperature: CHAT_CONFIG.provider.temperature,
-        }),
-      });
+      try {
+        const response = await fetch(`${CHAT_CONFIG.provider.baseUrl}/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model: CHAT_CONFIG.provider.model,
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: message }
+            ],
+            temperature: CHAT_CONFIG.provider.temperature,
+          }),
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error?.message || "Naraya API error");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error?.message || "Naraya API error");
+        }
+
+        const data = await response.json();
+        aiReply = data.choices[0].message.content;
+      } catch (apiErr) {
+        console.error("API completions request failed, triggering failsafe:", apiErr);
+        
+        // Pause chatbot in database (documents table)
+        try {
+          await db.insert(documents).values({
+            id: "system_chatbot_paused",
+            title: "Chatbot Status",
+            content: "true",
+            category: "system"
+          }).onConflictDoUpdate({
+            target: documents.id,
+            set: { content: "true" }
+          });
+        } catch (dbErr) {
+          console.error("Failed to pause chatbot in database:", dbErr);
+        }
+
+        // Notify the owner via email
+        try {
+          await sendMail({
+            to: "dhaafinm@gmail.com",
+            subject: "🚨 ALERT: Portfolio Chatbot Paused (API Down)",
+            html: `
+              <div style="font-family: sans-serif; padding: 24px; background: #050505; color: #fff; border-radius: 16px; border: 1px solid #222;">
+                <h2 style="font-size: 20px; font-weight: 900; color: #EF4444; margin-bottom: 16px;">AI Chatbot Deactivated</h2>
+                <p style="color: #ccc; font-size: 14px;">The portfolio chatbot was automatically placed on standby due to an API completion error:</p>
+                <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); padding: 16px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #FCA5A5; margin: 16px 0;">
+                  ${apiErr.message || "Network connection failure"}
+                </div>
+                <p style="color: #888; font-size: 13px;">To reactivate the chatbot, log into the Admin Panel, search for the document with ID <strong>"system_chatbot_paused"</strong>, and delete it or edit its content to <strong>"false"</strong>.</p>
+              </div>
+            `
+          });
+        } catch (mailErr) {
+          console.error("Failed to send alert email:", mailErr);
+        }
+
+        return Response.json(
+          { error: "The AI assistant is temporarily on standby. Please try again later." },
+          { status: 503 }
+        );
       }
-
-      const data = await response.json();
-      aiReply = data.choices[0].message.content;
     }
 
     // Log messages to chat_messages table
