@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
-import GraphExplorer from "../landing-page/GraphExplorer";
+import GraphExplorer from "../landing-page/molecules/GraphExplorer";
 
 const overlayVariants = {
   hidden: { clipPath: "circle(0% at calc(100% - 3.5rem) 3.5rem)", opacity: 1 },
