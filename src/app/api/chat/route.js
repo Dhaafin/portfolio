@@ -1,6 +1,7 @@
 import { db } from "@/lib/db/index.js";
 import { documents, chatLogs, projects, experiences, certifications, chatUsers, chatMessages } from "@/lib/db/schema.js";
 import { verifyJWT } from "@/lib/auth.js";
+import { CHAT_CONFIG } from "@/config/chat.config.js";
 
 export async function POST(req) {
   try {
@@ -37,24 +38,24 @@ export async function POST(req) {
     }
 
     if (isAuthenticated) {
-      // 10 queries limit for authenticated emails (except owner/admin)
+      // Limit for authenticated emails (except owner/admin)
       if (email !== "dhaafinm@gmail.com") {
         const logs = await db.query.chatLogs.findMany({
           where: (chatLogs, { eq }) => eq(chatLogs.email, email)
         });
-        if (logs.length >= 10) {
-          return Response.json({ error: "Query limit reached. Maximum 10 queries allowed." }, { status: 403 });
+        if (logs.length >= CHAT_CONFIG.limits.authQueriesPerEmail) {
+          return Response.json({ error: `Query limit reached. Maximum ${CHAT_CONFIG.limits.authQueriesPerEmail} queries allowed.` }, { status: 403 });
         }
       }
     } else {
-      // 3 free queries limit per IP for unauthenticated users
+      // Free queries limit per IP for unauthenticated users
       const logs = await db.query.chatLogs.findMany({
         where: (chatLogs, { and, eq, isNull }) => and(
           eq(chatLogs.ip, clientIp),
           isNull(chatLogs.email)
         )
       });
-      if (logs.length >= 3) {
+      if (logs.length >= CHAT_CONFIG.limits.freeQueriesPerIp) {
         return Response.json(
           { needsVerification: true, error: "Free query limit reached. Please verify email." },
           { status: 401 }
@@ -120,14 +121,7 @@ export async function POST(req) {
       certificationsContext || "No certifications listed."
     ].join("\n\n");
 
-    const systemPrompt = `You are a professional, helpful AI assistant representing Dhaafin, a software engineer.
-Your task is to answer questions about Dhaafin's projects, experience, education, and skills.
-Here is the verified context about Dhaafin:
----
-${context}
----
-Please answer the user's query based ONLY on the verified context above. If the context does not contain the answer, say "I'm sorry, I don't have that information in my records." Keep your responses concise, professional, and aligned with the "Luxury Nonchalance" aesthetic.`;
-
+    const systemPrompt = CHAT_CONFIG.systemPrompt(context);
     const apiKey = process.env.NARAYA_API_KEY;
     let aiReply = "";
 
@@ -137,19 +131,19 @@ Please answer the user's query based ONLY on the verified context above. If the 
       console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
       aiReply = `[DEV MODE] This is a simulated response. To enable real AI responses, please add NARAYA_API_KEY to your .env.local file. Received message: "${message}"`;
     } else {
-      const response = await fetch("https://router.bynara.id/v1/chat/completions", {
+      const response = await fetch(`${CHAT_CONFIG.provider.baseUrl}/chat/completions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: "agnes-2.0-flash",
+          model: CHAT_CONFIG.provider.model,
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: message }
           ],
-          temperature: 0.7,
+          temperature: CHAT_CONFIG.provider.temperature,
         }),
       });
 
