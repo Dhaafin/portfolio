@@ -1,6 +1,6 @@
 import Text from "@/components/atoms/Text";
-import ProjectsList from "@/components/organism/projects/ProjectsList";
-import { db } from "@/lib/db/index.js";
+import ProjectOrganism from "@/components/organism/projects/ProjectOrganism";
+import { getAllProjects } from "@/services/projects";
 
 export const metadata = { title: "Projects | Dhaafin" };
 
@@ -40,9 +40,7 @@ const mockProjects = [
 export default async function ProjectsPage() {
   const nodeColor = "#A78BFA";
 
-  const dbProjects = await db.query.projects.findMany({
-    orderBy: (projects, { asc }) => [asc(projects.order)],
-  });
+  const dbProjects = await getAllProjects();
 
   // Use DB projects if available, otherwise fallback to mock data
   const projects = dbProjects?.length > 0 ? dbProjects : mockProjects;
@@ -66,7 +64,7 @@ export default async function ProjectsPage() {
       </header>
 
       {/* The Timeline Container */}
-      <ProjectsList projects={projects} />
+      <ProjectOrganism projects={projects} />
     </div>
   );
 }

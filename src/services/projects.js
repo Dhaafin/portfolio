@@ -7,3 +7,9 @@ export async function getLandingProjects() {
     limit: 3,
   });
 }
+
+export async function getAllProjects() {
+  return db.query.projects.findMany({
+    orderBy: (projects, { asc }) => [asc(projects.order)],
+  });
+}
