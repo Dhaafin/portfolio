@@ -13,7 +13,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
-import ChatbotWidget from "@/components/organism/ChatbotWidget";
+import ChatbotWidget from "@/components/organism/chat/ChatbotWidget";
 
 export const metadata = {
   title: "Dhaafin | Full-stack Developer",

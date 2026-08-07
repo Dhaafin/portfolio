@@ -2,13 +2,13 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
-import ChatHeader from "../molecules/chat/ChatHeader";
-import ChatBubble from "../molecules/chat/ChatBubble";
-import SuggestedQuestions from "../molecules/chat/SuggestedQuestions";
-import OtpGate from "../molecules/chat/OtpGate";
-import ChatInput from "../molecules/chat/ChatInput";
+import ChatHeader from "./molecules/ChatHeader";
+import ChatBubble from "./molecules/ChatBubble";
+import SuggestedQuestions from "./molecules/SuggestedQuestions";
+import OtpGate from "./molecules/OtpGate";
+import ChatInput from "./molecules/ChatInput";
 import Spinner from "@/components/atoms/Spinner";
-import useChatbot from "@/hooks/useChatbot";
+import useChatbot from "./useChatbot";
 
 export default function ChatbotWidget() {
   const pathname = usePathname();
