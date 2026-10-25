@@ -144,7 +144,8 @@ export default function ProjectDetailModal({ activeProject, onClose, nodeColor =
                 videoEmbed.type === "iframe" ? (
                   <iframe
                     src={videoEmbed.src}
-                    title={videoEmbed.title}
+                    title={`${activeProject.title} demo video`}
+                    loading="lazy"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
                     className="w-full h-full border-0"
