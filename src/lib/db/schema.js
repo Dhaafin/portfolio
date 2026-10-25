@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
 export const projects = sqliteTable('projects', {
@@ -93,4 +93,14 @@ export const chatMessages = sqliteTable('chat_messages', {
   role: text('role').notNull(),
   content: text('content').notNull(),
   created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`)
+});
+
+
+export const aiSettings = sqliteTable('ai_settings', {
+  id: text('id').primaryKey().default('default'),
+  is_enabled: integer('is_enabled', { mode: 'boolean' }).default(true),
+  model: text('model').notNull().default('agnes-2.0-flash'),
+  temperature: real('temperature').default(0.7),
+  system_prompt: text('system_prompt'),
+  updated_at: text('updated_at').default(sql`(CURRENT_TIMESTAMP)`)
 });
