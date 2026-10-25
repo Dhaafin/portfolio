@@ -13,6 +13,7 @@ export const projects = sqliteTable('projects', {
   demo_url: text('demo_url'),
   github_url: text('github_url'),
   image_url: text('image_url'),
+  video_url: text('video_url'),
   is_published: integer('is_published', { mode: 'boolean' }).default(false),
   is_featured: integer('is_featured', { mode: 'boolean' }).default(false),
   order: integer('order').default(0),
