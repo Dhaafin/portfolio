@@ -45,5 +45,12 @@ export async function updateAISettings({ is_enabled, model, temperature, system_
       set: payload,
     });
 
-  return payload;
+  return {
+    id: "default",
+    is_enabled: payload.is_enabled,
+    model: payload.model,
+    temperature: payload.temperature,
+    system_prompt: payload.system_prompt,
+    updated_at: new Date().toISOString(),
+  };
 }

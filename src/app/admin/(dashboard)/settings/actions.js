@@ -26,7 +26,7 @@ export async function updateAISettingsAction(formData) {
     revalidatePath("/admin/settings");
     revalidatePath("/api/chat/status");
 
-    return { success: true, settings: updated };
+    return { success: true };
   } catch (error) {
     console.error("Error updating AI settings:", error);
     return { error: error.message || "Failed to update AI settings" };
