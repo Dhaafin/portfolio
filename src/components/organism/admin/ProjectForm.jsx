@@ -49,6 +49,7 @@ const projectSchema = z.z.object({
     .optional()
     .or(z.z.literal("")),
   order: z.z.number().int().default(0),
+  video_url: z.z.string().url("Must be a valid URL").optional().or(z.z.literal("")),
   is_published: z.z.boolean().default(false),
   is_featured: z.z.boolean().default(false),
 });
@@ -72,6 +73,7 @@ export default function ProjectForm({ initialData, id }) {
             : initialData.technologies || "",
           details: initialData.details || "",
           project_type: initialData.project_type || "",
+          video_url: initialData.video_url || "",
         }
       : {
           title: "",
@@ -84,6 +86,7 @@ export default function ProjectForm({ initialData, id }) {
           technologies: "",
           project_type: "",
           image_url: "",
+          video_url: "",
           order: 0,
           is_published: false,
           is_featured: false,
@@ -218,6 +221,14 @@ export default function ProjectForm({ initialData, id }) {
           placeholder="https://demo.com/..."
         />
       </div>
+
+      <FormField
+        label="Video Demo URL (YouTube / Loom / MP4 - Optional)"
+        id="video_url"
+        register={register}
+        error={errors.video_url?.message}
+        placeholder="https://youtube.com/watch?v=... or https://loom.com/share/..."
+      />
 
       <ImageUploader 
         currentUrl={initialData?.image_url} 
