@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Text from "@/components/atoms/Text";
 
@@ -20,7 +21,43 @@ const getGithubLabel = (url, index) => {
   return `github #${index + 1}`;
 };
 
+function getVideoEmbed(url) {
+  if (!url) return null;
+  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|watch\?.+&v=))([\w-]{11})/);
+  if (ytMatch) {
+    return {
+      type: "iframe",
+      src: `https://www.youtube-nocookie.com/embed/${ytMatch[1]}?rel=0&modestbranding=1`,
+      title: "YouTube video player",
+    };
+  }
+  const loomMatch = url.match(/loom\.com\/(?:share|embed)\/([a-zA-Z0-9]+)/);
+  if (loomMatch) {
+    return {
+      type: "iframe",
+      src: `https://www.loom.com/embed/${loomMatch[1]}`,
+      title: "Loom video player",
+    };
+  }
+  const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?([0-9]+)/);
+  if (vimeoMatch) {
+    return {
+      type: "iframe",
+      src: `https://player.vimeo.com/video/${vimeoMatch[1]}`,
+      title: "Vimeo video player",
+    };
+  }
+  return {
+    type: "video",
+    src: url,
+  };
+}
+
 export default function ProjectDetailModal({ activeProject, onClose, nodeColor = "#A78BFA" }) {
+  const hasVideo = Boolean(activeProject.video_url);
+  const hasImage = Boolean(activeProject.image_url);
+  const [activeMedia, setActiveMedia] = useState(hasVideo ? "video" : "image");
+  const videoEmbed = hasVideo ? getVideoEmbed(activeProject.video_url) : null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
@@ -68,15 +105,70 @@ export default function ProjectDetailModal({ activeProject, onClose, nodeColor =
           </Text>
         </header>
 
-        {/* Cinematic Banner Image */}
-        {activeProject.image_url && (
-          <div className="w-full aspect-16/9 sm:aspect-21/9 bg-surface border border-border/20 rounded-2xl overflow-hidden relative shrink-0">
-            <img
-              src={activeProject.image_url}
-              alt={activeProject.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        {/* Media Showcase (Video & Image Switcher) */}
+        {(hasVideo || hasImage) && (
+          <div className="flex flex-col gap-3 shrink-0">
+            {hasVideo && hasImage && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5 p-1 bg-white/5 border border-white/10 rounded-full">
+                  <button
+                    type="button"
+                    onClick={() => setActiveMedia("video")}
+                    className={`px-3 py-1 text-[10px] uppercase tracking-widest font-bold rounded-full transition-all cursor-pointer ${
+                      activeMedia === "video"
+                        ? "bg-white text-black shadow"
+                        : "text-white/50 hover:text-white"
+                    }`}
+                  >
+                    ▶ 01. video demo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveMedia("image")}
+                    className={`px-3 py-1 text-[10px] uppercase tracking-widest font-bold rounded-full transition-all cursor-pointer ${
+                      activeMedia === "image"
+                        ? "bg-white text-black shadow"
+                        : "text-white/50 hover:text-white"
+                    }`}
+                  >
+                    🖼 02. cover image
+                  </button>
+                </div>
+                <span className="text-[10px] uppercase tracking-widest text-white/30 font-mono">
+                  {activeMedia === "video" ? "1 / 2" : "2 / 2"}
+                </span>
+              </div>
+            )}
+            <div className="w-full aspect-16/9 sm:aspect-21/9 bg-surface border border-border/20 rounded-2xl overflow-hidden relative shrink-0">
+              {activeMedia === "video" && hasVideo && videoEmbed ? (
+                videoEmbed.type === "iframe" ? (
+                  <iframe
+                    src={videoEmbed.src}
+                    title={videoEmbed.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    className="w-full h-full border-0"
+                        />
+                ) : (
+                  <video
+                    src={videoEmbed.src}
+                    poster={activeProject.image_url}
+                    controls
+                    playsInline
+                          className="w-full h-full object-cover"
+                        />
+                )
+              ) : hasImage ? (
+                <>
+                  <img
+                    src={activeProject.image_url}
+                    alt={activeProject.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                </>
+              ) : null}
+            </div>
           </div>
         )}
 

@@ -90,7 +90,7 @@ export default function ProjectCard({ project, onExplore, nodeColor = "#A78BFA" 
 
         {/* Project Links & Explore Button */}
         <div className="flex flex-wrap items-center gap-6 mt-2">
-          {project.details && (
+          {(project.details || project.video_url) && (
             <button
               onClick={() => onExplore(project)}
               className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-950 transition-all duration-300 hover:scale-[1.03] active:scale-95 shadow-[0_0_15px_rgba(167,139,250,0.25)] hover:shadow-[0_0_25px_rgba(167,139,250,0.5)] px-5 py-2.5 rounded-full cursor-pointer hover:brightness-110"
@@ -125,6 +125,12 @@ export default function ProjectCard({ project, onExplore, nodeColor = "#A78BFA" 
 
         {/* Cinematic Image Placeholder */}
         <div className="w-full aspect-16/10 md:aspect-21/9 bg-surface border border-border/20 rounded-lg overflow-hidden relative group-hover:border-white/10 transition-colors duration-700 mt-4">
+          {project.video_url && (
+            <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[9px] uppercase tracking-widest font-bold text-white/90">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              video demo
+            </div>
+          )}
           {project.image_url ? (
             <img
               src={project.image_url}
