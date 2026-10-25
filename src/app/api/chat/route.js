@@ -3,23 +3,19 @@ import { documents, chatLogs, projects, experiences, certifications, chatUsers, 
 import { verifyJWT } from "@/lib/auth.js";
 import { CHAT_CONFIG } from "@/config/chat.config.js";
 import { sendMail } from "@/lib/mail.js";
+import { getAISettings, updateAISettings } from "@/services/aiSettings.js";
 
 export async function POST(req) {
   try {
-    // Check if chatbot is paused/standby (Failsafe flag stored in documents table)
-    const chatbotStatusDoc = await db.query.documents.findFirst({
-      where: (documents, { and, eq }) => and(
-        eq(documents.id, "system_chatbot_paused"),
-        eq(documents.category, "system")
-      )
-    });
-
-    if (chatbotStatusDoc && chatbotStatusDoc.content === "true") {
+    // Check if chatbot is paused/standby via centralized AI settings
+    const aiSettings = await getAISettings();
+    if (!aiSettings.is_enabled) {
       return Response.json(
         { error: "The AI assistant is temporarily on standby. Please try again later." },
         { status: 503 }
       );
     }
+    
 
     const reqBody = await req.json();
     const { message, sessionId: bodySessionId } = reqBody;
@@ -155,12 +151,12 @@ export async function POST(req) {
             "Authorization": `Bearer ${apiKey}`,
           },
           body: JSON.stringify({
-            model: CHAT_CONFIG.provider.model,
+            model: aiSettings.model || CHAT_CONFIG.provider.model,
             messages: [
               { role: "system", content: systemPrompt },
               { role: "user", content: message }
             ],
-            temperature: CHAT_CONFIG.provider.temperature,
+            temperature: typeof aiSettings.temperature === "number" ? aiSettings.temperature : CHAT_CONFIG.provider.temperature,
           }),
         });
 
@@ -174,19 +170,11 @@ export async function POST(req) {
       } catch (apiErr) {
         console.error("API completions request failed, triggering failsafe:", apiErr);
         
-        // Pause chatbot in database (documents table)
+        // Pause chatbot in centralized ai_settings
         try {
-          await db.insert(documents).values({
-            id: "system_chatbot_paused",
-            title: "Chatbot Status",
-            content: "true",
-            category: "system"
-          }).onConflictDoUpdate({
-            target: documents.id,
-            set: { content: "true" }
-          });
+          await updateAISettings({ is_enabled: false });
         } catch (dbErr) {
-          console.error("Failed to pause chatbot in database:", dbErr);
+          console.error("Failed to pause chatbot in ai_settings:", dbErr);
         }
 
         // Notify the owner via email
@@ -201,7 +189,7 @@ export async function POST(req) {
                 <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); padding: 16px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #FCA5A5; margin: 16px 0;">
                   ${apiErr.message || "Network connection failure"}
                 </div>
-                <p style="color: #888; font-size: 13px;">To reactivate the chatbot, log into the Admin Panel, search for the document with ID <strong>"system_chatbot_paused"</strong>, and delete it or edit its content to <strong>"false"</strong>.</p>
+                <p style="color: #888; font-size: 13px;">To reactivate the chatbot, log into the Admin Panel, go to the Admin Panel > <strong>Settings</strong> and toggle the AI Assistant switch back to <strong>Active</strong>.</p>
               </div>
             `
           });
