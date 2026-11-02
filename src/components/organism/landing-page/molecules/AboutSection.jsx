@@ -17,21 +17,23 @@ const fastTransition = { duration: 0.05, ease: [0.23, 1, 0.32, 1] };
 
 // --- Sub-Components ---
 
-const SectionLabel = memo(({ children, color = "hsl(217,91%,60%)" }) => {
+const SectionHeader = memo(({ kicker, title, color = "hsl(217,91%,60%)" }) => {
   return (
-    <div className="flex items-center gap-4 mb-8 md:mb-12">
-      <div className="h-[1px] w-12" style={{ background: color }} />
-      <p
-        className="text-[10px] font-black uppercase tracking-[0.4em]"
+    <div className="flex flex-col gap-2 mb-8 md:mb-12">
+      <span
+        className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.25em]"
         style={{ color }}
       >
-        {children}
-      </p>
+        {kicker}
+      </span>
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-white">
+        {title}
+      </h2>
     </div>
   );
 });
 
-SectionLabel.displayName = "SectionLabel";
+SectionHeader.displayName = "SectionHeader";
 
 const PrimaryCTA = memo(({ href, color, text }) => {
   return (
@@ -75,7 +77,7 @@ const ViewAllLink = memo(({ href, color, text = "view full archive" }) => {
         className="h-[1px] rounded-lg bg-linear-to-t from-w-8 transition-all duration-500 group-hover:w-16"
         style={{ background: color }}
       />
-      {text}.<span style={{ color }}>↗</span>
+      {text} <span style={{ color }}>↗</span>
     </Link>
   );
 });
@@ -283,7 +285,7 @@ export default function AboutSection({
           transition={{ duration: 0.8 }}
           className="mb-32"
         >
-          <SectionLabel color="#34D399">academic foundation.</SectionLabel>
+          <SectionHeader kicker="EDUCATION" title="Academic Background" color="#34D399" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
             {educations.map((edu, i) => (
               <div
@@ -374,7 +376,7 @@ export default function AboutSection({
           transition={{ duration: 0.8 }}
           className="relative mb-32"
         >
-          <SectionLabel color="#A78BFA">selected works.</SectionLabel>
+          <SectionHeader kicker="PROJECTS" title="Featured Works" color="#A78BFA" />
 
           <div className="flex flex-col border-t border-white/10 mt-12">
             {[...projects]
@@ -439,7 +441,7 @@ export default function AboutSection({
           transition={{ duration: 0.8 }}
           className="mb-32"
         >
-          <SectionLabel color="#F472B6">professional path.</SectionLabel>
+          <SectionHeader kicker="EXPERIENCE" title="Professional Experience" color="#F472B6" />
 
           <div className="flex flex-col mt-12 gap-2 overflow-hidden">
             {[...experiences]
@@ -507,7 +509,7 @@ export default function AboutSection({
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
         >
-          <SectionLabel color="#FACC15">verified credentials.</SectionLabel>
+          <SectionHeader kicker="CERTIFICATIONS" title="Licenses & Certifications" color="#FACC15" />
 
           <div className="mt-12 bg-black/40 border border-white/5 p-8 md:p-12 rounded-2xl font-mono text-sm md:text-base tracking-wider shadow-inner">
             <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4 text-white/40 uppercase text-xs font-bold tracking-[0.2em]">
