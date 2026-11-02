@@ -54,7 +54,7 @@ export default function ProjectCard({ project, onExplore, nodeColor = "#A78BFA" 
             </Text>
             <Text
               as="h2"
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black lowercase tracking-tighter text-foreground group-hover:text-white transition-colors duration-500"
+              className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground group-hover:text-white transition-colors duration-500"
             >
               {project.title}
             </Text>

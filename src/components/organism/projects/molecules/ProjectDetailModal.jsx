@@ -93,7 +93,7 @@ export default function ProjectDetailModal({ activeProject, onClose, nodeColor =
           </Text>
           <Text
             as="h3"
-            className="text-3xl sm:text-4xl md:text-5xl font-black lowercase tracking-tighter text-white"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white"
           >
             {activeProject.title}
           </Text>

@@ -54,14 +54,11 @@ export default function CertRow({ cert, index, onHover, onLeave, isHovered, anyH
 
             <div className="min-w-0">
               <motion.h2
-                className="text-2xl md:text-3xl lg:text-4xl font-black lowercase tracking-tighter leading-tight truncate"
+                className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight leading-tight truncate"
                 animate={{ color: isHovered ? cert.color : "hsl(210,40%,98%)" }}
                 transition={{ duration: 0.35 }}
               >
-                {cert.title.toLowerCase()}
-                <motion.span animate={{ opacity: isHovered ? 1 : 0.4 }} transition={{ duration: 0.3 }}>
-                  .
-                </motion.span>
+                {cert.title}
               </motion.h2>
               <p className="text-xs tracking-[0.25em] uppercase font-semibold text-muted/50 mt-1.5">
                 {cert.issuer}

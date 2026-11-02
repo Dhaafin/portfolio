@@ -340,7 +340,7 @@ export default function AboutSection({
                     <p className="text-[11px] font-black uppercase tracking-[0.5em] text-white/20 mb-1">
                       Institution
                     </p>
-                    <p className="text-xl font-bold tracking-tight text-white/60 lowercase">
+                    <p className="text-lg md:text-xl font-bold tracking-tight text-white/60">
                       {edu.institution}
                     </p>
                   </div>
@@ -403,7 +403,7 @@ export default function AboutSection({
                     <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 group-hover:text-[#A78BFA] transition-colors duration-300 w-6">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <h3 className="text-3xl md:text-5xl lg:text-7xl font-black lowercase tracking-tighter text-white/60 group-hover:text-white transition-colors duration-300">
+                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-white/70 group-hover:text-white transition-colors duration-300">
                       {project.title}
                     </h3>
                   </div>
