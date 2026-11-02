@@ -1,6 +1,5 @@
 import Hero from "./molecules/Hero";
 import GraphExplorer from "./molecules/GraphExplorer";
-import ChatbotShowcase from "./molecules/ChatbotShowcase";
 import AboutSection from "./molecules/AboutSection";
 import { getLandingProjects } from "@/services/projects";
 import { getLandingExperiences } from "@/services/experiences";
@@ -21,10 +20,6 @@ const LandingPageOrganism = async () => {
 
       <section id="explore">
         <GraphExplorer />
-      </section>
-
-      <section id="chatbot">
-        <ChatbotShowcase />
       </section>
 
       <section id="identity">
