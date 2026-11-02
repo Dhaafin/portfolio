@@ -1,5 +1,4 @@
 import Hero from "./molecules/Hero";
-import GraphExplorer from "./molecules/GraphExplorer";
 import AboutSection from "./molecules/AboutSection";
 import { getLandingProjects } from "@/services/projects";
 import { getLandingExperiences } from "@/services/experiences";
@@ -16,10 +15,6 @@ const LandingPageOrganism = async () => {
     <div className="bg-background">
       <section id="hero" className="h-screen overflow-hidden">
         <Hero />
-      </section>
-
-      <section id="explore">
-        <GraphExplorer />
       </section>
 
       <section id="identity">
