@@ -1,33 +1,15 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Text from "@/components/atoms/Text";
-import FloatingLens from "./molecules/FloatingLens";
 import CertRow from "./molecules/CertRow";
 
 export default function CertificationsOrganism({ certifications = [] }) {
   const [hoveredCert, setHoveredCert] = useState(null);
 
-  // Smooth spring-based cursor tracking
-  const rawX = useMotionValue(0);
-  const rawY = useMotionValue(0);
-  const lensX = useSpring(rawX, { damping: 22, stiffness: 180 });
-  const lensY = useSpring(rawY, { damping: 22, stiffness: 180 });
-
-  const handleMouseMove = useCallback(
-    (e) => {
-      rawX.set(e.clientX);
-      rawY.set(e.clientY);
-    },
-    [rawX, rawY]
-  );
-
   return (
-    <div className="min-h-screen bg-background selection:bg-accent/30" onMouseMove={handleMouseMove}>
-      {/* Floating Lens Cursor */}
-      <FloatingLens x={lensX} y={lensY} activeColor={hoveredCert?.color || null} />
-
+    <div className="min-h-screen bg-background selection:bg-accent/30">
       {/* Background Echo Text */}
       <AnimatePresence>
         {hoveredCert && (
