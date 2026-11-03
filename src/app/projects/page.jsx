@@ -55,13 +55,8 @@ export default async function ProjectsPage() {
           style={{ backgroundColor: nodeColor }}
         />
 
-        {/* Eyebrow with Blue Straight Line */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="h-px w-8 bg-accent" />
-          <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.4em] text-white/50">
-            Selected Works // 2023 — 2026
-          </span>
-        </div>
+        {/* Pure Straight Blue Line */}
+        <div className="h-px w-12 bg-accent mb-8" />
 
         {/* Title */}
         <Text
