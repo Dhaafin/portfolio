@@ -90,10 +90,6 @@ export default async function ProjectsPage() {
               Archived Releases
             </span>
           </div>
-          <div className="h-3 w-px bg-white/10 hidden sm:block" />
-          <div className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted/60 font-mono">
-            Focus: ML & Signal Processing • Systems
-          </div>
         </div>
       </header>
 
