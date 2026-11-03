@@ -55,19 +55,12 @@ export default async function ProjectsPage() {
           style={{ backgroundColor: nodeColor }}
         />
 
-        {/* Eyebrow with Astral Indicator */}
-        <div className="flex items-center gap-3 mb-6">
-          <div
-            className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-[11px] font-mono font-semibold uppercase tracking-[0.25em]"
-            style={{ color: nodeColor }}
-          >
-            <span
-              className="w-1.5 h-1.5 rounded-full animate-pulse"
-              style={{ backgroundColor: nodeColor }}
-            />
+        {/* Eyebrow with Blue Straight Line */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="h-px w-8 bg-accent" />
+          <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.4em] text-white/50">
             Selected Works // 2023 — 2026
-          </div>
-          <div className="h-px w-12 bg-linear-to-r from-white/20 to-transparent" />
+          </span>
         </div>
 
         {/* Title */}
