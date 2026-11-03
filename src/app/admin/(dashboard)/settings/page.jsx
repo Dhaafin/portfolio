@@ -1,4 +1,3 @@
-import Text from "@/components/atoms/Text";
 import CVUploader from "@/components/organism/admin/CVUploader";
 import AISettingsCard from "@/components/organism/admin/AISettingsCard";
 import { getAISettings } from "@/services/aiSettings.js";
@@ -9,38 +8,32 @@ export default async function AdminSettingsPage() {
   const aiSettings = await getAISettings();
 
   return (
-    <div className="flex flex-col gap-12">
-      <header>
-        <Text className="text-xs tracking-[0.3em] uppercase font-bold text-white/40 mb-2">
-          Control Center
-        </Text>
-        <Text as="h1" className="text-5xl font-black lowercase tracking-tighter">
-          settings<span className="text-white/20">.</span>
-        </Text>
+    <div className="flex flex-col gap-10">
+      <header className="pb-6 border-b border-white/10">
+        <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-white">
+          Settings
+        </h1>
+        <p className="text-xs text-muted font-normal mt-1">
+          AI assistant configuration and curriculum vitae upload
+        </p>
       </header>
 
-      <section className="flex flex-col gap-8">
-        <div className="flex items-center gap-4">
-          <div className="w-1 h-6 rounded-full bg-primary" />
-          <Text className="text-xs uppercase tracking-[0.2em] font-bold text-white/40">
-            AI Assistant Configuration
-          </Text>
-        </div>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-xs uppercase tracking-wider text-muted font-normal">
+          AI Assistant Configuration
+        </h2>
 
-        <div className="p-6 bg-white/2 border border-white/5 rounded-2xl">
+        <div className="p-5 bg-white/[0.02] border border-white/10 rounded-xl">
           <AISettingsCard initialSettings={aiSettings} />
         </div>
       </section>
 
-      <section className="flex flex-col gap-8">
-        <div className="flex items-center gap-4">
-          <div className="w-1 h-6 rounded-full bg-white/20" />
-          <Text className="text-xs uppercase tracking-[0.2em] font-bold text-white/40">
-            Documents
-          </Text>
-        </div>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-xs uppercase tracking-wider text-muted font-normal">
+          Curriculum Vitae (CV)
+        </h2>
 
-        <div className="p-6 bg-white/2 border border-white/5 rounded-2xl">
+        <div className="p-5 bg-white/[0.02] border border-white/10 rounded-xl">
           <CVUploader />
         </div>
       </section>

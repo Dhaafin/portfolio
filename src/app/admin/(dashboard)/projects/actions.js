@@ -54,6 +54,7 @@ export async function createProject(formData) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/admin/projects");
   revalidatePath("/projects");
   redirect("/admin/projects");
@@ -89,6 +90,7 @@ export async function updateProject(id, formData) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/admin/projects");
   revalidatePath("/projects");
   redirect("/admin/projects");
@@ -102,6 +104,7 @@ export async function deleteProject(id) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/admin/projects");
   revalidatePath("/projects");
 }
@@ -117,6 +120,7 @@ export async function reorderProjects(items) {
     console.error("Error reordering projects:", error);
   }
 
+  revalidatePath("/");
   revalidatePath("/admin/projects");
   revalidatePath("/projects");
 }

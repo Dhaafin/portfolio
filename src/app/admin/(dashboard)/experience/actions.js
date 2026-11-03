@@ -32,6 +32,7 @@ export async function createExperience(formData) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/admin/experience");
   revalidatePath("/experience");
   redirect("/admin/experience");
@@ -61,6 +62,7 @@ export async function updateExperience(id, formData) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/admin/experience");
   revalidatePath("/experience");
   redirect("/admin/experience");
@@ -74,6 +76,7 @@ export async function deleteExperience(id) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/admin/experience");
   revalidatePath("/experience");
 }
@@ -89,6 +92,7 @@ export async function reorderExperiences(items) {
     console.error("Error reordering experiences:", error);
   }
 
+  revalidatePath("/");
   revalidatePath("/admin/experience");
   revalidatePath("/experience");
 }

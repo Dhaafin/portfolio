@@ -1,7 +1,6 @@
 import { db } from "@/lib/db/index.js";
 import { chatMessages } from "@/lib/db/schema.js";
 import { desc } from "drizzle-orm";
-import Text from "@/components/atoms/Text";
 import ChatLogsViewer from "@/components/organism/admin/ChatLogsViewer";
 
 export const metadata = { title: "Chat Logs | Admin" };
@@ -13,16 +12,14 @@ export default async function AdminChatLogsPage() {
     .orderBy(desc(chatMessages.created_at));
 
   return (
-    <div className="flex flex-col gap-12">
-      <header className="flex items-end justify-between">
-        <div>
-          <Text className="text-xs tracking-[0.3em] uppercase font-bold text-white/40 mb-2">
-            AI Assistant
-          </Text>
-          <Text as="h1" className="text-5xl font-black lowercase tracking-tighter">
-            chat logs<span className="text-[#A78BFA]">.</span>
-          </Text>
-        </div>
+    <div className="flex flex-col gap-10">
+      <header className="pb-6 border-b border-white/10">
+        <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-white">
+          Chat Logs
+        </h1>
+        <p className="text-xs text-muted font-normal mt-1">
+          Conversation history and user inquiries
+        </p>
       </header>
 
       <ChatLogsViewer initialMessages={messages} />

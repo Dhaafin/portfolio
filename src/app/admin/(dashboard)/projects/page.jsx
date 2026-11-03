@@ -1,43 +1,43 @@
 import { db } from "@/lib/db/index.js";
-import Text from "@/components/atoms/Text";
 import Link from "next/link";
 import SortableProjectList from "@/components/organism/admin/SortableProjectList";
 
-export const metadata = { title: "Manage Projects | Admin" };
+export const metadata = { title: "Projects | Admin" };
 
 export default async function AdminProjectsPage() {
   const projects = await db.query.projects.findMany({
     orderBy: (projects, { asc }) => [asc(projects.order)],
   });
 
-  const nodeColor = "#A78BFA";
-
   return (
-    <div className="flex flex-col gap-12">
-      <header className="flex items-end justify-between">
+    <div className="flex flex-col gap-10">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
         <div>
-          <Text className="text-xs tracking-[0.3em] uppercase font-bold text-white/40 mb-2">
-            Content Manager
-          </Text>
-          <Text as="h1" className="text-5xl font-black lowercase tracking-tighter">
-            projects<span style={{ color: nodeColor }}>.</span>
-          </Text>
+          <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-white">
+            Projects
+          </h1>
+          <p className="text-xs text-muted font-normal mt-1">
+            Manage, edit, and reorder portfolio projects
+          </p>
         </div>
 
         <Link
           href="/admin/projects/new"
-          className="px-8 py-3 rounded-full bg-white text-black text-xs font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all"
+          className="px-4 py-2 rounded-lg bg-white text-black text-xs font-normal hover:bg-neutral-200 transition-colors self-start sm:self-auto"
         >
-          add project.
+          + New Project
         </Link>
       </header>
 
       <div>
         {!projects || projects.length === 0 ? (
-          <div className="p-24 border border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center text-center">
-            <Text className="text-muted/50 mb-4">No projects found in the void.</Text>
-            <Link href="/admin/projects/new" className="text-xs font-bold uppercase tracking-widest text-primary hover:underline">
-              Initialize first record.
+          <div className="p-16 border border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center text-center">
+            <p className="text-xs text-muted font-normal mb-3">No projects found.</p>
+            <Link
+              href="/admin/projects/new"
+              className="text-xs font-normal text-primary hover:underline"
+            >
+              Create your first project.
             </Link>
           </div>
         ) : (

@@ -1,150 +1,181 @@
 import { db } from "@/lib/db/index.js";
-import { projects as projectsTable, experiences as experiencesTable, certifications as certificationsTable } from "@/lib/db/schema.js";
-import Text from "@/components/atoms/Text";
-import Link from "next/link";
 import {
-  ProjectsBarChart,
-  PublishedDonut,
-  ExperienceBarChart,
-  CertificationsBarChart,
-} from "@/components/organism/admin/AdminCharts";
+  projects as projectsTable,
+  experiences as experiencesTable,
+  certifications as certificationsTable,
+  documents as documentsTable,
+} from "@/lib/db/schema.js";
+import Link from "next/link";
 
 export const metadata = { title: "Overview | Admin" };
 
-function groupBy(arr, key) {
-  return arr.reduce((acc, item) => {
-    const val = item[key] ?? "Unknown";
-    acc[val] = (acc[val] || 0) + 1;
-    return acc;
-  }, {});
-}
-
-function toChartData(grouped, labelKey) {
-  return Object.entries(grouped)
-    .map(([label, count]) => ({ [labelKey]: label, count }))
-    .sort((a, b) => String(a[labelKey]).localeCompare(String(b[labelKey])));
-}
-
 export default async function AdminOverviewPage() {
-  const [projects, experiences, certifications] = await Promise.all([
-    db.select({ year: projectsTable.year, is_published: projectsTable.is_published }).from(projectsTable),
-    db.select({ era: experiencesTable.era }).from(experiencesTable),
-    db.select({ issuer_short: certificationsTable.issuer_short }).from(certificationsTable),
+  const [projects, experiences, certifications, documents] = await Promise.all([
+    db.select({ is_published: projectsTable.is_published }).from(projectsTable),
+    db.select({ id: experiencesTable.id }).from(experiencesTable),
+    db.select({ id: certificationsTable.id }).from(certificationsTable),
+    db.select({ id: documentsTable.id }).from(documentsTable),
   ]);
 
-  const projectsByYear = toChartData(groupBy(projects ?? [], "year"), "year");
   const publishedCount = (projects ?? []).filter((p) => p.is_published).length;
   const draftCount = (projects ?? []).length - publishedCount;
-
-  const experienceByEra = toChartData(groupBy(experiences ?? [], "era"), "era");
-  const certsByIssuer = toChartData(groupBy(certifications ?? [], "issuer_short"), "issuer");
 
   const stats = [
     {
       label: "Projects",
       count: projects?.length ?? 0,
-      sub: `${publishedCount} published`,
-      accent: "#A78BFA",
+      sub: `${publishedCount} published, ${draftCount} draft`,
       href: "/admin/projects",
+      actionText: "+ New Project",
+      actionHref: "/admin/projects/new",
     },
     {
       label: "Experience",
       count: experiences?.length ?? 0,
-      sub: `${experienceByEra.length} era${experienceByEra.length !== 1 ? "s" : ""}`,
-      accent: "#6366F1",
+      sub: "Career timeline entries",
       href: "/admin/experience",
+      actionText: "+ New Experience",
+      actionHref: "/admin/experience/new",
     },
     {
       label: "Certifications",
       count: certifications?.length ?? 0,
-      sub: `${certsByIssuer.length} issuer${certsByIssuer.length !== 1 ? "s" : ""}`,
-      accent: "#60A5FA",
+      sub: "Professional credentials",
       href: "/admin/certifications",
+      actionText: "+ New Certification",
+      actionHref: "/admin/certifications/new",
+    },
+    {
+      label: "Documents",
+      count: documents?.length ?? 0,
+      sub: "Chatbot knowledgebase",
+      href: "/admin/documents",
+      actionText: "+ New Document",
+      actionHref: "/admin/documents/new",
+    },
+  ];
+
+  const quickLinks = [
+    {
+      title: "Projects",
+      desc: "Reorder, edit, and publish portfolio works",
+      href: "/admin/projects",
+    },
+    {
+      title: "Experience",
+      desc: "Manage career timeline, companies, and roles",
+      href: "/admin/experience",
+    },
+    {
+      title: "Certifications",
+      desc: "Manage verified licenses and credentials",
+      href: "/admin/certifications",
+    },
+    {
+      title: "Documents",
+      desc: "Manage RAG context for the portfolio AI chatbot",
+      href: "/admin/documents",
+    },
+    {
+      title: "Analytics",
+      desc: "Review chatbot visitors and query activity",
+      href: "/admin/analytics",
+    },
+    {
+      title: "Settings",
+      desc: "Configure AI parameters and curriculum vitae",
+      href: "/admin/settings",
     },
   ];
 
   return (
-    <div className="flex flex-col gap-12">
-      <header>
-        <Text className="text-xs tracking-[0.3em] uppercase font-bold text-white/40 mb-2">
-          Control Center
-        </Text>
-        <Text as="h1" className="text-5xl font-black lowercase tracking-tighter">
-          overview<span className="text-white/20">.</span>
-        </Text>
+    <div className="flex flex-col gap-10">
+      {/* Header (Clean, Non-bold) */}
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-white">
+            Overview
+          </h1>
+          <p className="text-xs text-muted font-normal mt-1">
+            Portfolio content management and system summary
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/admin/projects/new"
+            className="px-3.5 py-1.5 rounded-lg bg-white text-black text-xs font-normal hover:bg-neutral-200 transition-colors"
+          >
+            + New Project
+          </Link>
+          <Link
+            href="/admin/experience/new"
+            className="px-3.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-normal transition-colors"
+          >
+            + New Experience
+          </Link>
+        </div>
       </header>
 
-      {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/* Stat Cards (Non-bold, Minimal) */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s) => (
-          <Link
+          <div
             key={s.label}
-            href={s.href}
-            className="group p-6 bg-white/2 border border-white/5 rounded-2xl hover:bg-white/5 transition-all duration-500 flex flex-col gap-4"
+            className="p-5 bg-white/[0.02] border border-white/10 rounded-xl flex flex-col justify-between hover:border-white/20 transition-all"
           >
-            <div className="flex items-center justify-between">
-              <Text className="text-[10px] uppercase tracking-[0.2em] font-bold text-white/30">
-                {s.label}
-              </Text>
-              <div
-                className="w-2 h-2 rounded-full opacity-60 group-hover:opacity-100 transition-opacity"
-                style={{ backgroundColor: s.accent }}
-              />
+            <div className="flex items-center justify-between text-xs text-muted font-normal">
+              <span>{s.label}</span>
+              <Link
+                href={s.actionHref}
+                className="text-[11px] text-white/50 hover:text-white transition-colors"
+              >
+                {s.actionText}
+              </Link>
             </div>
-            <div>
-              <Text
-                className="text-5xl font-black tracking-tighter"
-                style={{ color: s.accent }}
+            <div className="mt-4">
+              <Link
+                href={s.href}
+                className="text-3xl font-normal text-white hover:text-primary transition-colors inline-block"
               >
                 {s.count}
-              </Text>
-              <Text className="text-xs text-white/30 mt-1 tracking-wider">{s.sub}</Text>
+              </Link>
+              <p className="text-[11px] text-muted/70 font-normal mt-1">
+                {s.sub}
+              </p>
             </div>
-          </Link>
+          </div>
         ))}
-      </div>
-
-      {/* Projects Charts */}
-      <section className="flex flex-col gap-8">
-        <div className="flex items-center gap-4">
-          <div className="w-1 h-6 rounded-full bg-[#A78BFA]" />
-          <Text className="text-xs uppercase tracking-[0.2em] font-bold text-white/40">
-            Projects
-          </Text>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-6 bg-white/2 border border-white/5 rounded-2xl">
-            <ProjectsBarChart data={projectsByYear} />
-          </div>
-          <div className="p-6 bg-white/2 border border-white/5 rounded-2xl">
-            <PublishedDonut published={publishedCount} draft={draftCount} />
-          </div>
-        </div>
       </section>
 
-      {/* Experience Chart */}
-      <section className="flex flex-col gap-8">
-        <div className="flex items-center gap-4">
-          <div className="w-1 h-6 rounded-full bg-[#6366F1]" />
-          <Text className="text-xs uppercase tracking-[0.2em] font-bold text-white/40">
-            Experience
-          </Text>
+      {/* Quick Navigation Cards */}
+      <section className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xs uppercase tracking-wider text-muted font-normal">
+            Quick Navigation
+          </h2>
         </div>
-        <div className="p-6 bg-white/2 border border-white/5 rounded-2xl">
-          <ExperienceBarChart data={experienceByEra} />
-        </div>
-      </section>
 
-      {/* Certifications Chart */}
-      <section className="flex flex-col gap-8">
-        <div className="flex items-center gap-4">
-          <div className="w-1 h-6 rounded-full bg-[#60A5FA]" />
-          <Text className="text-xs uppercase tracking-[0.2em] font-bold text-white/40">
-            Certifications
-          </Text>
-        </div>
-        <div className="p-6 bg-white/2 border border-white/5 rounded-2xl">
-          <CertificationsBarChart data={certsByIssuer} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {quickLinks.map((item) => (
+            <Link
+              key={item.title}
+              href={item.href}
+              className="p-4 bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-white/15 rounded-xl transition-all group flex flex-col justify-between gap-2"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-white/90 font-medium group-hover:text-white transition-colors">
+                  {item.title}
+                </span>
+                <span className="text-xs text-muted/40 group-hover:text-white group-hover:translate-x-0.5 transition-all">
+                  →
+                </span>
+              </div>
+              <p className="text-[11px] text-muted/60 font-normal leading-relaxed">
+                {item.desc}
+              </p>
+            </Link>
+          ))}
         </div>
       </section>
     </div>

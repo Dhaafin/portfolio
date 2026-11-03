@@ -30,6 +30,7 @@ export async function createCertification(formData) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/admin/certifications");
   revalidatePath("/certifications");
   redirect("/admin/certifications");
@@ -57,6 +58,7 @@ export async function updateCertification(id, formData) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/admin/certifications");
   revalidatePath("/certifications");
   redirect("/admin/certifications");
@@ -70,6 +72,7 @@ export async function deleteCertification(id) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/admin/certifications");
   revalidatePath("/certifications");
 }
@@ -85,6 +88,7 @@ export async function reorderCertifications(items) {
     console.error("Error reordering certifications:", error);
   }
 
+  revalidatePath("/");
   revalidatePath("/admin/certifications");
   revalidatePath("/certifications");
 }
