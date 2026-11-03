@@ -47,20 +47,66 @@ export default async function ProjectsPage() {
 
   return (
     <div className="min-h-screen relative w-full max-w-[1400px] mx-auto px-4 sm:px-12 md:px-24 lg:px-48 py-16 sm:py-24 md:py-32 overflow-x-hidden">
-      {/* Page Header (Root of the Timeline) */}
-      <header className="relative mb-16 sm:mb-24 md:mb-32 ml-10 sm:ml-16 md:ml-32">
-        <Text
-          className="text-[10px] sm:text-xs tracking-[0.3em] uppercase font-bold mb-4"
-          style={{ color: nodeColor }}
-        >
-          selected projects.
-        </Text>
+      {/* Overhauled Cinematic Hero */}
+      <header className="relative mb-20 sm:mb-28 md:mb-36 pl-4 sm:pl-8 md:pl-16">
+        {/* Ambient Atmospheric Glow */}
+        <div
+          className="absolute -top-24 left-1/4 w-80 sm:w-96 h-80 sm:h-96 rounded-full blur-[120px] pointer-events-none opacity-20"
+          style={{ backgroundColor: nodeColor }}
+        />
+
+        {/* Eyebrow with Astral Indicator */}
+        <div className="flex items-center gap-3 mb-6">
+          <div
+            className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-[11px] font-mono font-semibold uppercase tracking-[0.25em]"
+            style={{ color: nodeColor }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse"
+              style={{ backgroundColor: nodeColor }}
+            />
+            Selected Works // 2023 — 2026
+          </div>
+          <div className="h-px w-12 bg-linear-to-r from-white/20 to-transparent" />
+        </div>
+
+        {/* Title */}
         <Text
           as="h1"
-          className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black lowercase tracking-tighter leading-none"
+          className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black lowercase tracking-tighter leading-[0.85] text-white"
         >
-          projects<span style={{ color: nodeColor }}>.</span>
+          projects
+          <span
+            style={{ color: nodeColor }}
+            className="drop-shadow-[0_0_25px_rgba(167,139,250,0.5)]"
+          >
+            .
+          </span>
         </Text>
+
+        {/* Lead Subtitle (Bridges typography gap & fixes text ratio) */}
+        <p className="text-base sm:text-lg md:text-xl text-muted/80 font-normal leading-relaxed max-w-2xl mt-6 sm:mt-8">
+          An index of machine learning pipelines, signal processing research, and scalable digital architectures — built at the intersection of mathematical rigor and fluid aesthetics.
+        </p>
+
+        {/* Release Metrics Strip */}
+        <div className="flex flex-wrap items-center gap-6 mt-8 sm:mt-10 pt-6 border-t border-border/20 max-w-3xl">
+          <div className="flex items-center gap-2">
+            <span
+              className="text-xs sm:text-sm font-mono font-bold"
+              style={{ color: nodeColor }}
+            >
+              {String(projects.length).padStart(2, "0")}
+            </span>
+            <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted font-semibold">
+              Archived Releases
+            </span>
+          </div>
+          <div className="h-3 w-px bg-white/10 hidden sm:block" />
+          <div className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted/60 font-mono">
+            Focus: ML & Signal Processing • Systems
+          </div>
+        </div>
       </header>
 
       {/* The Timeline Container */}

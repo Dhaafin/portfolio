@@ -58,6 +58,7 @@ export default function ProjectDetailModal({ activeProject, onClose, nodeColor =
   const hasImage = Boolean(activeProject.image_url);
   const [activeMedia, setActiveMedia] = useState(hasVideo ? "video" : "image");
   const videoEmbed = hasVideo ? getVideoEmbed(activeProject.video_url) : null;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
@@ -87,22 +88,45 @@ export default function ProjectDetailModal({ activeProject, onClose, nodeColor =
         </button>
 
         {/* Modal Header */}
-        <header className="flex flex-col gap-2 border-b border-border/20 pb-6 pr-12 shrink-0">
-          <Text className="text-muted/50 text-[10px] sm:text-xs tracking-[0.25em] uppercase font-bold">
-            {activeProject.id} — {activeProject.year} {activeProject.project_type && `// ${activeProject.project_type}`}
-          </Text>
+        <header className="flex flex-col gap-3 border-b border-border/20 pb-6 pr-12 shrink-0">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span
+              className="text-[10px] sm:text-[11px] font-mono font-bold tracking-[0.2em] uppercase px-2 py-0.5 rounded border"
+              style={{
+                color: nodeColor,
+                borderColor: `${nodeColor}40`,
+                backgroundColor: `${nodeColor}15`,
+              }}
+            >
+              PROJECT // {activeProject.indexNumber || "01"}
+            </span>
+            <span className="text-muted/40 font-mono text-xs">•</span>
+            <span className="text-muted/70 text-xs font-mono font-semibold">
+              {activeProject.year}
+            </span>
+            {activeProject.project_type && (
+              <>
+                <span className="text-muted/40 font-mono text-xs">•</span>
+                <span className="text-muted/60 text-xs font-mono uppercase">
+                  {activeProject.project_type}
+                </span>
+              </>
+            )}
+          </div>
           <Text
             as="h3"
-            className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white mt-1"
           >
             {activeProject.title}
           </Text>
-          <Text
-            className="text-xs sm:text-sm tracking-[0.2em] uppercase font-bold mt-2"
-            style={{ color: nodeColor }}
-          >
-            {activeProject.role}
-          </Text>
+          {activeProject.role && (
+            <Text
+              className="text-xs sm:text-sm tracking-[0.2em] uppercase font-bold mt-1"
+              style={{ color: nodeColor }}
+            >
+              {activeProject.role}
+            </Text>
+          )}
         </header>
 
         {/* Media Showcase (Video & Image Switcher) */}
@@ -149,15 +173,15 @@ export default function ProjectDetailModal({ activeProject, onClose, nodeColor =
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
                     className="w-full h-full border-0"
-                        />
+                  />
                 ) : (
                   <video
                     src={videoEmbed.src}
                     poster={activeProject.image_url}
                     controls
                     playsInline
-                          className="w-full h-full object-cover"
-                        />
+                    className="w-full h-full object-cover"
+                  />
                 )
               ) : hasImage ? (
                 <>

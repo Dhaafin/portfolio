@@ -35,11 +35,17 @@ export default function ProjectOrganism({ projects = [] }) {
 
       {/* Project List */}
       <div className="flex flex-col gap-16 sm:gap-24 md:gap-32 lg:gap-48">
-        {projects.map((project) => (
+        {projects.map((project, index) => (
           <ProjectCard
             key={project.id}
+            index={index}
             project={project}
-            onExplore={setActiveProject}
+            onExplore={(p) =>
+              setActiveProject({
+                ...p,
+                indexNumber: String(index + 1).padStart(2, "0"),
+              })
+            }
             nodeColor={nodeColor}
           />
         ))}
