@@ -9,6 +9,6 @@ export async function getLandingExperiences() {
 
 export async function getAllExperiences() {
   return db.query.experiences.findMany({
-    orderBy: (experiences, { desc }) => [desc(experiences.order)],
+    orderBy: (experiences, { asc }) => [asc(experiences.order)],
   });
 }

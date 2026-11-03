@@ -6,10 +6,11 @@ import Text from "@/components/atoms/Text";
 
 const TRANSITION = { duration: 0.8, ease: [0.23, 1, 0.32, 1] };
 
-export default function ExperienceCard({ exp }) {
+export default function ExperienceCard({ exp, index = 0 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const hasMore = exp.points && exp.points.length > 3;
   const visiblePoints = isExpanded ? exp.points : exp.points?.slice(0, 3);
+  const indexLabel = String(index + 1).padStart(2, "0");
 
   return (
     <motion.div
@@ -26,7 +27,7 @@ export default function ExperienceCard({ exp }) {
           className="text-[9px] sm:text-[10px] uppercase tracking-[0.35em] font-black"
           style={{ color: exp.color || "hsl(217, 91%, 60%)" }}
         >
-          {exp.id}
+          {indexLabel}
         </Text>
         <div
           className="h-[1px] flex-1"

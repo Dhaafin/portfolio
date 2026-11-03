@@ -68,8 +68,8 @@ export default function ExperienceOrganism({ experiences = [] }) {
           />
 
           <div className="w-full lg:w-[32rem] flex flex-col gap-16 sm:gap-24 md:gap-40 lg:gap-56">
-            {list.map((exp) => (
-              <ExperienceCard key={exp.id} exp={exp} />
+            {list.map((exp, index) => (
+              <ExperienceCard key={exp.id} exp={exp} index={index} />
             ))}
 
             <div className="h-[40vh] lg:h-[40vh]" />
