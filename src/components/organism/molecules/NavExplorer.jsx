@@ -50,15 +50,6 @@ export default function NavExplorer() {
             />
           </div>
 
-          <motion.p
-            className="absolute top-10 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.4em] uppercase font-black text-muted/20 pointer-events-none"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-          >
-            astral navigation.
-          </motion.p>
-
           {/* Back button — aligned with content container */}
           <div className="absolute top-0 left-0 right-0 z-50 pointer-events-none">
             <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-12 md:px-24 lg:px-48 pt-10">
